@@ -1,0 +1,308 @@
+\section{Açık Anahtarlı Şifreleme (Asymmetric Encryption)}
+
+Asimetrik şifrelemede, birbiriyle matematiksel olarak ilişkili iki farklı anahtar kullanılır: açık anahtar ve özel anahtar. Açık anahtar şifreleme için kullanılır. Özel anahtar şifre çözme için kullanılır. Gönderici, alıcının açık anahtarını kullanarak veriyi şifreler. Alıcı, yalnızca kendisinde bulunan özel anahtarını kullanarak şifreli veriyi çözer. Anahtar paylaşımı daha güvenlidir; açık anahtar herkese açık olabilir. Dijital imzalar ve kimlik doğrulama gibi güvenlik mekanizmalarında kullanılır. Kripto para cüzdanlarında vs ssl/tls protokollerinde anahtar değişiminde kullanılır. Daha yavaştır. Örneğin; RSA, ECC, DSA, ElGamal.
+
+\subsection{RSA (Rivest-Shamir-Adleman)}
+
+1977 yılında Ron Rivest, Adi Shamir ve Leonard Adleman tarafından geliştirilmiştir. RSA, büyük asal sayıların çarpanlarına ayrılmasının zorluğuna dayanan bir algoritmadır. RSA, hem şifreleme hem de dijital imzalama için kullanılır. 
+
+\subsubsection{Encryption}
+
+İlk olarak anahtar çifti oluşturulur.
+
+\begin{enumerate}
+    \item $p$ ve $q$ olmak üzere iki büyük asal sayı seçilir.
+    \item Modülüs hesaplanır: $n = p \cdot q$. Bu $n$, açık ve özel anahtar için ortak kullanılır.
+    \item Euler totient fonksiyonu hesaplanır: $\phi(n) = (p - 1) \cdot (q - 1)$.
+    \item Açık bir sayı ($\epsilon$) seçilir, $1 < \epsilon < \phi(n)$ olacak şekilde, $\epsilon$ ve $\phi(n)$ aralarında asal olmalıdır.
+    \item Özel anahtar ($d$) hesaplanır: $(d \cdot \epsilon) \text{ mod } \phi(n) = 1$ olacak şekilde bulunur. Bu işlem, modüler ters alma işlemidir.
+\end{enumerate}
+
+Mesajı şifrelemek için: $C = M^{\epsilon} \text{ mod } n$ formülü kullanılır. Burada, $C$ şifrelenmiş metin, $M$ orijinal metindir. Şifre çözmek için: $M = C^{d} \text{ mod } n$ formülü kullanılır. Burada $d$, özel anahtardır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+import math
+from sympy import mod_inverse, isprime
+
+def random_prime(bit_size):
+    while True:
+        num = random.getrandbits(bit_size)
+        if isprime(num):
+            return num
+
+def generate_keys(bit_size=16):
+    p = random_prime(bit_size)
+    q = random_price(bit_size)
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    e = random.randint(2, phi - 1)
+    while math.gcd(e, phi) != 1:
+        e = random.randint(2, phi - 1)
+
+    d = mod_inverse(e, phi)
+    return (e, n), (d, n)
+
+def rsa_encrypt(plaintext, public_key):
+    e, n = public_key
+    cipher = [pow(ord(char), e, n) for char in plaintext]
+    return cipher
+
+def rsa_decrypt(cipher, private_key):
+    d, n = private_key
+    decrypted = ''.join([chr(pow(char, d, n)) for char in cipher])
+    return decrypted
+
+public_key, private_key = generate_keys()
+plaintext = "Hello, World!"
+cipher = rsa_encrypt(plaintext, public_key)
+decrypted = rsa_decrypt(cipher, private_key)
+print("Encrypted:", cipher)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{ECC (Elliptic Curve Cryptography)}
+
+ECC, eliptik eğri matematiğini kullanır. RSA'ya kıyasla çok daha küçük anahtar boyutlarıyla aynı güvenlik seviyesini sunar. Bu, ECC'yi sınırlı işlem gücü ve bellek gereksinimleri olan cihazlar için ideal hale getirir. Eliptik eğri denklemi:
+
+\[ y^2 = x^3 + ax + b \text{ mod } p \]
+
+Bu eğri, iki parametreye ve bir modülüse bağlıdır. Şifreleme işlemleri, bu eğri üzerindeki noktalar arasında yapılır.
+
+\subsubsection{Encryption}
+
+Parametreler ve anahtarlar oluşturulur.
+
+\begin{enumerate}
+    \item Eliptik eğri denklemi parametreleri belirlenir.
+    \item Eğri üzerinde taban noktası (G) seçilir.
+    \item Özel anahtar (d) seçilir. Rastgele bir sayı seçilir: $1 \leq d < n$. Burada $n$, eğrinin düzenidir.
+    \item Açık anahtar hesaplanır: $Q = d \cdot G$.
+\end{enumerate}
+
+Mesaj bir noktaya (M) dönüştürülür. Rastgele bir sayı (k) seçilir: $1 \leq k < n$. Şifrelenmiş mesaj çifti ($C_1, C_2$): $C_1 = k \cdot G$ ve $C_2 = M + k \cdot Q$. Şifre çözerken özel anahtar (d) şu şekilde hesaplanır: $M = C_2 - d \cdot C_1$.
+
+\newpage
+
+\subsection{DSA (Digital Signature Algorithm)}
+
+DSA, NIST tarafından dijital imzalar için geliştirilmiş bir açık anahtarlı şifreleme algoritmasıdır. DSA, dijital bir mesajın kaynağını doğrulamak ve mesajın değiştirilip değiştirilmediğini kontrol etmek için kullanılır. Bu algoritma, şifreleme için değil, dijital imzalama ve doğrulama işlemleri için tasarlanmıştır.
+
+\subsubsection{Encryption}
+
+Anahtarlar oluşturulur.
+
+\begin{enumerate}
+    \item Büyük bir asal sayı (p) seçilir.
+    \item Bir asal sayı (q) seçilir. Bu, $p - 1$'in çarpanı olan daha küçük bir asal sayıdır.
+    \item g tabanı hesaplanır: $g = h^{\frac{p - 1}{q}} \text{ mod } p$, burada $h$ rastgele seçilen bir sayı ve $1 < h < p - 1$.
+    \item Özel anahtar (x) seçilir: rastgele bir sayı seçilir $1 \leq x < q$.
+    \item Açık anahtar (y) hesaplanır: $y = g^x \text{ mod } p$.
+\end{enumerate}
+
+Mesaj $m$ için dijital imza oluşturulur.
+
+\begin{enumerate}
+    \item Rastgele bir sayı (k) seçilir: $1 \leq k < q$ ve $k$ ile $q$ aralarında asal olmalıdır.
+    \item r değeri hesaplanır: $r = (g^k \text{ mod } p) \text{ mod } q$.
+    \item s değeri hesaplanır: $s = k^{-1} \cdot (H(m) + x \cdot r) \text{ mod } q$. Burada, $H(m)$ mesajın hash değeridir, $k^{-1}$, $k$'nın modüler tersidir.
+\end{enumerate}
+
+İmza (r, s) çiftidir. Dijital imza doğrulanır.
+
+\begin{enumerate}
+    \item w değeri hesaplanır: $w = s^{-1} \text{ mod } q$.
+    \item $u_1$ ve $u_2$ değerleri hesaplanır: $u_1 = H(m) \cdot w \text{ mod } q$ ve $u_2 = r \cdot w \text{ mod } q$.
+    \item $v$ değeri hesaplanır: $v = (g^{u_1} \cdot y^{u_2} \text{ mod } p) \text{ mod } q$.
+    \item Eğer $v = r$ ise imza geçerlidir, aksi halde geçersizdir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hashlib
+from sympy import mod_inverse
+
+p = 23
+x = 6
+q = 11
+g = 2
+k = 7
+
+def generate_keys(g, x, p):
+    y = pow(g, x, p)
+    return x, y
+
+def sign_message(plaintext, private_key, k, g, p, q):
+    r = pow(g, k, p) % q
+    k_inv = mod_inverse(k, q)
+    hash_value = int(hashlib.sha256(plaintext.encode()).hexdigest(), 16) % q
+    s = (k_inv * (hash_value + private_key * r)) % q
+    return r, s
+    
+def verify_signature(plaintext, signature, public_key, g, p, q):
+    r, s = signature
+    if not (0 < r < q and 0 < s < q):
+        return False
+
+    w = mod_inverse(s, q)
+    hash_value = int(hashlib.sha256(plaintext.encode()).hexdigest(), 16) % q
+    u1 = (hash_value * w) % q
+    u2 = (r * w) % q
+    v = ((pow(g, u1, p) * pow(public_key, u2, p)) % p) % q
+    return v == r
+
+private_key, public_key = generate_keys(g, x, p)
+plaintext = "Hello, World!"
+signature = sign_message(plaintext, private_key, k, g, p, q)
+is_valid = verify_signature(plaintext, signature, public_key, g, p, q)
+print("Digital Signature:", signature)
+print("Is Valid:", is_valid)
+\end{lstlisting}
+
+\newpage
+
+\subsection{ElGamal}
+
+ElGamal, açık anahtarlı şifreleme için kullanılan bir algoritmadır. Hem şifreleme hem de dijital imzalama işlemleri için kullanılabilir. ElGamal, Diffie-Hellman anahtar değişimi üzerine kuruludur ve büyük asal sayıların modüler aritmetiği üzerinde çalışır. 
+
+\subsubsection{Encrpytion}
+
+Anahtarlar oluşturulur.
+
+\begin{enumerate}
+    \item Büyük bir asal sayı (p) seçilir.
+    \item g (taban) seçilir: rastgele bir sayı olup $1 < g < p$.
+    \item Özel anahtar (x) seçilir: rastgele bir sayı olup $1 < x < p - 1$.
+    \item Açık anahtar (y) hesaplanır: $y = g^x \text{ mod } p$.
+\end{enumerate}
+
+Mesaj m için şifreleme yapılır.
+
+\begin{enumerate}
+    \item m, p ile uyumlu olacak şekilde bir tam sayıya dönüştürülür.
+    \item Rastgele bir sayı (k) seçilir: $1 < k < p - 1$.
+    \item Şifrelenmiş mesaj: $c_1 = g^k \text{ mod } p$ ve $c_2 = m \cdot y^k \text{ mod } p$.
+\end{enumerate}
+
+Şifre çözme ise
+
+\begin{enumerate}
+    \item $s = c_{1}^{x} \text{ mod } p$.
+    \item $m = c_2 \cdot s^{-1} \text{ mod } p$, burada $s^{-1}$, $s$'nin modüler tersidir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import secrets
+from sympy import mod_inverse
+
+g = 5
+p = 97
+
+def generate_keys(g, p):
+    x = secrets.randbelow(p - 1) + 1
+    y = pow(g, x, p)
+    return (p, g, y), x
+
+def elgamal_encrypt(plaintext, public_key):
+    p, g, y = public_key
+    m = plaintext % p
+    k = secrets.randbelow(p - 1) + 1
+    c1 = pow(g, k, p)
+    c2 = (m * pow(y, k, p)) % p
+    return c1, c2
+
+def elgamal_decrypt(ciphertext, private_key, public_key):
+    p, _, _ = public_key
+    c1, c2 = ciphertext
+    s = pow(c1, private_key, p)
+    s_inv = mod_inverse(s, p)
+    m = (c2 * s_inv) % p
+    return m
+
+public_key, private_key = generate_keys(g, p)
+plaintext = 42
+ciphertext = elgamal_encrypt(message, public_key)
+decrypted = elgamal_decrypt(ciphertext, private_key, public_key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted_message)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Paillier Cipher}
+
+Paillier Cipher, 1999 yılında Pascal Paillier tarafından geliştirilmiştir. Bu algoritma, homomorfik şifreleme özelliği sayesinde, şifreli veriler üzerinde işlem yapmayı mümkün kılar. Bu özellik, gizli veriler üzerinde matematiksel işlemlerin yapılmasını gerektiren uygulamalarda kullanılır.
+
+\subsubsection{Encrpytion}
+
+Anahtarlar oluşturulur.
+
+\begin{enumerate}
+    \item İki büyük asal sayı (p ve q) seçilir.
+    \item Modül (n) hesaplanır: $n = p \cdot q$.
+    \item Lambda ($\lambda$) değeri hesaplanır (carmichael fonksiyonu): $\lambda = \text{lcm}(p - 1, q - 1)$, burada lcm en küçük olan ortak kattır.
+    \item Bir yardımcı fonksiyon $L(u)$ hesaplanır: $L(u) = \frac{u - 1}{n}$.
+    \item g, $n^2$ modülünde bir sayı seçilir: $\text{gcd}(L(g^{\lambda} \text{ mod } n^2), n) = 1$
+    \item Açık anahtar $(n, g)$'dir. Özel anahtar ise $(\lambda, \mu$). Burada $\mu = L(g^{\lambda} \text{ mod } n^2)^{-1} \text{ mod } n$.
+\end{enumerate}
+
+Mesaj şifrelenir.
+
+\begin{enumerate}
+    \item Rastgele bir sayı (r) seçilir: $1 < r < n$.
+    \item Şifrelenmiş mesaj (c): $c = (g^m \cdot r^n) \text{ mod } n^2$.
+\end{enumerate}
+
+Şifre çözme ise:
+
+\begin{enumerate}
+    \item $u = c^{\lambda} \text{ mod } n^2$.
+    \item $m = L(u) \cdot \mu \text{ mod } n$.
+\end{enumerate}
+
+\newpage
+
+\subsection{Diffie-Hellman Key Exchange}
+
+Diffie-Hellman Anahtar Değişimi (DHKE), iki tarafın güvenli bir şekilde ortak bir şifreleme anahtarı oluşturmasını sağlayan açık anahtarlı bir protokoldür. Bu protokol, özellikle güvenli bir kanal üzerinden iletişim kurulmadan önce, şifreleme anahtarlarının değiştirilmesini mümkün kılar.
+
+\subsubsection{Anahtar Değişimi}
+
+\begin{enumerate}
+    \item Her iki taraf da büyük bir asal sayı p (modül) ve bir taban g seçer. Bu parametreler açıkça paylaşılır.
+    \item Alice ve Bob, gizli özel anahtarlar seçer. Alice için bu anahtar a, Bob içinse b olur.
+    \item Açık anahtarlar hesaplanır. Alice, $A = g^a \text{ mod } p$ hesaplar ve Bob'a gönderir. Bob, $B = g^b \text{ mod } p$ hesaplar ve Alice'e gönderir.
+    \item Ortak anahtarlar hesaplanır. Alice, $K_A = B^a \text{ mod } p$ hesaplar. Bob, $K_B = A^b \text{ mod } p$ hesaplar.
+    \item Her iki tarafta aynı ortak anahtarı elde eder. Bu anahtar daha sonra şifreleme için kullanılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def diffie_hellman(p=23, g=5, a=6, b=15):
+    A = pow(g, a, p)
+    B = pow(g, b, p)
+    print(f"Alice's public key: {A}")
+    print(f"Bob's public key: {B}")
+    
+    K_A = pow(B, a, p)
+    K_B = pow(A, b, p)
+    
+    print(f"Alice's shared key: {K_A}")
+    print(f"Bob's shared key: {K_B}")
+    
+    if K_A == K_B:
+        print("The shared key has been created successfully.")
+    else:
+        print("Shared key did not match.")
+\end{lstlisting}
+
+\newpage

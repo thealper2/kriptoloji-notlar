@@ -1,0 +1,985 @@
+\section{Tarihteki Şifreleme Yöntemleri}
+
+\subsection{Polybius Cipher}
+
+Polybius Cipher, eski Yunan filozofu Polybius tarafından önerilmiştir. Bu yöntem, bir tablo kullanılarak hashlerin şifrelenmesi prensibine dayanır. Her harfe tablo üzerinde bir koordinat atanır. İngiliz alfabesinin 26 harfinden biri eksiltilir ve 5x5 bir kare oluşturulur.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+  & 1 & 2 & 3 & 4 & 5 \\ \hline
+1 & A & B & C & D & E \\ \hline
+2 & F & G & H & I/J & K \\ \hline
+3 & L & M & N & O & P \\ \hline
+4 & Q & R & S & T & U \\ \hline
+5 & V & W & X & Y & Z \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şifreleme sırasında her harf, tablodaki satır ve sütun numarası ile temsil edilir. Şifre çözme sırasında bu sayılar tekrar harflere dönüştürülür. Örneğin "ALPER" kelimesinin şifrelenmiş hali "1131351542" dir.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Bir Polybius tablosu oluşturulur.
+    \item Şifrelenecek metnin her harfi için koordinat bulunur.
+    \item Bu koordinatlar birleştirilerek şifreli metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Decryption}
+
+\begin{enumerate}
+    \item Şifrelenmiş metin iki rakamlı gruplara ayrılır.
+    \item Her grubun satır ve sütun değerine karşılık gelen harf bulunur.
+    \item Harfler birleştirilerek orijinal metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def create_polybius_square():
+    alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+    square = {}
+    index = 0
+    for row in range(1, 6):
+        for col in range(1, 6):
+            square[alphabet[index]] = (row, col)
+            index += 1
+
+    coordinates = {v: k for k, v in square.items()}
+    return square, coordinates
+
+def encrypt_polybius(text):
+    square, _ = create_polybius_square()
+    text = text.upper().replace("J", "I")
+    encrypted = ""
+    for char in text:
+        if char.isalpha():
+            row, col = square[char]
+            encrypted += f"{row}{col}"
+        else:
+            encrypted += char
+
+    return encrypted
+
+def decrypt_polybius(text):
+    _, coordinates = create_polybius_square()
+    decrypted = ""
+    i = 0
+    while i < len(text):
+        if text[i].isdigit() and i + 1 < len(text) and text[i + 1].isdigit():
+            row = int(text[i])
+            col = int(text[i + 1])
+            decrypted += coordinates[(row, col)]
+            i += 2
+        else:
+            decrypted += text[i]
+            i += 1
+
+    return decrypted
+
+plaintext = "Hello World"
+ciphertext = encrypt_polybius(plaintext)
+decrypted_text = decrypt_polybius(ciphertext)
+print("Ciphertext:", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Caesar Cipher}
+
+Caesar Cipher, Julius Caesar tarafından kullanılan bir yer değiştirme (substitution) şifreleme yöntemidir. Bu yöntemde, alfabenin harfleri sabit bir sayı kadar kaydırılarak şifrelenir. Şifreleme ve deşifreleme işlemi, kaydırma miktarı (shift değeri) üzerinden yapılır. Eğer shift değeri 3 ise, A harfi D harfi olarak şifrelenir. Bu mantık şifreleme sırasında tüm harflere uygulanır. Deşifreleme ise tam tersine kaydırarak yapılır.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Shift değeri belirlenir.
+    \item Şifrelenecek metindeki her harf için; harfin alfabe sırasındaki yerine shift değeri eklenir.
+    \item Eğer alfabe sonuna ulaşılırsa başa dönülür.
+\end{enumerate}
+
+\subsubsection{Decryption}
+
+\begin{enumerate}
+    \item Şifrelenmiş metindeki her harf için; harfin alfabe sıraısndaki yerinden shift değeri çıkarılır.
+    \item Eğer alfabe başından önceye gidilerse sona dönülür.
+\end{enumerate}
+
+Örneğin "ALPER" kelimesinin 2 kelimelik shiftler ile şifrelenmiş hali "CNRGT" dir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def caesar_encrypt(plainttext, shift=3):
+    encrypted = ""
+    for char in plainttext:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            encrypted += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            encrypted += char
+
+    return encrypted
+
+def caesar_decrypt(ciphertext, shift=3):
+    decrypted = ""
+    for char in ciphertext:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            decrypted += chr((ord(char) - base - shift) % 26 + base)
+        else:
+            decrypted += char
+
+    return decrypted
+
+plaintext = "Hello World"
+ciphertext = caesar_encrypt(plaintext, shift=3)
+decrypted_text = caesar_decrypt(ciphertext, shift=3)
+print("Ciphertext:", ciphertext)
+print("Decrypted:",decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Affine Cipher}
+
+Affine Cipher, bir yer değiştirme şifreleme yöntemidir. Her harf, bir matematiksel formül kullanılarak şifrelenir. Şifreleme işlemi, modüler aritmetiğe dayanır ve iki anahtar kullanır: $a$ (çarpan) ve $b$ (toplama sabiti). Bu yöntem, monoalfabetik bir şifreleme türüdür. Şifreleme için:
+
+\[ E(x) = (\alpha \cdot x + b) \text{ mod } 26 \]
+
+Burada, $x$, harfin alfabe üzerindeki sırasını (0-25 arasında); $\alpha$, çarpanı (mod 26 ile asal olmalıdır); $b$, toplama sabitini; $\text{ mod } 26$, alfabe boyutunu temsil eder. Deşifreleme için:
+
+\[ D(y) = \alpha^{-1} \cdot (y - b) \text{ mod } 26 \]
+
+Burada, $y$, şifreli harfin alfabe üzerindeki sırasını, $\alpha^{-1}$, $\alpha$'nın mod 26'ya göre ters çarpanını temsil eder.
+
+Örneğin, "ALPER" kelimesini Affine Cipher ile şifreleyelim. $\alpha = 5$ ve $b = 8$ olsun.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+A & B & C & D & E & F & G & H & I & J & K & L & M \\ \hline
+0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\ \hline
+13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Tabloya göre şifrelenmiş mesaj şu şekildedir:
+
+\begin{itemize}
+    \item A harfi için $y = (5 \cdot 0 + 8) \text{ mod } 26 = \text{I}$
+    \item L harfi için $y = (5 \cdot 9 + 8) \text{ mod } 26 = \text{L}$
+    \item P harfi için $y = (5 \cdot 15 + 8) \text{ mod } 26 = \text{F}$
+    \item E harfi için $y = (5 \cdot 4 + 8) \text{ mod } 26 = \text{C}$
+    \item R harfi için $y = (5 \cdot 16 + 8) \text{ mod } 26 = \text{P}$
+\end{itemize}
+
+"ALPER" kelimesinin Affine Cipher ile şifrelenmiş hali "ILFCP" dir. Şimdi ise bu şifreyi çözelim. Her bir harf için:
+
+\begin{itemize}
+    \item $1 = \alpha \cdot \alpha^{-1} \text{ mod } 26$, buradan $\alpha_{\text{inv}} = 21$ olur.
+    \item "I" karakteri için, tabloda değeri 8, $D(x) = 21 \cdot (8 - 8) \text{ mod } 26 = 0$ olur. 0'ın tablodaki değeri "A"'dır.
+    \item "L" karakteri için, tabloda değeri 11, $D(x) = 21 \cdot (11 - 8) \text{ mod } 26 = 11$ olur. 11'in tablodaki değeri "L"'dır.
+    \item "F" karakteri için, tabloda değeri 5, $D(x) = 21 \cdot (5 - 8) \text{ mod } 26 = 15$ olur. 15'in tablodaki değeri "P"'dır.
+    \item "C" karakteri için, tabloda değeri 2, $D(x) = 21 \cdot (2 - 8) \text{ mod } 26 = 4$ olur. 4'ün tablodaki değeri "E"'dır.
+    \item "P" karakteri için, tabloda değeri 15, $D(x) = 21 \cdot (15 - 8) \text{ mod } 26 = 17$ olur. 17'nin tablodaki değeri "R"'dır.
+\end{itemize}
+
+Böylece, şifreli metin "ILFCP" den tekrar "ALPER" kelimesini elde etmiş olduk. 
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import math
+
+def mod_inverse(a, m):
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+
+    return None
+
+def affine_encrypt(plaintext, a=5, b=8):
+    if math.gcd(a, 26) != 1:
+        raise ValueError("")
+
+    encrypted = ""
+    for char in plaintext.upper():
+        if char.isalpha():
+            x = ord(char) - ord("A")
+            encrypted += chr(((a * x + b) % 26) + ord("A"))
+        else:
+            encrypted += char
+
+    return encrypted
+
+def affine_decrypt(ciphertext, a=5, b=8):
+    if math.gcd(a, 26) != 1:
+        raise ValueError("")
+
+    a_inv = mod_inverse(a, 26)
+    if a_inv is None:
+        raise ValueError
+
+    decrypted = ""
+    for char in ciphertext.upper():
+        if char.isalpha():
+            y = ord(char) - ord("A")
+            decrypted += chr(((a_inv * (y - b)) % 26) + ord("A"))
+
+        else:
+            decrypted += char
+
+    return decrypted
+
+plaintext = "Hello World"
+ciphertext = affine_encrypt(plaintext, a=5, b=8)
+decrypted_text = affine_decrypt(ciphertext, a=5, b=8)
+print("Ciphertext:", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Vigenere Cipher}
+
+Vigenere Cipher, çok alfabeli yer değiştirme şifreleme (polyalphabetic substitution cipher) yöntemidir. Şifreleme ve deşifreleme işlemi, bir anahtar kelime kullanılarak gerçekleştirilir. Anahtar kelime, şifrelenecek metnin uzunluğuna kadar tekrar eder. Bu yöntem, basit yer değiştirme şifrelemelerine göre daha güvenlidir, çünkü farklı alfabeler arasında geçiş yaparak daha karmaşık bir şifreleme sağlar. Şifreleme için, her harf bir anahtar kelime yardımıyla bir alfabe içinde kaydırılır. 
+
+\[ C_i = (P_i + K_i) \text{ mod } 26 \]
+
+Burada, $P_i$, düz metindeki harfin alfabe sırası (0-25 arasında); $K_i$, anahtar keliminin ilgili harfinin alfabe sırası (0-25 arasında); $C_i$, şifrelenmiş metindeki harfin alfabe sırasıdır. Deşifreleme işleminde, şifreleme işlerminin tersi yapılır. 
+
+\[ P_i = (C_i - K_i) \text{ mod } 26 \]
+
+Örneğin "ANAHTAR" kelimesini kullanarak "ALPERKARACA" ismini şifreleyelim. 
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+A & B & C & D & E & F & G & H & I & J & K & L & M \\ \hline
+0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\ \hline
+13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Tabloya göre şifrelenmiş mesaj şu şekildedir:
+
+\begin{table}[ht]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Anahtar Harf & Mesaj Harf & Index Toplamı & Mod & Şifreli Mesaj Index & Şifreli Harf \\ \hline
+A & A & $0 + 0 = 0$ & $0 \text{ mod } 26 = 0$ & 0 & A \\ \hline
+N & L & $13 + 11 = 24$ & $24 \text{ mod } 26 = 24$ & 24 & Y \\ \hline 
+A & P & $0 + 15 = 15$ & $15 \text{ mod } 26 = 15$ & 15 & P \\ \hline
+H & R & $7 + 4 = 11$ & $11 \text{ mod } 26 = 11$ & 11 & L \\ \hline
+T & T & $19 + 17 = 36$ & $36 \text{ mod } 26 = 10$ & 10 & K \\ \hline
+A & K & $0 + 10 = 10$ & $10 \text{ mod } 26 = 10$ & 10 & K \\ \hline
+R & A & $17 + 0 = 17$ & $17 \text{ mod } 26 = 17$ & 17 & R \\ \hline
+A & R & $0 + 17 = 17$ & $17 \text{ mod } 26 = 17$ & 17 & R \\ \hline
+N & A & $13 + 0 = 13$ & $13 \text{ mod } 26 = 13$ & 13 & N \\ \hline
+A & C & $0 + 2 = 2$ & $2 \text{ mod } 26 = 2$ & 2 & C \\ \hline
+H & A & $7 + 0 = 7$ & $7 \text{ mod } 26 = 7$ & 7 & H \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\newpage
+
+Buradan "ANAHTAR" kelimesi anahtarı ile "ALPERKARACA" mesajını şifrelenmiş hali "AYPLKKRRNCH" geliyor. Şimdi ise bunu aynı anahtar ile geri çözelim. Şifre çözme işlemi için şifreli mesaj harflerinin değerlerinden, anahtar kelimenin harflerinin değerleri çıkarılır. Eğer sonuç sıfırdan küçükse üzerine mod yani 26 eklenir.
+
+\begin{table}[ht]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Şifreli Mesaj Harf & Anahtar Harf & Index Toplamı & Mod & Mesaj Index & Mesaj Harf \\ \hline
+A & A & $0 - 0 = 0$ & $0$ & 0 & A \\ \hline
+Y & N & $24 - 13 = 11$ & $11$ & 11 & L \\ \hline 
+P & A & $15 - 0 = 15$ & $15$ & 15 & P \\ \hline
+L & H & $11 - 7 = 4$ & $4$ & 4 & E \\ \hline
+K & T & $10 - 19 = -9$ & $-9 + 26 = 17$ & 17 & R \\ \hline
+K & A & $10 - 0 = 10$ & $10$ & 10 & K \\ \hline
+R & R & $17 - 17 = 0$ & $0$ & 0 & A \\ \hline
+R & A & $17 - 0 = 17$ & $17$ & 17 & R \\ \hline
+N & N & $13 - 13 = 0$ & $0$ & 0 & A \\ \hline
+C & A & $2 - 0 = 2$ & $2$ & 2 & C \\ \hline
+H & H & $7 - 7 = 0$ & $0$ & 0 & A \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Görüldüğü gibi tekrardan "ALPERKARACA" kelimesini elde ettik.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def vigenere_encrypt(plaintext, key):
+    key = key.upper()
+    encrypted = ""
+    key_index = 0
+    for char in plaintext.upper():
+        if char.isalpha():
+            p = ord(char) - ord("A")
+            k = ord(key[key_index]) - ord("A")
+            encrypted += chr((p + k) % 26 + ord("A"))
+            key_index = (key_index + 1) % len(key)
+        else:
+            encrypted += char
+
+    return encrypted
+
+def vigenere_decrypt(ciphertext, key):
+    key = key.upper()
+    decrypted = ""
+    key_index = 0
+    for char in ciphertext.upper():
+        if char.isalpha():
+            c = ord(char) - ord('A')
+            k = ord(key[key_index]) - ord('A')
+            decrypted += chr((c - k + 26) % 26 + ord('A'))
+            key_index = (key_index + 1) % len(key)
+        else:
+            decrypted += char 
+    return decrypted
+
+plaintext = "Hello World"
+key = "secretkey"
+ciphertext = vigenere_encrypt(plaintext, key)
+decrypted_text = vigenere_decrypt(ciphertext, key)
+print("Ciphertext:", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Playfair Cipher}
+
+1854 yılında Charles Wheatstone tarafından geliştirilmiştir. Carles Wheatsone tarafından geliştirilmiş olmasına rağmen adını bu algoritmanın kullanılmasını savunan Lord Playfair'den alır. Çift harfli (digraph) yer değiştirme şifreleme yöntemidir. Şifreleme işlemi 5x5 harf matrisinin kullanımıyla gerçekleştirilir. Bu yöntem, metni harf çiftleri (digraph) halinde işler ve bu çiftlerin matris üzerindeki pozisyonlarına göre şifreler.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Anahtar kelime alınır ve tekrar eden harfler çıkarılarak matrisin ilk satırlarına yazılır. Matris, geriye kalan alfabe harfleriyle doldurulur.
+    \item Düz metin iki harfli gruplara bölünür. Aynı harfler bir çift içinde yer alırsa, araya "X" eklenir. Tek harfli kalan metinler için sona bir "X" eklenir.
+    \item Her harf çifti için matris üzerindeki konumlarına göre şifrelenir:
+    \begin{itemize}
+        \item \textbf{Aynı Satır}: Harfler sağa doğru kaydırılır.
+        \item \textbf{Aynı Sütun}: Harfler aşağıya doğru kaydırılır.
+        \item \textbf{Farklı Satır ve Sütun}: Harfler dikdörtgenin karşı köşeleriyle değiştirilir.
+    \end{itemize}
+\end{enumerate}
+
+Örneğin, "MONARCHY" anahtarı ile "ALPERKARACAD" kelimesini şifreleyelim. "MONARCHY" anahtarında tekrar eden bir harf olmadığı için anahtar aynı şekilde matrise eklenir. Matris:
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+M & O & N & A & R \\ \hline
+C & H & Y & B & D \\ \hline
+E & F & G & I/J & K \\ \hline
+L & P & Q & S & T \\ \hline
+U & V & W & X & Z \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şimdi "ALPERKARACA" kelimesini ikili gruplara ayıralım: "AL PE RK AR AC AD". Tabloya göre:
+
+\begin{itemize}
+    \item Köşeleri A ve L olan karenin diğer köşeleri: MS.
+    \item Köşeleri P ve E olan karenin diğer köşeleri: LF.
+    \item R ve K aynı sütunda olduğu için birer altlarındaki değerler: DT.
+    \item A ve R aynı satırda olduğu için birer sağındakiler: RM.
+    \item Köşeleri A ve C olan karenin diğer köşeleri: MB.
+    \item Köşeleri A ve D olan karenin diğer köşeleri: RB.
+\end{itemize}
+
+"MONARCHY" anahtarı ile "ALPERKARACAD" kelimesinin şifrelenmiş hali "MSLFDTRMMBRB" dir.
+
+\newpage
+
+\subsection{Bifid Cipher}
+
+1901 yılında Felix Delastelle tarafından geliştirilmiştir. Bu yöntem, Polybios karesi kullanarak hem yer değiştirme hem de transpozisyon şifreleme tekniklerini birleştirir. Amaç, bir mesajın harflerini hem satır hem de sütun koordinatları üzerinden şifrelemektir. 
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Polybios karesini oluşturmak için alfabenin harfleri, bir 5x5 matris içinde yerleştirilir. Anahtar kelime, matrisin doldurulmasında ilk sırayı alır ve ardından geri kalan alfabe harfleri eklenir.
+    \item Düz metin (plaintext) yalnızca alfabe harflerinden oluşmalıdır ve büyük harflerle yazılmalıdır. 
+    \item Her harf için matrisin satır ve sütun koordinatları alınır ve bir listeye yazılır.
+    \item Satır ve sütun koordinatları birleştirilerek yeni bir sıralama oluşturulur.
+    \item Oluşan yeni sıralama, her çift sayı için matristen harf seçilerek şifreli metin (ciphertext) elde edilir.
+\end{enumerate}
+
+Örneğin, "ANAHTAR" kelimesi anahtarı ile "ALPERKARACA" kelimesini şifreleyelim. Bifid matrisi:
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+  & 1 & 2 & 3 & 4 & 5 \\ \hline
+1 & A & N & H & T & R \\ \hline
+2 & B & C & D & E & F \\ \hline
+3 & G & I/J & K & L & M \\ \hline
+4 & O & P & Q & S & U \\ \hline
+5 & V & W & X & Y & Z \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\newpage
+
+Tabloya göre "ALPERKARACA" kelimesinin şifrelenmiş hali:
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+Harf & A & L & P & E & R & K & A & R & A & C & A \\ \hline
+Satır & 1 & 3 & 4 & 2 & 1 & 3 & 1 & 1 & 1 & 2 & 1 \\ \hline
+Sütun & 1 & 4 & 2 & 4 & 5 & 3 & 1 & 5 & 1 & 2 & 1 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şimdi bu tablodaki değerleri soldan sağa doğru ikişerli şekilde okuyarak Bifid tablosundaki değeriyle mesajı şifreleyelim:
+
+\begin{itemize}
+    \item 13, 1. satır 3. sütun: H
+    \item 42, 4. satır 2. sütun: P
+    \item 13, 1. satır 3. sütun: H
+    \item 11, 1. satır 1. sütun: A
+    \item 12, 1. satır 2. sütun: N
+    \item 11, 1. satır 1. sütun: A
+    \item 42, 4. satır 2: sütun: P
+    \item 45, 4. satır 5. sütun: U
+    \item 31, 3. satır 1. sütun: G
+    \item 51, 5. satır 1. sütun: V
+    \item 21, 2. satır 1. sütun: B
+\end{itemize}
+
+"ANAHTAR" anahtarı ile "ALPERKARACA" mesajının şifrelenmiş hali "HPHANAPUGVB" dır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def create_polybius_square(key):
+    key = key.upper().replace("J", "I")
+    alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+    key_square = []
+    used_chars = set()
+    for char in key:
+        if char not in used_chars and char in alphabet:
+            key_square.append(char)
+            used_chars.add(char)
+
+    for char in alphabet:
+        if char not in used_chars:
+            key_square.append(char)
+
+    square = [key_square[i:i + 5] for i in range(0, 25, 5)]
+    positions = {char: (i // 5, i % 5) for i, char in enumerate(key_square)}
+    return square, positions
+
+def bifid_encrypt(plaintext, key):
+    square, positions = create_polybius_square(key)
+    plaintext = plaintext.upper().replace('J', 'I')
+    row_coords = []
+    col_coords = []
+    for char in plaintext:
+        if char in positions:
+            row, col = positions[char]
+            row_coords.append(row)
+            col_coords.append(col)
+
+    combined_coords = row_coords + col_coords
+    ciphertext = ""
+    for i in range(0, len(combined_coords), 2):
+        row = combined_coords[i]
+        col = combined_coords[i + 1]
+        ciphertext += square[row][col]
+
+    return ciphertext
+
+def bifid_decrypt(ciphertext, key):
+    square, positions = create_polybius_square(key)
+    reverse_positions = {v: k for k, v in positions.items()}
+    coords = []
+    for char in ciphertext:
+        for item in positions[char]:
+            coords.append(item)
+
+    row_coords = coords[:len(coords) // 2]
+    col_coords = coords[len(coords) // 2:]
+    plaintext = ""
+    for r, c in zip(row_coords, col_coords):
+        plaintext += square[r][c]
+
+    return plaintext
+
+plaintext = "Hello World"
+key = "secretkey"
+ciphertext = bifid_encrypt(plaintext, key)
+decrypted_text = bifid_decrypt(ciphertext, key)
+print("Ciphertext:", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Trifid Cipher}
+
+Trifid Cipher, Felix Delastelle tarafından geliştirilen çok boyutlu bir şifreleme yöntemidir. Bifid Şifreleme'nin bir uzantısı olarak, Trifid metodu metni şifrelemek için üç boyutlu bir matrisi (3x3x3) kullanır. Hem yer değiştirme hem de transpozisyon prensiplerini birleştirir, bu da daha güçlü bir şifreleme sağlar.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Alfabenin harfleri, 27 hücrelik bir kübe yerleştirilir.
+    \item Şifrelenecek metin büyük harflere çevrilir. Harfler, küpteki pozisyonlarına göre (katman, satır, sütun) bir koordinat kümesine çevrilir.
+    \item Pozisyonlar üç ayrı gruba ayrılır: Katman, Satır, Sütun koordinatları. Koordinatlar birleştirilerek sıralama değiştirilir.
+    \item Yeni sıralamaya göre koordinatlar tekrar gruplanır ve küpteki harfler şifreli metni oluşturur.
+\end{enumerate}
+
+Örneğin, "ANAHTAR" anahtarı ile "ALPER" mesajını şifreleyim. 3 adet tablo:
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+  & 1 & 2 & 3 \\ \hline
+1 & A & N & H \\ \hline
+2 & T & R & B \\ \hline
+3 & C & D & E \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+  & 1 & 2 & 3 \\ \hline
+1 & F & G & J \\ \hline
+2 & J & K & L \\ \hline
+3 & M & O & P \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\newpage
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+  & 1 & 2 & 3 \\ \hline
+1 & Q & S & U \\ \hline
+2 & V & W & X \\ \hline
+3 & Y & Z & - \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Tablodaki değerlere göre "ALPER" kelimesinin tablosu:
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Harf & A & L & P & E & R \\ \hline
+Katman & 1 & 2 & 2 & 1 & 1 \\ \hline
+Sütun & 1 & 3 & 3 & 3 & 2 \\ \hline
+Satır & 1 & 2 & 3 & 3 & 2 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şimdi bu tablodaki değerleri soldan sağa doğru üçerli şekilde okuyarak Trifid tablosundaki değeriyle mesajı şifreleyelim:
+
+\begin{itemize}
+    \item 122, 1. katman 2. sütun 2. satır: R 
+    \item 111, 1. katman 1. sütun 1. satır: A
+    \item 333, 3. katman 3. sütun 3. satır: -
+    \item 212, 2. katman 1. sütun 2. satır: J
+    \item 332, 3. katman 3. sütun 2. satır: X
+\end{itemize}
+
+"ANAHTAR" anahtarı ile "ALPER" mesajının şifrelenmiş hali "RAJX" dır.
+
+\newpage
+
+\subsection{Vernam Cipher}
+
+Vernam Şifreleme, 1917'de Gilbert Vernam tarafından geliştirilen ve "One-Time Pad" olarak da bilinen bir şifreleme yöntemidir. Bu yöntem, bir veri ve bir anahtar arasında bir mod-2 (XOR) işlemi gerçekleştirerek veri şifreler. Düz metin (plaintext) bir bit dizisine dönüştürülür. Anahtar da aynı uzunlukta rastgele bir bit dizisi olarak oluşturulur. Şifreleme işleminde, düz metnin her biti ile anahtarın karşılık gelen biti XOR işlemi ile işlenir:
+
+\[ C_i = P_i \oplus K_i \]
+
+Burada, $P_i$, düz metinin i-inci biti; $K_i$, anahtarın i-inci biti; $C_i$, şifreli metnin i-inci biti.
+
+Örneğin, "VERNAM" anahtarı ile "KARACA" kelimesini şifreleyelim. İlk olarak anahtar ve mesajdaki her bir harfin ASCII kodunun binary kodu elde edilir. Daha sonra bu anahtar ve mesajın binary kodları xor işlemine girer. ASCII tablosunda büyük-küçük harf duyarlıdır.
+
+\begin{table}[ht]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Anahtar Harf & ASCII Kodu & Binary Kodu & Mesaj Harf & ASCII Kodu & Binary Kodu \\ \hline
+V & 86 & 1010110 & K & 75 & 1001011 \\ \hline
+E & 69 & 1000101 & A & 65 & 1000001 \\ \hline
+R & 82 & 1010010 & R & 82 & 1010010 \\ \hline
+N & 78 & 1001110 & A & 65 & 1000001 \\ \hline
+A & 65 & 1000001 & C & 67 & 1000011 \\ \hline
+M & 77 & 1001101 & A & 65 & 1000001 \\ \hline 
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[ht]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+Anahtar Harf Binary & Mesaj Harf Binary & XOR İşlemi & ASCII Kodu \\ \hline
+1010110 & 1001011 & 00011101 & 29 \\ \hline
+1000101 & 1000001 & 00000100 & 4 \\ \hline
+1010010 & 1010010 & 00000000 & 0 \\ \hline
+1001110 & 1000001 & 00001111 & 15 \\ \hline
+1000001 & 1000011 & 00000010 & 2 \\ \hline
+1001101 & 1000001 & 00001100 & 12 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+"KARACA" kelimesinin şifreli hali "00011101 00000100 00000000 00001111 00000010 00001100" dir. Aynı anahtarın binary kodunu ile şifreli mesajı xor işlemine sokarak şifrelenen metin çözülür.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def vernam_encrypt(plaintext, key):
+    binary_plaintext = ''.join(format(ord(char), '08b') for char in plaintext)
+    binary_key = ''.join(format(ord(char), '08b') for char in key)
+
+    if len(binary_plaintext) != len(binary_key):
+        raise ValueError()
+
+    ciphertext = ''.join('1' if p != k else '0' for p, k in zip(binary_plaintext, binary_key))
+    return ciphertext
+
+def vernam_decrypt(ciphertext, key):
+    binary_key = ''.join(format(ord(char), '08b') for char in key)
+    plaintext_binary = ''.join('1' if c != k else '0' for c, k in zip(ciphertext, binary_key))
+    chars = [plaintext_binary[i:i+8] for i in range(0, len(plaintext_binary), 8)]
+    decrypted = ''.join(chr(int(char, 2)) for char in chars)
+    return decrypted
+
+plaintext = "Hello World"
+key = "secretkeyyy"
+ciphertext = vernam_encrypt(plaintext, key)
+decrypted_text = vernam_decrypt(ciphertext, key)
+print("Ciphertext (Binary):", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Hill Cipher}
+
+Hill Cipher, 1929 yılında Lester S. Hill tarafından geliştirilen bir şifreleme yöntemidir. Bu yöntem, doğrusal cebir kullanarak matris çarpımı prensibine dayalı bir şifreleme sağlar. Hill şifreleme, blok şifreleme yöntemleri arasında yer alır ve metni belirli boyutlardaki bloklara ayırarak işlem yapar.
+
+Şifreleme için:
+
+\[ C = (K \times P) \text{ mod } 26 \]
+
+Deşifreleme için:
+
+\[ P = (K^{-1} \times C) \text{ mod } 26 \]
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item $n \times n$ boyutunda bir kare matris (anahtar) oluşturulur. Bu matris şifreleme ve deşifreleme işlemlerinde kullanılır. Anahtar matrisin determinantı 26 ile aralarında asal olmalıdır. Bu, matrisin tersinin alınabilir olmasını sağlar.
+    \item Düz metin (plaintext) harfler halinde sayılara dönüştürülür. Eğer metin uzunluğu matris boyutuna tam bölünmüyorsa, boşlukları doldurmak için dolgu karakteri eklenir.
+    \item Düz metin blokları, anahtar matrisi ile çarpılır ve mod 26 alınır.
+\end{enumerate}
+
+Örneğin, "java" kelimesini 2x2'lik bir anahtar ile şifreleyelim. Anahtarımız $\begin{bmatrix} 6 & 2 \\ 1 & 4 \end{bmatrix}$ olsun. İlk olarak mesaj ikili bloklara bölünür. Böylece: $java = \begin{bmatrix} j \\ a \end{bmatrix} , \begin{bmatrix} v \\ a \end{bmatrix}$ olur. 
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+A & B & C & D & E & F & G & H & I & J & K & L & M \\ \hline
+0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\ \hline
+13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\newpage
+
+Sonra tabloya göre her bir harfe gelen değerlerle matris oluşturulur: $java = \begin{bmatrix} 9 \\ 0 \end{bmatrix} , \begin{bmatrix} 21 \\ 0 \end{bmatrix}$. Anahtar ile ikili bloklar çarpılır. 
+
+\[ \begin{bmatrix} 6 & 2 \\ 1 & 4 \end{bmatrix} \cdot \begin{bmatrix} 9 \\ 0 \end{bmatrix} = \begin{bmatrix} 54 \\ 9 \end{bmatrix} \]
+\[ \begin{bmatrix} 6 & 2 \\ 1 & 4 \end{bmatrix} \cdot \begin{bmatrix} 21 \\ 0 \end{bmatrix} = \begin{bmatrix} 126 \\ 21 \end{bmatrix} \]
+
+Çıkan sonuç mod değerinden büyük olduğu için 26'ya göre modu alınır.
+
+\[ \begin{bmatrix} 54 \\ 9 \end{bmatrix} \text{ mod } 26 = \begin{bmatrix} 2 \\ 9 \end{bmatrix} \]
+\[ \begin{bmatrix} 126 \\ 21 \end{bmatrix} \text{ mod } 26 = \begin{bmatrix} 22 \\ 9 \end{bmatrix} \]
+
+Bulunan değerlerin tablodaki harf karşılığı bize şifreli mesajı verir.
+
+\[ \begin{bmatrix} 2 \\ 9 \end{bmatrix} = \begin{bmatrix} c \\ j \end{bmatrix} \]
+\[ \begin{bmatrix} 22 \\ 21 \end{bmatrix} = \begin{bmatrix} w \\ j \end{bmatrix} \]
+
+Böylece "java" mesajının şifreli hali "cjwj" olur. Şimdi ise bu şifreli mesajı çözelim. Öncelikle anahtar matrisinin tersi alınır; anahtar matrisinin tersi ile kendisinin çarpımı bize birim matrisi verir. Anahtar matrisin tersinde negatif değer varsa mod yani 26 değeri eklenir. Anahtar matrisin tersini hesaplarsak:
+
+\[ A^{-1} = (ad - bc)^{-1} \begin{bmatrix} d & -b \\ -c & a \end{bmatrix} \]
+\[ A^{-1} = (6 \cdot 4 - 2 \cdot 1)^{-1} \begin{bmatrix} 4 & -2 \\ -1 & 6 \end{bmatrix} \text{ mod } 26 \]
+\[ A^{-1} = \frac{1}{22} \cdot \begin{bmatrix} 4 & -2 \\ -1 & 6 \end{bmatrix} \text{ mod } 26 \]
+
+Matrisin tersi bulunduktan sonra matris ile şifreli mesaj çarpılır. Bulunan değerlerin 26'ya göre modu alınır. Elde edilen değerlerin tablodaki harf karşılıkları alındığında metin çözülmüş olur.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def mod_inverse(a, m):
+    a = a % m
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    return None
+
+def hill_encrypt(plaintext, key_matrix):
+    n = key_matrix.shape[0]
+    plaintext = plaintext.upper().replace(" ", "")
+    if len(plaintext) % n != 0:
+        plaintext += 'X' * (n - len(plaintext) % n)
+    
+    plaintext_numbers = [ord(char) - ord('A') for char in plaintext]
+    plaintext_blocks = np.array(plaintext_numbers).reshape(-1, n)
+    
+    ciphertext = []
+    for block in plaintext_blocks:
+        encrypted_block = np.dot(key_matrix, block) % 26
+        ciphertext.extend(encrypted_block)
+
+    encrypted = ''.join(chr(num + ord('A')) for num in ciphertext)
+    return encrypted
+
+def hill_decrypt(ciphertext, key_matrix):
+    n = key_matrix.shape[0]
+    ciphertext_numbers = [ord(char) - ord('A') for char in ciphertext]
+    ciphertext_blocks = np.array(ciphertext_numbers).reshape(-1, n)
+    
+    det = int(round(np.linalg.det(key_matrix)))
+    det_inv = mod_inverse(det, 26)
+    key_matrix_inv = np.linalg.inv(key_matrix) * det
+    key_matrix_inv = (key_matrix_inv * det_inv) % 26
+    key_matrix_inv = np.round(key_matrix_inv).astype(int) % 26
+    
+    plaintext = []
+    for block in ciphertext_blocks:
+        decrypted_block = np.dot(key_matrix_inv, block) % 26
+        plaintext.extend(decrypted_block)
+
+    decrypted = ''.join(chr(num + ord('A')) for num in plaintext)
+    return decrypted
+
+key_matrix = np.array([[6, 24, 1], [13, 16, 10], [20, 17, 15]])
+plaintext = "Hello World"
+ciphertext = hill_encrypt(plaintext, key_matrix)
+decrypted_text = hill_decrypt(ciphertext, key_matrix)
+print("Ciphertext:", ciphertext)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Bible Code}
+
+Bible Code (İncil Kodu), klasik bir şifreleme yöntemi olmaktan çok, belirli bir metin içerisinden gizli mesajlar ya da kodlar bulma amacıyla kullanılan bir yöntemdir. Tarihte, İncil gibi büyük metinlerde gizli mesajların bulunabileceği inancı üzerine kurgulanmıştır. Bu yöntem, metin içerisindeki harflerin belirli bir desenle seçilmesi ve bir mesaj oluşturulması üzerine dayanır.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Şifreleme ve çözme işlemleri için bir kaynak metin seçilir. Bu genelde İncil gibi uzun bir metindir.
+    \item Şifrelenecek veriye göre bir desen (örneğin her 5. harfi seçmek gibi) belirlenir.
+    \item Şifrelenecek mesajın her bir harfi, kaynak metindeki bir pozisyonla eşleştirilir.
+    \item Kaynak metin üzerinden harflerin sıralı bir şekilde bulunması sağlanır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def bible_code_encrypt(message, text, step):
+    message = message.upper().replace(" ", "")
+    text = text.upper().replace(" ", "").replace("\n", "")
+    
+    indices = []
+    current_index = 0
+    
+    for char in message:
+        while current_index < len(text):
+            if text[current_index] == char:
+                indices.append(current_index)
+                current_index += step
+                break
+            current_index += 1
+    
+    return indices
+
+def bible_code_decrypt(indices, text):
+    text = text.upper().replace(" ", "").replace("\n", "")
+    message = ''.join([text[i] for i in indices])
+    return message
+
+source_text = ""
+message_to_encrypt = "God"
+step_size = 5
+
+encrypted_indices = bible_code_encrypt(message_to_encrypt, source_text, step_size)
+decrypted_message = bible_code_decrypt(encrypted_indices, source_text)
+print("Encrypted (Indexes):", encrypted_indices)
+print("Decrypted:", decrypted_message)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Base64}
+
+Base64, ikili verileri (binary data) ASCII formatına dönüştürmek için kullanılan bir kodlama yöntemidir. Şifreleme değil, bir kodlama yöntemidir ve esas amacı, veriyi taşınabilir ve okunabilir hale getirmektir. E-posta sistemlerinde, URL'lerde veya JSON formatında veriyi taşırken kullanılır. Veriyi 6 bitlik gruplara böler ve bu grupları bir tabloya göre ASCII karakterlerine dönüştürür. Alfabetik harfler (A-Z, a-z), rakamlar (0-9), +, / karakterlerini kullanır. 64 farklı karakter kullandığı için "Base64" adını almıştır. Eksik bitleri tamamlamak için "=" karakteri ile dolgu yapılır.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Kodlanacak veri önce ASCII değerlerine, ardından ikili (binary) formatına dönüştürülür.
+    \item Oluşan binary veri 6 bitlik gruplara bölünür. Eğer toplam uzunluk 6'nın katı değilse, veri 0 eklenerek tamamlanır. 
+    \item 6 bitlik gruplar, Base64 tablosundaki karakterlere dönüştürülür.
+    \item Eğer veri tam 3 byte (24 bit) değilse, eksik kısımlar eşitlik (=) karakteriyle doldurulur.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import base64
+
+def base64_encode(data):
+    byte_data = data.encode('utf-8')
+    encoded_data = base64.b64encode(byte_data)
+    return encoded_data.decode('utf-8')
+
+def base64_decode(encoded_data):
+    byte_data = encoded_data.encode('utf-8')
+    decoded_data = base64.b64decode(byte_data)
+    return decoded_data.decode('utf-8')
+
+plaintext = "Hello World"
+encoded = base64_encode(plaintext)
+decoded = base64_decode(encoded)
+print("Encoded:", encoded)
+print("Decoded:", decoded)
+\end{lstlisting}
+
+\newpage
+
+\subsection{ROT13 Cipher}
+
+ROT13 (Rotation by 13 places) basit bir şifreleme yöntemidir. Her harfi, alfabedeki 13. harfe kaydırarak şifreler. Eğer bir harf A ile M arasında ise, harf 13 kaydırılır; eğer N ile Z arasında ise yine 13 kaydırılır. Bu yöntem, şifreyi hem şifreler hem de çözer, çünkü alfabede 26 harf olduğundan, 13 kaydırma işleminden sonra aynı harfe geri dönülür. Bu özellik, ROT13'ün kolayca çözülmesini sağlar.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import string
+
+def rot13_encrypt_decrypt(text):
+    rot13_table = str.maketrans(
+        string.ascii_lowercase + string.ascii_uppercase,
+        string.ascii_lowercase[13:] + string.ascii_lowercase[:13] +
+        string.ascii_uppercase[13:] + string.ascii_uppercase[:13]
+    )
+    return text.translate(rot13_table)
+
+plaintext = "Hello World"
+encrypted_text = rot13_encrypt_decrypt(plaintext)
+decrypted_text = rot13_encrypt_decrypt(encrypted_text)
+print("Encrpyted:", encrypted_text)
+print("Decrypted:", decrypted_text)
+\end{lstlisting}
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+A & B & C & D & E & F & G & H & I & J & K & L & M \\ \hline
+0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\ \hline
+13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Örneğin, "ALPER" mesajının ROT13 ile şifrelenmiş hali tabloya göre "NYCRE" dir.
+
+\newpage
+
+\subsection{Lehmer Code}
+
+Lehmer Code, sıralı bir küme içerisindeki öğelerin sırasını temsil etmek için kullanılan bir kodlama sistemidir. Sıralama ve permütasyonlarla ilişkili işlemlerde kullanılır. Lehmer kodu, bir permütasyonun sırasını ifade etmek için her öğe için "daha küçük" öğelerin sayısını belirler. Bu yöntem, belirli bir öğenin sırasını hesaplamak için kullanılır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def lehmer_code_encryption(perm):
+    n = len(perm)
+    lehmer = []
+    for i in range(n):
+        count = 0
+        for j in range(i + 1, n):
+            if perm[j] < perm[i]:
+                count += 1
+        lehmer.append(count)
+    return lehmer
+
+def lehmer_code_decryption(lehmer):
+    n = len(lehmer)
+    perm = []
+    elements = list(range(1, n + 1))
+    
+    for i in range(n):
+        index = lehmer[i]
+        perm.append(elements.pop(index))
+    return perm
+
+perm = [3, 1, 2]
+encrypted = lehmer_code_encryption(perm)
+decrypted = lehmer_code_decryption(encrypted)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage

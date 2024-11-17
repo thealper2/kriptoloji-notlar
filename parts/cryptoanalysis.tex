@@ -1,0 +1,315 @@
+\section{Kriptoanaliz Yöntemleri}
+
+\subsection{Frekans Analizi}
+
+Frekans analizi, şifrelenmiş metindeki harflerin veya sembollerin ne sıklıkla tekrar ettiğini inceleyerek şifreyi çözmeyi amaçlar. Monoalfabetik şifreleme (örneğin caesar cipher) gibi basit şifreleme yöntemlerini kırmak için kullanılır. Temel varsayımı, doğal bir dilde belirli harflerin veya sembollerin diğerlerin daha sık kullanılmasıdır. Örneğin, İngilizce'de en sık kullanılan harfler "e,t,a,o,i,n" iken, Türkçe'de en sık kullanılan harfler "a,e,i,n,r" harfleridir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Şifreli metindeki her harfin kaç kere geçtiği hesaplanır.
+    \item Harflerin frekansları metindeki toplam harf sayısına bölünerek yüzde oranları hesaplanır.
+    \item Şifreli metindeki frekans dağılımı bilinen bir dilin frekansları ile karşılaştırılır.
+    \item Harf eşleştirmeleri yapılarak metin çözülür.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from collections import Counter
+
+turkish_frequencies = {
+}
+
+encrypted = "bmrfs lbsbdb"
+
+def frequency_analysis(text, language_frequencies):
+    text = text.lower()
+    letter_counts = Counter(filter(str.isalpha, text))
+    total_letters = sum(letter_counts.values())
+    encrypted_frequencies = {letter: (count / total_letters) * 100 
+                             for letter, count in letter_counts.items()}
+
+    for letter, freq in sorted(encrypted_frequencies.items(), key=lambda x: x[1], reverse=True):
+        match = sorted(language_frequencies.items(), key=lambda x: abs(x[1] - freq))[0]
+        print(f"Encrypted Letter: {letter}, Frequency: {freq:.2f}%, Matched: {match[0]}")
+
+frequency_analysis(encrypted, turkish_frequencies)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Kasiski Method}
+
+Kasiski yöntemi, polialfabetik şifreleme yöntemlerini (örneğin vigenere cipher) kırmak için kullanılır. Bu yöntem, şifreli metinde tekrar eden harf gruplarını analiz ederek şifreleme anahtarının uzunluğunu tahmin etmeye çalışır. Polialfabetik şifreleme yöntemlerinde, aynı düz metin harfi, farklı şifreleme anahtarlarına bağlı olarak farklı harflerle şifrelenir. Ancak, aynı anahtar tekrarlandığı için belirli harf grupları benzer şekilde şifrelenir. Kasiski yöntemi bu tekrarlardan yararlanır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Şifreli metinde aynı olan 3 veya daha fazla harf uzunluğunda tekrar eden diziler belirlenir.
+    \item Tekrar eden diziler arasındaki mesafeler bulunur.
+    \item Bu mesafelerin ortak bölenleri, anahtar uzunluğu için aday değerleri verir.
+    \item En sık görülen ortak bölen, anahtar uzunluğunu tahmin etmek için kullanılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from collections import defaultdict
+from functools import reduce
+from math import gcd
+
+def kasiski_analysis(text, sequence_length=3):
+    sequences = defaultdict(list)
+    for i in range(len(text) - sequence_length + 1):
+        seq = text[i:i + sequence_length]
+        sequences[seq].append(i)
+        
+    repeating_sequences = {seq: indices for seq, indices in sequences.items()
+                           if len(indices) > 1}
+
+    distances = []
+    for indices in repeating_sequences.values():
+        for i in range(len(indices) - 1):
+            distances.append(indices[i + 1] - indices[i])
+
+    if distances:
+        key_length = reduce(gcd, distances)
+        print("Key Length:", key_length)
+        return key_length
+    else:
+        return None
+
+encrypted_text = "ABABXYZXYZABABXYZXYZ"
+kasiski_analysis(encrypted_text)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Known-Plaintext Analysis (KPA)}
+
+KPA yönteminde saldırgan, şifrelenmiş metni (cipherText) ve buna karşılık gelen düz metni (plaintext) bilir. Bu bilgi, şifreleme algoritmasını veya anahtarı bulmak için kullanılır. Aynı şifreleme anahtarı kullanılarak şifrelenmiş diğer şifreli metinleri çözmek için etkili bir yöntemdir. Bu yöntem, blok şifreleme, akış şifreleme veya diğer şifreleme tekniklerinin analizinde kullanılır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+plaintext = "HELLO"
+xor_ciphertext = [75, 80, 93, 93, 82]
+
+def extract_key(plaintext, ciphertext):
+    key = []
+    for p, c in zip(plaintext, ciphertext):
+        key.append(ord(p) ^ c)
+
+    return key
+
+def kpa_analysis(ciphertext, key):
+    decrypted = ""
+    for c, k in zip(ciphertext, key):
+        decrypted += chr(c ^ k)
+
+    return decrypted
+
+key = extract_key(plaintext, xor_ciphertext)
+print("Key:", key)
+decrypted = kpa_analysis(xor_ciphertext, key)
+print("Decrypted:", decrypted)
+new_ciphertext = [87, 82, 85, 85, 88]
+decrypted_new_plaintext = kpa_analysis(new_ciphertext, key)
+print("New Decrypted", decrypted_new_plaintext)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Chosen-Plaintext Analysis (CPA)}
+
+CPA, bir saldırganın düz metni seçebilmesine sahip olduğu ve seçtiği düz metne karşılık gelen şifreli metini elde edebildiği bir yöntemdir. Amaç, şifreleme algoritmasını veya anahtarı çözerek, başka metinleri çözmektir. Blok şifreleme ve akış şifreleme yöntemlerinin zayıflıklarını analiz etmek için kullanılır. Seçilen girdiye göre sistemin nasıl çıktı oluşturduğunu anlamaya dayanır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def xor_encrypt(plaintext, key):
+    ciphertext = []
+    for i, char in enumerate(plaintext):
+        ciphertext.append(ord(char) ^ key[i % len(key)])
+
+    return ciphertext
+
+def xor_decrypt(ciphertext, key):
+    plaintext = ""
+    for i, char in enumerate(ciphertext):
+        plaintext += chr(char ^ key[i % len(key)])
+    
+    return plaintext
+
+def cpa_analysis(plaintext_list, ciphertext_list):
+    key_guess = []
+    for i in range(len(plaintext_list[0])):
+        key_char = ord(plaintext_list[0][i]) ^ ciphertext_list[0][i]
+        key_guess.append(key_char)
+
+    return key_guess
+
+key = [42, 17, 56]
+plaintext_list = ["HELLO", "WORLD"]
+ciphertext_list = [xor_encrypt(plaintext, key) for plaintext in plaintext_list]
+guessed_key = cpa_analysis(plaintext_list, ciphertext_list)
+print("Original Key:", key)
+print("Guessed Key:", guessed_key)
+for ciphertext in ciphertext_list:
+    decrypted = xor_decrypt(ciphertext, guessed_key)
+    print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Ciphertext-Only Analysis (COA)}
+
+COA'da saldırgan, yalnızca şifreli metinlere (ciphertext) sahiptir, elinde başka bir bilgi yoktur. Amaç, şifreleme algoritmasını çözmek, düz metni (plaintext) geri elde etmek veya kullanılan anahtarı bulmaktır. COA, caesar cipher, substitution cipher gibi basit şifreleme algoritmalarında etkilidir. COA'nın başarılı olabilmesi için:
+
+\begin{itemize}
+    \item Şifreleme algoritmasında zayıflıklar olması gerekir.
+    \item Şifreli metinlerde istatistiksel düzenler (örneğin harf frekansı) bulunmalıdır.
+    \item Uzun veya yinelenen metinler gibi analiz için kullanılabilecek özellikler içermelidir.
+\end{itemize}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from collections import Counter
+
+english_letter_freq = {
+    'E': 12.7, 'T': 9.1, 'A': 8.2, 'O': 7.5, 'I': 7.0,
+    'N': 6.7, 'S': 6.3, 'H': 6.1, 'R': 6.0, 'D': 4.3,
+    'L': 4.0, 'C': 2.8, 'U': 2.8, 'M': 2.4, 'W': 2.4,
+    'F': 2.2, 'G': 2.0, 'Y': 2.0, 'P': 1.9, 'B': 1.5,
+    'V': 1.0, 'K': 0.8, 'J': 0.2, 'X': 0.2, 'Q': 0.1, 'Z': 0.1
+}
+
+def coa_analysis(ciphertext, language_frequencies):
+    ciphertext = ciphertext.upper()
+    letter_counts = Counter(ciphertext)
+    total_letters = sum(letter_counts.values())
+    ciphertext_freq = {c: (count / total_letters) * 100 for c, count in letter_counts.items() 
+                       if c.isalpha()}
+    most_common_letter = max(ciphertext_freq, key=ciphertext_freq.get)
+    v = list(language_frequencies.values())
+    k = list(language_frequencies.keys())
+    assumed_most_common = k[v.index(max(v))]
+    shift = (ord(most_common_letter) - ord(assumed_most_common)) % 26
+    plaintext = ""
+    for char in ciphertext:
+        if char.isalpha():
+            offset = 65 if char.isupper() else 97
+            plaintext += chr((ord(char) - offset - shift) % 26 + offset)
+        else:
+            plaintext += char
+
+    return plaintext, shift
+
+plaintext = "HELLO WORLD"
+ciphertext = "KHOOR ZRUOG" # Caesar (key = 3)
+decrypted_text, guessed_key = caesar_coa(ciphertext)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted_text)
+print("Guessed Key:", guessed_key)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Man-in-the-Middle (MITM) Attack}
+
+Man-in-the-Middle (MITM) saldırısı, iki taraf arasındaki iletişimin saldırgan tarafından gizlice dinlendiği, değiştirildiği veya yönlendirildiği bir tür kriptanaliz veya güvenlik ihlali yöntemidir. Saldırgan, iletişim hattına girerek, iki tarafın birbirlerine doğrudan bağlandığını düşünmesini sağlar. Bu sırada:
+
+\begin{itemize}
+    \item Saldırgan, iki taraf arasındaki mesajları dinleyebilir.
+    \item Mesajları değiştirebilir.
+    \item İletişimi kesebilir veya sahte mesajlar ekleyebilir.
+\end{itemize}
+
+\newpage
+
+\subsection{Adaptive Chosen-Plaintext Analysis (ACPA)}
+
+ACPA, Chosen-Plaintext Analysis (CPA) yönteminin bir uzantısıdır. Bu yöntemde saldırgan, belirli metinleri (plaintext) şifreleme algoritmasına gönderir ve şifrelenmiş sonuçları (ciphertext) alır. Şifreleme algoritması hakkında öğrendiklerine dayanarak, yeni metinler seçer ve bunların şifrelenmiş çıktısını incelemeye devam eder.
+
+\newpage
+
+\subsection{Birthday Attack}
+
+Birthday Attack, bir hash fonksiyonunda çakışmaları bulmaya çalışan bir saldırı yöntemidir. Bu yöntem, doğum günü paradoksundan yararlanır. Doğum günü paradoksu, bir grupta iki kişinin aynı doğum gününe sahip olma olasılığının beklenenden daha yüksek olduğunu belirtir. Eğer hash fonksiyonu yeterince güçlü değilse, bu saldırıyla çakışma bulunabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir hash fonksiyonu, bir verinin özet değerini üretir. Bir hash fonksiyonunun çıkış aralığı $N$ ise, iki farklı girdinin aynı hash değerine sahip olma olasılığı yaklaşık olarak $\sqrt{N}$ girişte ortaya çıkar.
+    \item Rastgele birçok giriş oluşturulur ve bu girişlerin hash değeri hesaplanır. Hash değerleri karşılaştırılarak çakışma aranır. Çakışma bulunduğunda saldırı başarılı olur. 
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hashlib
+import random
+import string
+
+def birthday_attack(hash_function, num_attempts=10000, length=8):
+    hashes = {}
+    for _ in range(num_attempts):
+        random_data = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+        hash_value = hashlib.md5(random_data.encode()).hexdigest()
+        
+        if hash_value in hashes:
+            print(f"Found!")
+            print(f"1. Data: {hashes[hash_value]}")
+            print(f"2. Data: {random_data}")
+            print(f"Hash: {hash_value}")
+        else:
+            hashes[hash_value] = random_data
+    print("Not found.")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Side-Channel Attack}
+
+Side-Channel Attack (Yan Kanal Saldırısı), bir kriptografik algoritmanın matematiksel veya mantıksal kusurlarını hedeflemek yerine, fiziksel uygulamasından elde edilen yan bilgileri kullanarak yapılan bir saldırı türüdür. Bu saldırılar, bir cihazın çalışması sırasında ortaya çıkan enerji tüketimi, elektromanyetik yayılım, işlem süresi veya akustik sinyaller gibi yan bilgileri analiz eder.
+
+\newpage
+
+\subsection{Brute-Force Attack}
+
+Brute-Force Attack (Kaba Kuvvet Saldırısı), bir şifreleme sistemini kırmak için olası tüm anahtar veya parola kombinasyonlarının sistematik olarak denenmesi yöntemidir. Saldırgan, doğru kombinasyonu bulana kadar tüm olası değerleri dener. Bu yöntem, şifreleme mekanizmalarının zayıflığından veya zayıf parolalardan faydalanır.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def caesar_brute_force(ciphertext):
+    for shift in range(1, 26):
+        decrypted = ""
+        for char in ciphertext:
+            if char.isalpha():
+                offset = 65 if char.isupper() else 97
+                decrypted += chr((ord(char) - offset - shift) % 26 + offset)
+            else:
+                decrypted += char
+
+        print(f"Shift: {shift}, Decrypted: {decrypted}")
+
+ciphertext = "bmqfs lbsbdb"
+caesar_brute_force(ciphertext)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Differential Cryptoanalysis}
+
+Differential Cryptanalysis (Diferansiyel Kriptoanaliz), simetrik şifreleme algoritmalarını analiz etmek ve zayıflıklarını bulmak için kullanılan bir yöntemdir. Feistel şifreleme yapıları ve blok şifreleme algoritmaları üzerinde etkili bir analiz yöntemidir. Bu yöntem, şifreleme algoritmasındaki farklılıkların (differentials) şifreleme sürecinde nasıl yayıldığını inceleyerek anahtar bilgisine ulaşmayı amaçlar. İki farklı düz metin arasındaki farkların şifrelenmiş metne nasıl yansıdığını gözlemleyerek saldırgan, anahtar hakkında bilgi elde etmeye çalışır.
+
+\newpage
+
+\subsection{Integral Crytpoanalysis}
+
+Integral Cryptanalysis Attack, blok şifreleme algoritmalarında kullanılan bir kriptoanaliz yöntemidir. Bu saldırı türü, algoritmanın yapısındaki kısmi giriş/çıkış bağımsızlıklarını analiz eder. Feistel şifreleme yapıları ve SPN (Substitution-Permutation Network) tabanlı algoritmalar üzerinde kullanılır. Bu yöntem, algoritmanın iç durumlarının belirli bir kısmının değişmez kaldığı durumları tespit ederek şifreleme sürecini incelemeye odaklanır. Integral kriptoanaliz, özellikle algoritmanın birden fazla turuna yayılan aktif bitlerin (active bits) yayılımını analiz eder. Bu analiz sonucunda şifreleme algoritmasının zayıf noktalarını bulmak ve anahtarın bazı bölümlerini veya tamamını tahmin etmek mümkündür.
+
+\newpage

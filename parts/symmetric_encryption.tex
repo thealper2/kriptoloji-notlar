@@ -1,0 +1,151 @@
+\section{Gizli Anahtarlı Şifreleme (Symmetric Encryption)}
+
+Simetrik şifrelemede, aynı anahtar hem şifreleme hem de şifre çözme işlemleri için kullanılır. Veri, bir şifreleme algoritması ve bir gizli anahtar kullanılarak şifrelenir. Şifrelenmiş veri, aynı gizli anahtarı bilen bir alıcıya gönderilir. Alıcı, aynı anahtarı kullanarak veriyi çözer ve orijinal haline ulaşır. Çok hızlıdır. Anahtar paylaşımı güvenli bir şekilde yapılmazsa sistem kırılabilir Her iki taraf da aynı gizli anahtara sahip olmalıdır. VPN bağlantılarında kullanılır. 
+
+\begin{itemize}
+    \item \textbf{Blok Şifreleme}: Veriyi sabit uzunlukta bloklara bölerek şifreler. Örneğin; DES, 3DES, AES.
+    \item \textbf{Akış Şifreleme}: Veriyi tek tek bitler veya baytlar halinde şifreler. Örneğin; RC4, Salsa20, ChaCha20.
+    \item \textbf{Hybrid Yaklaşımlar}: Akış ve blok şifrelemenin avantajlarını birleştirir. Çoğu modern protokolde hibrit modeller tercih edilir.
+\end{itemize}
+
+\subsection{DES (Data Encryption Standard)}
+
+DES, 1970'lerde IBM tarafından geliştirilmiş ve ABD hükümeti tarafından standart olarak kabul edilmiş bir blok şifreleme algoritmasıdır. Veriyi 64 bitlik bloklar halinde işler ve 56 bit bir anahtar kullanır. Her bloğun son bit parity için kullanıldığından şifreleme işleminde kullanılmaz, bu yüzden 56 bit anahtar kullanır. 56-bit anahtar uzunluğu kısa olduğundan brute-force saldırılarına karşı zayıftır. Şifreleme ve şifre çözme için Feistel yapısını kullanır ve şifreleme işlemi toplamda 16 tur gerçekleştirir. Her turda farklı bir alt anahtar kullanarak veriyi işler. 
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Veri, sabit bir permütasyon tablosu (initial permutation) kullanılarak yeniden düzenlenir.
+    \item Veri, Feistel yapısı ile 16 tur işlenir. Her turda, veri $L_i$ (sol) ve $R_i$ (sağ) olmak üzere 32-bitlik iki yarıya bölünür. Sağ taraf, bir fonksiyon ve bir alt anahtarla işlenir, ardından sol tarafla XOR yapılır. Sol ve sağ taraf yer değiştirir.
+    \item İşlenen veri (final permutation), başlangıç permütasyonunun tersine göre düzenlenir.
+    \item Şifreleme işlemi tamamlanır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import DES
+from Crypto.Util.Padding import pad, unpad
+
+def des_encrypt(plaintext, key):
+    if len(key) != 8:
+        raise ValueError("")
+
+    cipher = DES.new(key, DES.MODE_ECB)
+    padded_text = pad(plaintext.encode(), 8)
+    encrypted = cipher.encrypt(padded_text)
+    return encrypted
+
+def des_decrypt(ciphertext, key):
+    if len(key) != 8:
+        raise ValueError("")
+
+    cipher = DES.new(key, DES.MODE_ECB)
+    decrypted_padded_text = cipher.decrypt(ciphertext)
+    decrypted = unpad(decrypted_padded_text, 8)
+    return decrypted.decode()
+
+plaintext = "Hello, World!"
+key = b"secretky"
+encrypted = des_encrypt(plaintext, key)
+decrypted = des_decrypt(encrypted, key)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{3DES (Triple Data Encryption Standard)}
+
+3DES, DES algoritmasının güvenlik açıklarını kapatmak için geliştirilmiş bir genişletilmiş versiyonudur. 3 farklı anahtar veya aynı anahtarın farklı kombinasyonlarını kullanarak 3 adımda şifreleme ve şifre çözme işlemleri gerçekleştirir. Bir veri bloğu üzerinde DES algoritması şu sırayla üç kez uygulanır:
+
+\begin{enumerate}
+    \item İlk anahtar ile DES şifrelemesi uygulanır.
+    \item İkinci anahtar ile DES şifre çözmesi uygulanır.
+    \item Üçüncü anahtar ile tekrar DES şifrelemesi uygulanır.
+\end{enumerate}
+
+\[ C = E_{K_3}(D_{K_2}(E_{K_1}(P)))\]
+
+Burada, $P$, düz metin (plaintext); $C$, şifrelenmiş metin (ciphertext); $E$, DES şifreleme işlemi; $D$, DES şifre çözme işlemidir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import DES3
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+def triple_des_encrypt(plaintext, key):
+    cipher = DES3.new(key, DES3.MODE_ECB)
+    padded_text = pad(plaintext.encode(), 8)
+    encrypted = cipher.encrypt(padded_text)
+    return encrypted
+
+def triple_des_decrypt(encrypted, key):
+    cipher = DES3.new(key, DES3.MODE_ECB)
+    decrypted_padded_text = cipher.decrypt(encrypted)
+    decrypted = unpad(decrypted_padded_text, 8)
+    return decrypted.decode()
+
+key = get_random_bytes(24)
+plaintext = "Hello, World!"
+DES3.adjust_key_parity(key)
+encrypted = triple_des_encrypt(plaintext, key)
+decrypted = triple_des_decrypt(encrypted, key)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{AES (Advanced Encryption Standard)}
+
+AES (Advanced Encryption Standard), 2001 yılında Rijndael algoritması temel alınarak geliştirilmiş modern ve güvenli bir blok şifreleme algoritmasıdır. Veri güvenliği için dünya çapında yaygın olarak kullanılan bir standarttır. AES, sabit bir 128 bit blok boyutunda çalışır. Farklı güvenlik seviyeleri için 3 farklı anahtar uzunluğunu destekler: 128 bit (10 tur), 192 bit (12 tur) ve 256 bit (14 tur). AES, hem donanım hem de yazılım ortamlarında hızlıdır ve brute-force saldırılarına karşı oldukça dayanıklıdır.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Düz metin, ilk olarak anahtar ile XOR işlemine girer.
+    \item Her tür şu 4 adımdan oluşur:
+    \begin{itemize}
+        \item \textbf{SubBytes}: Her bayt, S-box adı verilern bir tablo yardımıyla bir başkasıyla değiştirilir.
+        \item \textbf{ShiftRows}: Veri bloğundaki satırlar belirli bir düzene göre kaydırılır.
+        \item \textbf{MixColumns}: Sütunlar matematiksel bir işlemle karıştırılır.
+        \item \textbf{AddRoundKey}: Veri bloğu, o tura ait alt anahtar ile XOR yapılır.
+    \end{itemize}
+    \item Son turda, SubBytes, ShiftRows ve AddRoundKey işlemleri yapılır. MixColumns atlanır.
+    \item Tüm turlar tamamlandıktan sonra şifreli metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+def aes_encrypt(plaintext, key):
+    cipher = AES.new(key, AES.MODE_CBC)
+    iv = cipher.iv
+    padded_text = pad(plaintext.encode(), AES.block_size)
+    encrypted = cipher.encrypt(padded_text)
+    return iv + encrypted
+
+def aes_decrypt(encrypted, key):
+    iv = encrypted[:AES.block_size]
+    actual_encrypted_text = encrypted[AES.block_size:]
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    decrypted_padded_text = cipher.decrypt(actual_encrypted_text)
+    decrypted = unpad(decrypted_padded_text, AES.block_size)
+    return decrypted.decode()
+
+key = get_random_bytes(24)
+plaintext = "Hello, World!"
+encrypted = triple_des_encrypt(plaintext, key)
+decrypted = triple_des_decrypt(encrypted, key)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage

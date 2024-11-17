@@ -1,0 +1,953 @@
+\section{Hash Functions (Özetleme Fonksiyonları)}
+
+Hash fonksiyonları, verileri belirli bir uzunlukta sabit bir çıktıya dönüştüren fonksiyonlardır. Bu çıktılar hash değeri veya hash kodu olarak adlandırılır. Verilerin değişmeden kaldığını doğrulamak için, veri tabanlarında hızlı arama ve veri eşleşmesini sağlamak için, parolaların güvenli bir şekilde saklanmasını sağlamak için, belirli bir verinin ya da mesajin kimliğini doğrulamak için, verilerin doğruluğunu ve bütünlüğünü korumak için kullanılır.
+
+\subsection{Types of Hash Functions}
+
+\subsubsection{Division Method (Bölme Yöntemi)}
+
+Division Method, bir anahtarı belirli bir tam sayıya bölerek kalanını hesaplar ve bu kalan, hash değeri olarak kullanılır. Basit ve hızlıdır. Uygun bir mod seçilmediğinde çakışma oranı yüksektir. Bazı değerlerle belirli desenler oluşabilir.
+
+\[ h(k) = k \text{ mod } m \]
+
+Burada, $k$ anahtar ve $m$ bir mod değeridir.
+
+\subsubsection{Multiplication Method (Çarpma Yöntemi)}
+
+Bu yöntemde, anahtar, 0 ile 1 arasında bir sabit sayıyla çarpılır. Çarpım sonucunda kesirli kısım, bir mod değeriyle çarpılarak hash değeri elde edilir. Çakışma olasılığı düşüktür. Uygulaması, bölme yöntemine göre daha yavaştır.
+
+\[ h(k) = \lfloor m(kA \text{ mod } 1) \rfloor \]
+
+Burada, $k$ anahtar, $A$ sabit bir sayı (0 ile 1 arasında) ve $m$ mod değeridir.
+
+\subsubsection{Mid-Square Method (Orta Kare Yöntemi)}
+
+Bu yöntemde, anahtar önce kendisiyle çarpılır ve ardından orta kısmı hash değeri olarak kullanılır. Anahtarın tüm basamaklarına duyarlıdır. Sabit sayı gerektirmez. Çakışma olasılığı yüksektir. Küçük anahtarlar için hash değeri iyi dağılmayabilir.
+
+\subsubsection{Folding Method (Katlama Yöntemi)}
+
+Anahtar, gruplara ayrılır (örneğin, dört basamaklı sayılar halinde). Bu gruplar toplanır ve bu toplam hash değeri olarak kullanılır. Dağınık verilerde bile oldukça iyi çalışır. Sayılar gruplara ayrıldığından, anahtarın tüm bölümlerini dikkate alır. Çakışma olasılığı yüksektir.
+
+\subsubsection{Cryptographic Hash Functions (Kriptografik Hash Fonksiyonları)}
+
+Kriptografik hash fonksiyonları, belirli güvenlik gereksinimlerini karşılaşmak için tasarlanmış hash fonksiyonlarıdır. Bunlar tek yönlü fonksiyonlardır, yani hash değerinden orijinal veriyi elde etmek imkansızdır. Parola saklama, dijital imza ve veri bütünlüğü doğrulama gibi alanlarda yaygın olarak kullanılır. Örneğin, MD5, SHA-1, SHA-256. Fakat MD5 ve SHA-1 gibi eski algoritmalar artık güvensiz olarak kabul edilmektedir.
+
+\subsubsection{Universal Hashing (Evrensel Hashleme)}
+
+Evrensel hashleme, birden çok hash fonksiyonu ailesi arasından rastgele bir fonksiyon seçilerek çakışma olasılığını minimize etmeyi amaçlar. Her bir giriş için farklı bir hash fonksiyonu kullanılır. Çakışma olasılığı son derece düşüktür. Güvenlik açısından avantajlar sunar. 
+
+\subsubsection{Perfect Hashing (Mükemmel Hashleme)}
+
+Mükemmel hashleme, çakışma olmadan verilerin hashlenmesini sağlar. Yani, her anahtar benzersiz bir hash değerine sahiptir. Hiçbir çakışma olmaması, arama işlemlerini hızlandırır. Veri yapılarında verimli alan kullanımı sağlar. 
+
+\newpage
+
+\subsection{Cyclic Redundancy Check (CRC)}
+
+CRC, veri iletimi sırasında ortaya çıkabilecek hataları tespit etmek için kullanılır. Belirli bir uzunluktaki veri bloklarının bir matematiksel özetini üretir ve bu özet, verinin bir hata içerip içermediğini kontrol etmek için kullanılır. Ağ iletişim protokollerinde ve dosya bütünlüğünü kontrol etmek için yaygın olarak kullanılır.
+
+\begin{itemize}
+    \item \textbf{CRC-8}: 8 bitlik bir CRC kodu üretir.
+    \item \textbf{CRC-16}: 16 bitlik bir CRC kodu üretir. 
+    \item \textbf{CRC-32}: 32 bitlik bir CRC kodu üretir. Ethernet ve ZIP dosyalarında kullanılır.
+    \item \textbf{CRC-64}: 64 bitlik bir CRC kodu üretir.
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veri, belirli bir şekilde bit dizisi olarak temsil edilir.
+    \item CRC hesaplaması, belirli bir polinomla modüler bölme işlemi kullanılarak yapılır. Bu polinomlar belirli CRC standartlarına karşılık gelir.
+    \item Verinin sonuna CRC bitlerinin yerleştirileceği kadar 0 eklenir. Örneğin, CRC-16 için 16 sıfır eklenir.
+    \item Veriyi genişletildikten sonra, seçilen polinomla mod 2 bölme işlemi yapılır, yani bitler üzerinde xor işlemi uygulanır. Bu işlem sonucunda bir kalan elde edilir.
+    \item Son kalan (CRC Kodu), verinin sonuna eklenir. Bu eklenen bitler, veri ile birlikte gönderilir.
+    \item Alıcı, bu bitleri kontrol ederek hata tespiti yapar.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import binascii
+data = b"Hello, World!"
+mask32 = 0xffffffff
+crc_value = binascii.crc32(data) & mask32
+print(f"CRC-32 Value (Hex): f{crc_value:#010x}")
+print(f"CRC-32 Value (Dec): f{crc_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Fletcher}
+
+Fletcher, veri doğrulama ve hata tespiti için kullanılır. CRC'den daha hızlı çalışır. Fletcher algoritması, iki ayrı toplama işlemi gerçekleştirerek verinin özetini oluşturur. CRC'nin aksine, bit seviyesinde değil, byte seviyesinde çalışır. 
+
+\begin{itemize}
+    \item \textbf{Fletcher-4}: 4 bitlik özet üretir.
+    \item \textbf{Fletcher-8}: 8 bitlik özet üretir.
+    \item \textbf{Fletcher-16}: 16 bitlik özet üretir. 
+    \item \textbf{Fletcher-32}: 32 bitlik özet üretir.
+    \item \textbf{Fletcher-64}: 64 bitlik özet üretir.
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veri, byte dizisi (8-bit parçalar) olarak alınır.
+    \item İki toplam değeri başlatılır. Bu iki toplam, verinin tüm elemanları üzerinden iteratif bir şekilde güncellenir.
+    \item Veri, byte'ler halinde okunur ve her bir byte için: $\text{sum1} = (\text{sum1} + \text{byte}) \text{ mod } 255$ ve $\text{sum2} = (\text{sum2} + \text{sum1}) \text{ mod } 255$.
+    \item Hesaplama tamamlandıktan sonra, iki toplam değeri birleştirilir. Fletcher-16 için $\text{checksum} = (\text{sum2} << 8) | \text{sum1}$.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def fletcher16(data: bytes) -> int:
+    sum1 = sum2 = 0
+    for byte in data:
+        sum1 = (sum1 + byte) % 255
+        sum2 = (sum2 + sum1) % 255
+
+    checksum = (sum2 << 8) | sum1
+    return checksum
+
+data = b"Hello, World!"
+checksum = fletcher16(data)
+print(f"Fletcher-16 Value: {checksum:#06x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Adler-32}
+
+Adler-32, CRC'ye benzer, veri doğrulama ve hata tespiti için kullanılır. 1995 yılında Mark Adler tarafından geliştirilmiştir. Adler-32, 32 bit uzunluğunda bir özet üretir ve Fletcher'a dayanır ancak bazı iyileştirmeler içerir. Zlib sıkıştırma algoritmasında kullanılır. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item İki toplam değeri başlatılır: $A = 1$ ve $B = 0$.
+    \item Veri, byte'ler halinde okunur ve her byte için: $A = (A + \text{byte}) \text{ mod } 65521$ (65521, Adler-32 için bir asal sayıdır.) ve $B = (B + A) \text{ mod } 65521$. $A$, her byte'ı ekleyerek güncellenirken, $B$ ise $A$ değerini sürekli toplar.
+    \item Hesaplama tamamlandıktan sonra, $A$ ve $B$ değerleri birleştirilir: $\text{Adler32} = (B << 16) | A$.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def adler32(data: bytes) -> int:
+    MOD_ADLER = 65521
+    A = 1
+    B = 0
+    for byte in data:
+        A = (A + byte) % MOD_ADLER
+        B = (B + A) % MOD_ADLER
+
+    checksum = (B << 16) | A
+    return checksum
+
+data = b"Hello, World!"
+checksum = adler32(data)
+print(f"Adler-32 Value: {checksum:#010x}")
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python]
+import zlib
+data = b"Hello, World!"
+checksum_zlib = zlib.adler32(data)
+print(f"Adler-32 Value (Zlib): {checksum_zlib:#010x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{XOR8}
+
+XOR8, 8 bitlik bir özet oluşturur. Verinin her bir byte'ı üzerinde XOR işlemi yaparak bir özet değeri oluşturur. Hata tespiti için kullanılır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir başlangıç değeri seçilir.
+    \item Veri, byte'ler halinde okunur ve her byte için: $\text{checksum} = \text{checksum} ^ \text{byte}$. Her iki bitin aynı olduğu durumlarda 0, farklı olduğu durumlarda 1 verir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def xor8(data: bytes) -> int:
+    checksum = 0
+    for byte in data:
+        checksum ^= byte
+
+    return checksum
+
+data = b"Hello, World!"
+checksum = xor8(data)
+print(f"XOR8 Value: {checksum:#04x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Luhn Algorithm}
+
+Luhn Algoritması, bir doğrulama algoritmasıdır. Kredi kartı numaraları, IMEI numarları gibi kimlik belirleyici sayıların doğruluğunu kontrol etmek için kullanılır. Algoritma, bir sayının geçerli olup olmadığını belirlemek için basamaklar üzerinde matemtiksel işlemler yapar. Luhn Algoritması bit uzunluğuna göre sınırlanmış bir algoritma değildir; bunun yerine sayıların doğruluğunu kontrol eder.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Sayı ters çevrilir.
+    \item Ters çevrilen sayıda, 0'dan başlayarak çift indeksteki sayılar iki ile çarpılır. Eğer iki ile çarpım sonucu elde edilen değer 9'dan büyükse; elde edilen değerin rakamları toplamı yazılır.
+    \item Tüm sayılar toplanır.
+    \item Eğer sonuç'un 10'a modu 0 ise geçerlidir. Aksi halde geçerli değildir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def luhn_algorithm(card_number: str) -> bool:
+    total_sum = 0
+    reverse_digits = card_number[::-1]
+    for i, digit in enumerate(reverse_digits):
+        n = int(digit)
+        if i % 2 == 1:
+            n *= 2
+            if n > 9:
+                n -= 9
+
+        total_sum += n
+
+    return total_sum % 10 == 0
+
+card_number = ""
+is_valid = luhn_algorithm(card_number)
+print(f"Is Valid: {is_valid}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Verhoeff Algorithm}
+
+Verhoeff algoritması, doğrulama işlemleri için kullanılan hata tespit algoritmasıdır. Bu algoritma, sayılar üzerindeki küçük hataları tespit edebilmek için tasarlanmıştır. 10 basamaktan oluşan bir doğrulama kodu üretir ve her bir basamağı 0-9 arası bir değer alır. D-algorithm adı verilen matematiksel bir yapı kullanarak çalışır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Algoritma, verilen sayıyı soldan sağa doğru işler, yani sayı ters çevrilir.
+    \item Algoritmanın çalışma mekanizması için belirli bir çarpanlar ve diziler kullanılır. Bu diziler, D ve P tablosu olarak bilinir. D tablosu her basamağa bir işlem değeri atar. P tablosu ise sayının her basamağı için bir modül değeri sağlar.
+    \item Sayı soldan sağa doğru işlenir. Başlangıç değeri sıfırdır. Her bir basamağa karşılık gelen çarpanlar ve modül hesaplamaları yapılır. Bu işlem sonucu, son basamağa kadar devam edilir.
+    \item Eğer sonuç sıfır ise, sayı geçerli kabul edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+D = [
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+    [2, 3, 4, 5, 6, 7, 8, 9, 0, 1],
+    [3, 4, 5, 6, 7, 8, 9, 0, 1, 2],
+    [4, 5, 6, 7, 8, 9, 0, 1, 2, 3],
+    [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
+    [6, 7, 8, 9, 0, 1, 2, 3, 4, 5],
+    [7, 8, 9, 0, 1, 2, 3, 4, 5, 6],
+    [8, 9, 0, 1, 2, 3, 4, 5, 6, 7],
+    [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+]
+
+P = [
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+    [2, 3, 4, 5, 6, 7, 8, 9, 0, 1],
+    [3, 4, 5, 6, 7, 8, 9, 0, 1, 2],
+    [4, 5, 6, 7, 8, 9, 0, 1, 2, 3],
+    [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
+    [6, 7, 8, 9, 0, 1, 2, 3, 4, 5],
+    [7, 8, 9, 0, 1, 2, 3, 4, 5, 6],
+    [8, 9, 0, 1, 2, 3, 4, 5, 6, 7],
+    [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+]
+
+def verhoeff_algorithm(number: str) -> bool:
+    number = number[::-1]
+    c = 0
+    for i in range(len(number)):
+        c = D[c][P[(i + 1) % 8][int(number[i])]]
+    
+    return c == 0
+
+number = "1256849376"
+is_valid = verhoeff_algorithm(number)
+print(f"Is Valid: {is_valid}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Damm Algorithm}
+
+Damm algoritması, veri doğrulama ve hata tespiti için kullanılır. Bir sayıya ek bir kontrol basamağı ekler ve bu kontrol basamağı, sayının geçerli olup olmadığını doğrulamak için kullanılır. Modüler aritmetik ve tablolama kullanarak çalışır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Algoritmanın temelini, 10x10 boyutunda bir doğrulama tablosu oluşturur. Bu tablo, her bir sayı için bir diğer sayı ile yapılan işlemi gösterir.
+    \item Verilen sayıya ek olarak bir kontrol basamağı hesaplanır. Bu işlem, sayının her bir basamağı için tablodaki uygun değeri kullanarak yapılır.
+    \item Verilen sayının sonuna eklenen kontrol basamağı, sayının geçerliliğini kontrol eder. Eğer sayı doğru ise, kontrol basamağı ve hesaplanan sonuç sıfır olur.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+D = [
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+    [2, 3, 4, 5, 6, 7, 8, 9, 0, 1],
+    [3, 4, 5, 6, 7, 8, 9, 0, 1, 2],
+    [4, 5, 6, 7, 8, 9, 0, 1, 2, 3],
+    [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
+    [6, 7, 8, 9, 0, 1, 2, 3, 4, 5],
+    [7, 8, 9, 0, 1, 2, 3, 4, 5, 6],
+    [8, 9, 0, 1, 2, 3, 4, 5, 6, 7],
+    [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+]
+
+def damm_algorithm(number: str) -> bool:
+    number = number[::-1]
+    c = 0
+    for i in range(len(number)):
+        c = D[c][int(number[i])]
+    
+    return c == 0
+
+number = "1357"
+is_valid = verhoeff_algorithm(number)
+print(f"Is Valid: {is_valid}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Rabin Fingerprint}
+
+Michael O. Rabin tarafından geliştirilmiştir. Veri bloklarının hızlı bir şekilde karşılaştırılması ve tespit edilmesi için kullanılır. Algoritma, bir polinomin veriye karşı modüler aritmetik işlemi ile hesaplanır. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item İlk adım, veriyi bir polinom şeklinde temsil etmektir. Her bir veri parçası, bir polinomun katsayısı olarak kabul edilir.
+    \item Veriye uygulanan polinom, belirlenen bir sabit polinom ile mod alınır. Bu mod işlemi, sonuç polinomunun sabit uzunlukta kalmasını sağlar.
+    \item Mod işlemi sonrası kalan değer, verinin özetini (fingerprint) verir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def rabin_fingerprint(data: bytes, poly=0x000000000000001b) -> int:
+    fp = 0
+    for byte in data:
+        value = (fp >> 56) ^ byte
+        for i in range(8):
+            if value & (1 << (63 - i)):
+                value ^= poly << (7 - i)
+
+        fp = (fp << 8) ^ value
+
+    return fp
+
+data = b"Hello, World!"
+fingerprint = rabin_fingerprint(data)
+print(f"Rabin Fingerprint: {fingerprint:#x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Tabulation Hashing}
+
+Tabulation Hashing, bir dizi tablo kullanarak veriyi küçük alt parçalara böler ve bu parçalar için tabloya dayalı rastgele değerler belirler. Yöntem, birden fazla tablo kullanarak rastgele tablolarla veriyi karıştırır, bu sayede düşük çakışma oranına sahip bir özet elde eder.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item İlk adımda, belirli boyutta bir tablo rastgele sayılarla doldurulur. Her bir tabloa, veri parçalarının hash işlemi için kullanılacak rastgele değerlerini içerir.
+    \item Hashlenecek veri, belirli birimlere bölünür.
+    \item Her veri parçası, farklı tablolardan karşılık gelen rastgele değerlerle eşleştirilir. Bu eşleşen rastgele değerler, bit düzeyinde toplanarak birleştirilir.
+    \item Tüm veri parçalarının tablo değerleriyle işlenmesinden sonra, elde edilen sonuç hash değeri olur.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+def tabulation_hashing(data: bytes) -> int:
+    table = [[random.getrandbits(32) for _ in range(256)] 
+                                     for _ in range(4)]
+    hash_value = 0
+    for i, byte in enumerate(data):
+        hash_value ^= table[i % 4][byte]
+
+    return hash_value
+data = b"Hello, World!"
+hash_value = tabulation_hashing(data)
+print(f"Tabulation Hashing: {hash_value:#x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Zobrist Hashing}
+
+Zobrist Hashing, oyun tahtaları veya tablolar gibi çok boyutlu veri yapılarını hızlıca karşılaştırmak ve hash değerini almak için geliştirilmiştir. 1969 yılında Albert Zobrist tarafından geliştirilmiştir. Satranç, Go gibi oyunlarda tahtadaki mevcut pozisyonun temsil edilmesinde kullanılır. Her oyun tahtası karesi ve her oyun taşı için rastgele bir değer belirler. Her taş tahtaya yerleştirildiğinde veya kaldırıldığında bu rastgele değerler XOR işlemi ile hash hesaplamasına dahil edilir. Bu sayede tahtadaki dürüm sürekli olark güncellenerek hash değeri yeniden hesaplanabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Her oyun tahtası karesi ve her bir oyun taşı tipine rastgele bir 64-bit veya 128-bit değer atanır. Eğer bir oyun taşının tahtada olup olmaması durumu da hesaba katılıyorsa, her taş için var-yok durumu da rastgele bir değerle temsil edilir.
+    \item Boş tahtanın hash değeri sıfırdır, çünkü herhangi bir taş yoktur ve XOR işlemleri sonucunda değişiklik yoktur.
+    \item Tahta üzerinde bir taş yerleştirildiğinde, ilgili karenin rastgele değeri mevcut hash değerine XOR ile eklenir. 
+    \item Aynı taş kaldırıldığında tekrar XOR yapılarak, bu taşın etkisi hash değerinden çıkarılır. XOR işlemi aynı değeri iki kez eklediğinde sıfırlar.
+    \item Her oyun hamlesiyle birlikte taşların hareketiyle hash değeri de güncellenir. Yani bir taş eklendiğinde veya bir taş çıkarıldığında, o taşın temsil ettiği değer XOR ile hash'e eklenir veya çıkarılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+
+pieces = ["pawn", "knight", "bishop", "rook", "queen", "king"]
+colors = ["white", "black"]
+
+zobrist_table = {}
+for piece in pieces:
+    for color in colors:
+        for row in range(8):
+            for col in range(8):
+                zobrist_table[(piece, color, row, col)] = random.getrandbits(64)
+
+board = [[0 for _ in range(8)] for _ in range(8)]
+board[6][0] = ("pawn", "white")
+board[1][0] = ("pawn", "black")
+board[7][1] = ("knight", "white")
+
+def zobrist_hashing(board, zobrist_table):
+    hash_value = 0
+    for row in range(8):
+        for col in range(8):
+            if board[row][col] != 0:
+                piece, color = board[row][col]
+                hash_value ^= zobrist_table[(piece, color, row, col)]
+
+    return hash_value
+
+hash_value = zobrist_hashing(board, zobrist_table)
+print(f"Zobrist Hash: {hash_value:#x}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Pearson Hashing}
+
+Pearson hashing, 8-bitlik bir hash fonksiyonudur. İlk olarak 1990 yılında Peter K. Pearson tarafından önerilen bu algoritma, küçük hash tabloları oluşturmak ve dizeleri hızlı bir şekilde özetlemek için kullanılır. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Pearson hashing, 256 elemanlı bir rastgele tablo kullanır. Bu tablo sabit olmalı ve her eleman, 0 ile 255 arasında bir değere sahip olmalıdır. Tablo, algoritmanın temelidir ve her baytın hash değerini belirlemede kullanılır.
+    \item Hash değeri başlangıçta sıfır olarak başlar. Algoritma boyunca bu değer her bayta göre güncellenir.
+    \item Hashlenecek veri bayt bayt işlenir. Her bayt için, hash değeri ilgili bayt ile XOR işlemine girer. Ortaya çıkan değer, 256 elemanlı tabloda indeks olarak kullanılır ve tabloda o indeksin karşılığı olan değer hash'e atanır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+pearson_table = np.arange(256)
+np.random.shuffle(pearson_table)
+
+def pearson_hash(data):
+    data = data.encode("utf-8")
+    hash_value = 0
+    for byte in data:
+        hash_value = pearson_table[hash_value ^ byte]
+    return hash_value
+
+data = "Hello, World!"
+hash_result = pearson_hash(data)
+print(f"Pearson Hash: {hash_result}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Bernstein's Hash (DJB2)}
+
+Daniel J. Bernstein tarafından geliştirilmiştir. Metin verileri üzerinde hash hesaplamak için kullanılır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Hash değeri başlangıçta 5381 olarak belirlenir.
+    \item Hashlenecek veri byte'ler halinde işlenir. Her bayt için; hash değeri, önce 33 ile çarpılır. Sonra, ilgili baytın ASCII değeri ile toplanır.
+    \item Verinin tüm baytları işlendikten sonra, 32-bit uzunluğunda bir hash elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def djb2_hash(data: str) -> int:
+    hash_value = 5381
+    for char in data:
+        hash_value = (hash_value * 33) + ord(char)
+
+    mask = 0XFFFFFFFF
+    checksum = hash_value & mask
+    return checksum
+
+data = "Hello, World!"
+hash_result = djb2_hash(data)
+print(f"DJB2 Hash: {hash_result}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Elf Hash}
+
+Elf Hash, bazı işletim sistemlerinde ve derleyicilerde kullanılan bir özetleme fonksiyonudur. Sembolik adlar veya dizeler için kullanılır. Bu algoritma, veri seti içerisindeki verileri hızlı bir şekilde işleyip hash tablolarında kullanılabilir hale getirmeyi amaçlar. 32-bit uzunluğunda bir hash değeri üretir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Hash değeri başlangıçta sıfırdır.
+    \item Her bayt için hash değeri güncellenir. Öncelikle hash değeri, 4 bit kaydırılarak güncellenir, yani 16 ile çarpılır. Hash'e bayt değeri eklenir. Hash'in en üst 4'biti (28-31. bitler) maskelenir. Bu en üst 4 bit sıfırlanır ve gerekli durumlarda geri kalan hash değeriyle XOR işlemi yapılır.
+    \item Verinin tüm baytları işlendikten sonra, son hash değeri döndürülür.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def elf_hash(data: str) -> int:
+    hash_value = 0
+    for char in data:
+        hash_value = (hash_value << 4) + ord(char)
+        high_bits = hash_value & 0xF0000000
+        
+        if high_bits != 0:
+            hash_value ^= (high_bits >> 24)
+        
+        hash_value &= ~high_bits
+
+    mask = 0xFFFFFFFF
+    checksum = hash_value & mask
+    return checksum
+
+data = "Hello, World!"
+hash_result = elf_hash(data)
+print(f"Elf Hash: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Murmur Hash}
+
+Murmur Hash, kısmi olarak rastgeleleştirilmiş bir özet fonksiyonudur. Adını, bitlerin "homurdanması" olarak ifade edilen bir algoritmadan alır. Hsah tabloları, veri yapıları ve veritabanları gibi veri yönetim sistemlerinde yaygın olarak kullanılır. Deterministik bir fonksiyondur, yani aynı giriş için her zaman aynı hash değerini üretir. Ancak bazı varyasyonlarında rastgele bir başlangıç değeri (seed) kullanılarak daha güvenli hale getirilmiştir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Girdi verisi sabit büyüklükte bloklara ayrılır. Eğer giriş verisinin uzunluğu bu blok boyutunun tam katı değilse, son blokta kalan veriler uygun şekilde doldurulur.
+    \item Her blok, sabit sayılarla çarpılır ve bit kaydırma işlemleriyle karşılaştırılır. Veriler üzerinde modüler aritmetik işlemler uygulanır.
+    \item Tüm bloklar işlendiğinde, kalan veriler eklenir ve son bir karıştırma işlemi yapılır. Bu aşama, küçük boyutlu girdilerde bile hash'in iyi dağılması sağlanır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import mmh3
+data = "Hello, World!"
+hash_value = mmh3.hash(data)
+print(f"MurmurHash3 (32-bit): {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{BLAKE2}
+
+BLAKE2, modern kriptografik özetleme fonksiyonudur. Bu algoritma, mesajların özetini hesaplar ve dijital imza, kimlik doğrulama gibi uygulamalarda kullanır. BLAKE2b, 64-bit platformlar için optimize edilmiştir ve 512-bit'e kadar özetler üretebilir. BLAKE2s, 32-bit platformlar için optimize edilmiştir ve 256-bit'e kadar özetler üretebilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item BLAKE algoritmalarında, başlangıç vektörleri belirli sabit değerler olarak tanımlanır.
+    \item Girdi verisi sabit büyüklükte bloklara ayrılır. Her blok, belirli sayısal işlemlerle ve karıştırma fonksiyonlarıyla işlenir.
+    \item Veriler, sabit sayılarla çapılır ve modüler aritmetik işlemler uygulanarak karıştırılır. Bu işlem, verinin hash değerine düzgün ve güvenli bir şekilde dağılmasını sağlar.
+    \item Tüm bloklar işlendiğinde, son bir karıştırma işlemi yapılır ve hash fonksiyonunun ürettiği sabit bit uzunluğundaki özet değer elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hashlib
+data = b"Hello, World!"
+blake2b_hash = hashlib.blake2b(data).hexdigest()
+blake2s_hash = hashlib.blake2s(data).hexdigest()
+print(f"BLAKE2b hash: {blake2b_hash}")
+print(f"BLAKE2s hash: {blake2s_hash}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{HMAC (Hash-based Message Authentication Code)}
+
+HMAC (Hash-based Message Authentication Code), bir mesajın doğruluğunu ve bütünlüğünü garanti etmek için kullanılan bir özetleme fonksiyonudur. HMAC, bir kriptografik hash fonksiyonu ve bir gizli anahtar kullanarak mesajların doğrulanmasını sağlar. Bu, hem mesajın değiştirilip değiştirilmediğini kontrol eder hem de mesajın bir kaynaktan geldiğini doğrular. Anahtar, gizli bir anahtardır ve sadece iki taraf arasında paylaşılır. Mesajın doğrulaması bu anahtarla yapılır. HMAC, ağ güvenliği protokollerinde (TLS, IPsec) kullanılır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Anahtar, hash fonksiyonunun blok boyutundan uzun ise, anahtar bir kez hash edilir ve daha kısa hale getirilir. Anahtar, hash fonksiyonunun blok boyutundan kısa ise, eksik kısımlar sıfırla doldurulur.
+    \item İki sabit byte dizisi kullanılır: ipad (iç dolgu) ve opad (dış dolgu). Anahtar ile ipad ve opad byte'leri XOR işlemi ile birleştirilir.
+    \item Mesaj, anahtar ve ipad ile birleştirilip bir kriptografik hash fonksiyonu ile hash edilir (iç hash).
+    \item İç hash sonucu, anahtar ve opad ile birleştirilir ve tekrar hash fonksiyonuna sokulur.
+    \item Elde edilen hash değeri, mesajın doğrulama kodudur.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hmac
+import hashlib
+message = b"Hello, World!"
+key = b"secretkey"
+hmac_hash = hmac.new(key, message, hashlib.sha256).hexdigest()
+print(f"HMAC (SHA-256): {hmac_hash}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Keccak (Keccak Message Authentication Code)}
+
+KMAC, Keccak (SHA-3) tabanlı bir mesaj doğrulama kodudur. SHA-3'ün kriptografik sünger fonksiyonlarını (sponge function) kullanarak bir mesajın bütünlüğünü ve doğruluğunu kontrol eder. KMAC, hem gizli bir anahtarı hem de bir veri girdisini kullanarak bir özet (hash) oluşturur. KMAC'in temel çalışma prensibi, Keccak sünger fonksiyonunun sağladığı esneklik ve güçlü güvenlik özelliklerini kullanarak hem uzunluk genişletme saldırılarına karşı güvenlik sağlar hem de esnek parametreler sunar.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import KMAC128
+message = b"Hello, World!"
+key = b"secretkey" * 8
+kmac = KMAC128.new(key=key, mac_len=32)
+kmac.update(message)
+kmac_hash = kmac.hexdigest()
+print(f"KMAC (256-bit): {kmac_hash}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{ECOH (Elliptic Curve Only Hash)}
+
+ECOH, kriptografik hash fonksiyonları için güçlü bir güvenlik seviyesi sağlamak amacıyla eliptik eğrilerden faydalanır. Eliptik eğriler, daha küçük anahtar boyutlarında yüksek güvenlik sağlayarak verimli kriptografik işlemler sunar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item ECOH, belirli bir eliptik eğri üzerinde çalışır. Bu eğri, mesajın matematiksel olarak işlenmesini sağlar.
+    \item Girdi mesajı, belirli boyutlardaki bloklara bölünür.
+    \item Mesaj blokları, seçilen eliptik eğri üzerinde matemtiksel işlemlerden geçer. Mesaj blokları, eğri üzerindeki noktalarla temsil edilir.
+    \item Bu eğri noktaları üzerinde işlemler devam eder ve bu noktalar birleştirilir.
+    \item Eliptik eğri üzerindeki noktalar işlenerek hash fonksiyonu tamamlanır.
+\end{enumerate}
+
+\newpage
+
+\subsection{Fast Syndrome-based Hash Function (FSB)}
+
+FSB, kuantum bilgisayarlara dayanıklı bir yapı sunmak için tasarlanmıştır. Doğrusal kodlar ve sendromlar üzerine kurulu olup, kriptografik özet üretirken matematiksel olarak güvenli bir temel sağlar. FSB algoritmasının temeli, doğrusal kodlama teorisindeki "sendrom" kavramına dayanır. FSB, bir doğrusal kodlama matrisiyle çalışır ve mesajın bu matris ile işlenmesi sonucunda bir özet (hash) üretir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veriyi işlemek için bir doğrusal kodlama matrisi seçilir.
+    \item Girdi mesajı, binary (ikili) bir bit dizisine dönüştürülür. 
+    \item Mesaj bitleri, kodlama matrisi ile çarpılır. Bu çarpım sonucunda "sendrom" adı verilen bir bit dizisi elde edilir. Sendrom, matris ve mesajın ilişkisini tanımlayan bir çıktıdır.
+    \item Sendrom, belirli matematiksel işlemlerden geçirilerek nihai hash sonucu elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+matrix = np.array([
+    [1, 0, 1, 1],
+    [0, 1, 1, 0],
+    [1, 1, 0, 1],
+    [0, 0, 1, 1]
+])
+
+message = np.array([1, 0, 1, 0])
+syndrome = np.dot(matrix, message) % 2
+hash_value = ''.join(str(x) for x in syndrome)
+print(f"Sendrom (Syndrome): {syndrome}")
+print(f"FSB Hash: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{GOST}
+
+GOST, Rusya tarafından geliştirilmiştir. Belirli adımların sonucunda bir veri parçası için 256-bitlik bir özet üretir. Bu adımlar, girdiyi parçalar ve her bir parça üzerinde karmaşık bit manipülasyonları yaparak sonucu hesaplar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Girdi veri uzunluğu sınırlandırılmaksızın alınır, fakat veri 256-bit bloklara bölünür. Girdi verisi birden fazla blok içeriyorsa, bloklar halinde işlenir. Bir başlangıç durumu belirlenir. Bu durum, ilk başta tüm sıfırlardan oluşan bir vektördür.
+    \item Girdi verisi 256-bit (32-byte) bloklar halinde işlenir. Eğer son blok tam olarak 256-bit değilse, boş kalan alanlar doldurulur.
+    \item Algoritma, veri üzerinde 32 turdan oluşan bit-manipülasyonları yapar. Her turda çeşitli aritmetik ve mantıksal işlemler yapılır. Bu işlemler sırasında kullanılan bir S-Box tablosu bulunur. Bu tablo, her bir giriş için karmaşık ve önceden tanımlanmış çıkış değerlerini sağlar.
+    \item Bütün veriler işlendiğinde, 256-bitlik (32-byte) nihai özet değeri elde edilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{SipHash}
+
+SipHash, anahtarlı hash fonksiyonu olarak tasarlanmıştır. Kısa veri parçalarını güvenli bir şekilde özetlemek için geliştirilmiştir. DoS (Denial of Service) saldırılarına karşı korunmak için tasarlanmıştır. Temel özelliği, anahtarlı olmasıdır, yani güvenli bir hash hesaplaması yapabilmek için iki anahtar kullanılır. Bu, fonksiyonun rastgele veri ile üretilen sahte özetlere karşı korumalı olmasını sağlar. Aynı veriye her seferinde aynı anahtar ile hash hesaplandığında aynı sonuç elde edilir, ancak anahtar değiştirilirse hash sonucu da değişir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item SipHash, 128-bitlik bir gizli anahtar kullanır.
+    \item Girdi verisi parçalara ayrılır ve her bir parça, 64-bitlik bloklar halinde işlenir. Eğer veri son bloğa sığmazsa, boş kalan kısımlar sıfırla doldurulur.
+    \item SsipHash, iç durumda 4 adet 64-bitlik başlangıç değerini tutar. Bu durum, daha sonra hash hesaplaması sırasında güncellenir. Başlangıç durumu, gizli anahtara dayanarak oluşturulur.
+    \item Her veri bloğu, dört farklı turda işlenir. Her bir tur, veri ve anahtar üzerinde çeşitli bit manipülasyonları yapar. Her turda belirli sayıda döndürme işlemi gerçekleştirilir. SipHash-2-4, bu işlemi 2 iç ve 4 dış turla yapar.
+    \item Bütün veri işlendiğinde, 64-bit veya 128-bit (versiyona bağlı olarak) nihai hash sonucu üretilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{Grostl}
+
+Grostl, 2008 yılında geliştirilen bir kriptografik özetleme (hash) fonksiyonu olup, NIST’in SHA-3 yarışmasında finalist olmuştur. İki temel bileşenden oluşur: P ve Q fonksiyonları. Her iki fonksiyon da AES benzeri blok şifreleme prensiplerine dayanır ve iç içe geçmiştir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Hash işlemi başlamadan önce, algoritma, başlangıç değeri olarak sabit bir bit dizisi kullanır. Bu başlangıç değeri hash uzunluğuna göre değişir.
+    \item Girdi verisi belirli boyutlardaki bloklara bölünür. Grostl'de blok boyutu kullanılan hash fonksiyonunun uzunluğuna bağlıdır.
+    \item Her bir blok, AES benzeri P ve Q fonksiyonlarıyla işlenir. P ve Q fonksiyonları, çeşitli matris işlemleri ve bit manipülasyonları yapar: P fonksiyonu veriyi bir kez şifreler. Q fonksiyonu veriyi ters bir sırayla şifreler.
+    \item Son blok işlendikten sonra, verinin uzunluğu da son bloğa eklenir. Bu, özetin doğruluğunu sağlamak için kullanılır.
+    \item Tüm bloklar işlendiğinde, algoritma nihai hash (özet) sonucunu üretir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import SHA3_256
+data = b'Hello, World!'
+hash_obj = SHA3_256.new()
+hash_obj.update(data)
+hash_value = hash_obj.hexdigest()
+print(f"Grostl-256: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{HAVAL (Hash of Variable Length)}
+
+1992 yılında Peter Y. Yin, Zhengjun Yin ve Yuliang Zheng tarafından geliştirilmiştir. HAVAL, esnekliği ile öne çıkar ve değişken uzunluklu özetler üretir. Kullanıcı, hem özetin uzunluğunu hem de işlem turlarının sayısını seçebilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Algoritma, başlangıçta belirli sabit bir bit dizisi ile başlar. Bu başlangıç değeri, işlenecek verinin boyutuna ve tur sayısına göre değişmez.
+    \item Girdi verisi, 1024 bitlik (128 byte) bloklar halinde bölünür. Eğer son blok 1024 bitten kısa ise veri, belirli bir dolgu ile tamamlanır.
+    \item HAVAL, seçilen tur sayısına göre (3, 4 veya 5 tur) veri üzerinde karmaşık işlemler yapar. Her turda, veriyi manipüle eden matematiksel fonksiyonlar kullanılır. Her turda beş farklı komut kullanılır: F1, F2, F3, F4, ve F5. Bu fonksiyonlar, veriyi farklı yöntemlerle işleyip bir sonraki tura hazırlar.
+    \item Son blok işlendiğinde, verinin toplam uzunluğu da dikkate alınır ve özet sonuç hesaplanır.
+\end{enumerate}
+
+\newpage
+
+\subsection{JH Hash}
+
+Joan Daemen ve Gilles Van Assche tarafından geliştirilmiştir. JH, geniş bir iç durum ve sıkıştırma fonksiyonu tasarımına dayanır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Hash fonksiyonu, başlangıçta belirlenmiş sabit bir değer ile başlar. Bu başlangıç durumu, hash’in bit uzunluğuna bağlıdır.
+    \item Girdi verisi, 512 bitlik bloklar halinde bölünür. Eğer son blok 512 bitten kısa ise, veri dolgu (padding) ile tamamlanır.
+    \item Her 512 bitlik blok üzerinde sıkıştırma fonksiyonu çalıştırılır. JH'nin sıkıştırma fonksiyonu, bir iç durum üzerinde çalışarak veriyi bir sonuca indirger. Bu aşamada, JH permütasyonu (iç durum) sürekli olarak güncellenir ve her blok için aynı algoritma tekrarlanır.
+    \item Tüm bloklar işlendikten sonra, son blok üzerinde bir son işlem yapılır ve elde edilen iç durumdan nihai özet (hash) değeri hesaplanır.
+\end{enumerate}
+
+\newpage
+
+\subsection{Locality-Sensitive Hash (LSH)}
+
+LSH, veri benzerliklerini hızlı bir şekilde bulmak için kullanılan bir tekniktir. Veri noktalarının birbirine yakın olanlarını gruplamak veya benzer ögeleri bulmak için kullanılır. LSH, belirli veri ögelerini özetler ve benzer veri noktalarının aynı özetleme sonucuna sahip olmasını sağlamak amacıyla tasarlanmıştır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item İlk adımda, özetlenmek istenen veri, vektör formuna dönüştürülür. Bu vektör, girdinin sayısal bir temsilidir.
+    \item Verilen vektörlerin yerel benzerliğini ölçmek için uzayda rastgele hiper düzlemler oluşturulur. Hiper düzlem, vektörlerin hangi tarafta olduğunu belirlemek için kullanılır.
+    \item Vektörler hiper düzlemler aracılığıyla işlenir ve benzer verilerin aynı hash fonksiyonuyla eşleştirilmesi sağlanır. Burada her bir vektör, hangi hiper düzlemde bulunduğuna bağlı olarak 1 veya 0 ile kodlanır.
+    \item Son aşamada, vektörlerin hiper düzlem karşılaştırmaları sonucunda elde edilen ikilik (binary) değerler birleştirilir ve özetleme sonucu ortaya çıkar.
+\end{enumerate}
+
+\newpage
+
+\subsection{MD2 (Message Digest 2)}
+
+1989 yılında Ronald Rivest tarafından geliştirilmiştir. Özetleme işlemi, değişen uzunluktaki bir veri girdisini sabit uzunlukta bir hash değerine (mesaj özeti) dönüştürür. MD2, modern standartlarla karşılaştırıldığında eski bir algoritmadır ve günümüzde kriptografik olarak güvenli kabul edilmez. MD2, her zaman 128 bitlik (16 byte) bir özet değer üretir. Çakışmaların bulunma riski yüksektir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Girdi mesajının uzunluğu 16 byte'ın bir katı olacak şekilde doldurulur (padding). Doldurma, eksik byte sayısı kadar değer eklenerek yapılır.
+    \item MD2, veri bütünlüğünü sağlamak için bir checksum değeri hesaplar. Bu checksum, mesajın her byte'ını işler ve belirli bir tabloya göre güncellenir.
+    \item Girdi mesajı 16 byte'lık bloklara bölünür. Her blok, belirli dönüşüm kurallarına göre işlenir. Bu dönüşümler sabit bir s-dizisi (s-table) kullanılarak gerçekleştirilir.
+    \item Tüm bloklar işlendiğinde, elde edilen sonuç 128 bitlik (16 byte) özet değeridir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import MD2
+data = b'Hello, World!'
+hash_obj = MD2.new()
+hash_obj.update(data)
+hash_value = hash_obj.hexdigest()
+print(f"MD2: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{MD4 (Message Digest 4)}
+
+1990 yılında Ronald Rivest tarafından geliştirilmiştir. MD4, değişken uzunluktaki bir veri girdisini sabit uzunlukta bir özet değeri (hash) üretmek için kullanılır. Ancak MD4, artık kriptografik olarak güvenli kabul edilmez ve modern sistemlerde nadiren kullanılır. MD4, her zaman 128 bitlik (16 byte) bir özet değeri üretir. MD4, güvenlik açıkları nedeniyle kullanılmaması gereken bir algoritma olarak kabul edilmektedir. Çakışmaların (collision) kolayca bulunabildiği kanıtlanmıştır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veri, 512 bitlik (64 byte) bloklara bölünür. Mesajın uzunluğu 512'nin katı değilse, veri padding ile tamamlanır. İlk olarak, bir 1 biti eklenir, ardından 0 bitleri eklenir. Mesajın toplam uzunluğu (bit cinsinden) son 64 bitlik bir alana yerleştirilir.
+    \item MD4, dört adet 32-bitlik değişken (A, B, C, D) kullanır. Bu değişkenler sabit başlangıç değerlerine sahiptir:
+    \begin{itemize}
+        \item \textbf{A}: 0x67452301
+        \item \textbf{B}: 0xEFCDAB89
+        \item \textbf{C}: 0x98BADCFE
+        \item \textbf{D}: 0x10325476
+    \end{itemize}
+    \item Her 512 bitlik blok, 48 turdan oluşan 3 farklı işlem aşamasından geçirilir:
+    \begin{itemize}
+        \item \textbf{İlk Aşama (F)}: Modifiye edilmiş bir mantıksal AND ve OR işlemi kullanır.
+        \item \textbf{İkinci Aşama (G)}: Çıkış için daha karmaşık bir işlem uygular.
+        \item \textbf{Üçüncü Aşama (H)}: XOR ve rotasyon işlemleriyle çıktıyı işler.
+    \end{itemize}
+    \item Her turda, mesaj blokları belirli bir şekilde karıştırılır ve işlem sonuçları A, B, C, D değişkenlerine eklenir.
+    \item Tüm bloklar işlendiğinde, A, B, C, D değişkenleri birleştirilerek 128 bitlik (16 byte) özet değeri üretilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import MD4
+data = b'Hello, World!'
+hash_obj = MD4.new()
+hash_obj.update(data)
+hash_value = hash_obj.hexdigest()
+print(f"MD2: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{MD5 (Message Digest 5)}
+
+1992 yılında Ronald Rivest tarafından geliştirilmiştir. MD5, bir mesajın değişken uzunluktaki içeriğini sabit uzunlukta 128 bitlik (16 byte) bir özet değerine dönüştürür.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veri, 512 bitlik (64 byte) bloklara bölünür. Mesajın uzunluğu 512'nin katı değilse, veri padding ile tamamlanır. İlk olarak, bir 1 biti eklenir, ardından 0 bitleri eklenir. Mesajın toplam uzunluğu (bit cinsinden) son 64 bitlik bir alana yerleştirilir.
+    \item MD4, dört adet 32-bitlik değişken (A, B, C, D) kullanır. Bu değişkenler sabit başlangıç değerlerine sahiptir:
+    \begin{itemize}
+        \item \textbf{A}: 0x67452301
+        \item \textbf{B}: 0xEFCDAB89
+        \item \textbf{C}: 0x98BADCFE
+        \item \textbf{D}: 0x10325476
+    \end{itemize}
+    \item Her blok üzerinde 64 turdan oluşan bir işlem yapılır.
+    \item Sonuç olarak, başlangıç durumları (A, B, C, D) birleştirilir ve 128 bitlik özet değeri oluşturulur.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import MD5
+data = b'Hello, World!'
+hash_obj = MD5.new()
+hash_obj.update(data)
+hash_value = hash_obj.hexdigest()
+print(f"MD2: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{MD6 (Message Digest 6)}
+
+2008 yılında Ronald Rivest ve ekibi tarafından geliştirilmiştir. MD6, bir ağacı andıran yapıya sahip, oldukça hızlı ve paralelleştirilebilir bir algoritmadır. Modern donanımlarda yüksek performans sağlar ve kullanıcı tarafından özelleştirilebilir bir güvenlik parametresi (derinlik) sunar. Çıkış uzunluğu esnektir.  Çakışmaya, ön-görüntüye ve ikinci ön-görüntüye karşı güçlüdür. MD6'nın tasarımı, ağaca benzer bir yapı kullanır, bu da paralel işleme için uygundur.
+
+\newpage
+
+\subsection{SHA (Secure Hash Algorithm)}
+
+İlk olarak NSA tarafından tasarlanmış ve NIST tarafından standartlaştırılmıştır. SHA algoritması birkaç farklı versiyondan oluşur. Her biri farklı çıkış boyutlarına ve güvenlik seviyelerine sahiptir:
+
+\begin{itemize}
+    \item \textbf{SHA-1}: 160 bit çıkışa sahiptir. Çakışma saldırılarına karşı zayıf olduğu için artık önerilmez.
+    \item \textbf{SHA-2}: Çıkış 224, 256, 384 veya 512 bit olabilir. Güçlü ve modern uygulamalarda yaygın olarak kullanılır.
+    \item \textbf{SHA-3}: Çıkış 224, 256, 384 veya 512 bit olabilir. SHA-2'nin daha da güçlendirilmiş bir versiyonu. Keccak algoritmasına dayanır.
+\end{itemize}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hashlib
+data = "Hello, World!"
+sha256_hash = hashlib.sha256()
+sha256_hash.update(data.encode('utf-8'))
+hash_value = sha256_hash.hexdigest()
+print(f"SHA-256 Hash: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{SHA-3}
+
+SHA-3 (Secure Hash Algorithm 3), NIST tarafından 2015 yılında standartlaştırılmış bir özetleme algoritmasıdır. Keccak algoritmasına dayanır ve SHA-2'nin bir alternatifi olarak geliştirilmiştir. SHA-3, modern saldırılara karşı daha yüksek güvenlik sağlamak için tasarlanmıştır ve temel farkı sünger yapısı (sponge construction) kullanmasıdır. SHA-3, giriş verisini işleyip sabit uzunlukta bir özet üreten bir dizi matematiksel işlem gerçekleştirir. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veri, Keccak algoritmasının gereksinimlerine göre bloklara ayrılır. Veriye padding (doldurma) eklenir, böylece blokların uzunluğu algoritmaya uyum sağlar.
+    \item SHA-3, absorbing (emilme) ve squeezing (sıkıştırma) aşamalarından oluşan sünger yapısını kullanır. Girdi verisi, bir iç durum (state) ile işlenir ve özet değeri bu durumdan türetilir.
+    \item Giriş blokları, algoritmanın iç durumuna sırayla emilir. Bu işlem sırasında bitwise XOR ve dönüşümler yapılır.
+    \item Sonuç bloğu (hash değeri), iç durumdan türetilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import hashlib
+message = "Hello, World!"
+sha3_hash = hashlib.sha3_256()
+sha3_hash.update(input_data.encode('utf-8')) 
+hash_value = sha3_hash.hexdigest()
+print(f"SHA3-256 Hash: {hash_value}")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Skein}
+
+2008 yılında geliştirilmiştir. Threefish blok şifreleme algoritmasını temel alır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Veriler, algoritmanın desteklediği boyutlara uygun şekilde bloklara ayrılır.
+    \item Her bir veri bloğu, Threefish blok şifresi ile işlenir. Bu şifreleme, belirli bir sayıda dönüşüm ve anahtar karıştırması içerir.
+    \item Skein, UBI işlemini kullanarak her bir bloğun farklı bağlamlarda işlendiğinden emin olur. Bu yapı, bloklar arasında bağlantıyı korurken esneklik sağlar.
+    \item Tüm bloklar işlendiğinde, sabit uzunlukta bir özet değeri üretilir.
+\end{enumerate}
+
+\newpage
