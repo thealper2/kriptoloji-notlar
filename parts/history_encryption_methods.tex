@@ -92,7 +92,7 @@ print("Decrypted:", decrypted_text)
 
 \subsection{Caesar Cipher}
 
-Caesar Cipher, Julius Caesar tarafından kullanılan bir yer değiştirme (substitution) şifreleme yöntemidir. Bu yöntemde, alfabenin harfleri sabit bir sayı kadar kaydırılarak şifrelenir. Şifreleme ve deşifreleme işlemi, kaydırma miktarı (shift değeri) üzerinden yapılır. Eğer shift değeri 3 ise, A harfi D harfi olarak şifrelenir. Bu mantık şifreleme sırasında tüm harflere uygulanır. Deşifreleme ise tam tersine kaydırarak yapılır.
+Caesar Cipher, Julius Caesar tarafından kullanılan bir yer değiştirme (substitution) şifreleme yöntemidir. Bu yöntemde, alfabenin harfleri sabit bir sayı kadar kaydırılarak şifrelenir. Şifreleme ve deşifreleme işlemi, kaydırma miktarı (shift değeri) üzerinden yapılır. Eğer shift değeri 3 ise, A harfi D harfi olarak şifrelenir. Bu mantık şifreleme sırasında tüm harflere uygulanır. Deşifreleme ise tam tersine kaydırarak yapılır. Caesar algoritması oldukça güvensizdir çünkü brute force saldırıları ile tüm denemeler yapılarak düz metin kolayca elde edilir.
 
 \subsubsection{Encryption}
 
@@ -251,7 +251,7 @@ print("Decrypted:", decrypted_text)
 
 \subsection{Vigenere Cipher}
 
-Vigenere Cipher, çok alfabeli yer değiştirme şifreleme (polyalphabetic substitution cipher) yöntemidir. Şifreleme ve deşifreleme işlemi, bir anahtar kelime kullanılarak gerçekleştirilir. Anahtar kelime, şifrelenecek metnin uzunluğuna kadar tekrar eder. Bu yöntem, basit yer değiştirme şifrelemelerine göre daha güvenlidir, çünkü farklı alfabeler arasında geçiş yaparak daha karmaşık bir şifreleme sağlar. Şifreleme için, her harf bir anahtar kelime yardımıyla bir alfabe içinde kaydırılır. 
+Vigenere Cipher, çok alfabeli yer değiştirme şifreleme (polyalphabetic substitution cipher) yöntemidir. 1553 yılında Giovan Battista Bellaso tarafından tanıtılmıştır ve 1586'da Fransız diplomat Blaise de Vigenere tarafından geliştirilmiştir. Şifreleme ve deşifreleme işlemi, bir anahtar kelime kullanılarak gerçekleştirilir. Anahtar kelime, şifrelenecek metnin uzunluğuna kadar tekrar eder. Bu yöntem, basit yer değiştirme şifrelemelerine göre daha güvenlidir, çünkü farklı alfabeler arasında geçiş yaparak daha karmaşık bir şifreleme sağlar. Şifreleme için, her harf bir anahtar kelime yardımıyla bir alfabe içinde kaydırılır. Caesar algoritmasının geliştirilmiş bir halidir.
 
 \[ C_i = (P_i + K_i) \text{ mod } 26 \]
 
@@ -366,7 +366,7 @@ print("Decrypted:", decrypted_text)
 
 \subsection{Playfair Cipher}
 
-1854 yılında Charles Wheatstone tarafından geliştirilmiştir. Carles Wheatsone tarafından geliştirilmiş olmasına rağmen adını bu algoritmanın kullanılmasını savunan Lord Playfair'den alır. Çift harfli (digraph) yer değiştirme şifreleme yöntemidir. Şifreleme işlemi 5x5 harf matrisinin kullanımıyla gerçekleştirilir. Bu yöntem, metni harf çiftleri (digraph) halinde işler ve bu çiftlerin matris üzerindeki pozisyonlarına göre şifreler.
+1854 yılında Charles Wheatstone tarafından geliştirilmiştir. Carles Wheatsone tarafından geliştirilmiş olmasına rağmen adını bu algoritmanın kullanılmasını savunan Lord Playfair'den alır. Çift harfli (digraph) yer değiştirme şifreleme yöntemidir. Şifreleme işlemi 5x5 harf matrisinin kullanımıyla gerçekleştirilir. Bu yöntem, metni harf çiftleri (digraph) halinde işler ve bu çiftlerin matris üzerindeki pozisyonlarına göre şifreler. İlk yıllarda yöntemi karmaşık bulan İngiliz Dışişleri Bakanlığı daha sonra 1. ve 2. Dünya Savaşlarında bu yöntemi kullanmıştır. 2. Dünya Savaşında Avustral ve Yeni Zelanda da kullanmıştır.  
 
 \subsubsection{Encryption}
 
@@ -414,7 +414,7 @@ U & V & W & X & Z \\ \hline
 
 \subsection{Bifid Cipher}
 
-1901 yılında Felix Delastelle tarafından geliştirilmiştir. Bu yöntem, Polybios karesi kullanarak hem yer değiştirme hem de transpozisyon şifreleme tekniklerini birleştirir. Amaç, bir mesajın harflerini hem satır hem de sütun koordinatları üzerinden şifrelemektir. 
+1901 yılında Fransız kriptograf Felix Delastelle tarafından geliştirilmiştir. Felix Delastelle daha sonra Trifid ve Four-square şifreleme yöntemlerini de geliştirmiştir. Bu yöntem, Polybios karesi kullanarak hem yer değiştirme hem de transpozisyon şifreleme tekniklerini birleştirir. Amaç, bir mesajın harflerini hem satır hem de sütun koordinatları üzerinden şifrelemektir. 
 
 \subsubsection{Encryption}
 
@@ -631,7 +631,7 @@ Satır & 1 & 2 & 3 & 3 & 2 \\ \hline
 
 \subsection{Vernam Cipher}
 
-Vernam Şifreleme, 1917'de Gilbert Vernam tarafından geliştirilen ve "One-Time Pad" olarak da bilinen bir şifreleme yöntemidir. Bu yöntem, bir veri ve bir anahtar arasında bir mod-2 (XOR) işlemi gerçekleştirerek veri şifreler. Düz metin (plaintext) bir bit dizisine dönüştürülür. Anahtar da aynı uzunlukta rastgele bir bit dizisi olarak oluşturulur. Şifreleme işleminde, düz metnin her biti ile anahtarın karşılık gelen biti XOR işlemi ile işlenir:
+Vernam Şifreleme, 1917'de Gilbert Vernam tarafından geliştirilen ve "One-Time Pad" olarak da bilinen bir şifreleme yöntemidir. 1. Dünya Savaşında Almanların çözemeyeceği bir metod geliştirilmesi için görevlendirilen mühendis Gilbert Vernam, Joseph Mauborgne adlı bir subay ile bu yöntemi geliştirdi. Bu yöntem, bir veri ve bir anahtar arasında bir mod-2 (XOR) işlemi gerçekleştirerek veri şifreler. Düz metin (plaintext) bir bit dizisine dönüştürülür. Anahtar da aynı uzunlukta rastgele bir bit dizisi olarak oluşturulur. Şifreleme işleminde, düz metnin her biti ile anahtarın karşılık gelen biti XOR işlemi ile işlenir:
 
 \[ C_i = P_i \oplus K_i \]
 
@@ -881,6 +881,60 @@ Base64, ikili verileri (binary data) ASCII formatına dönüştürmek için kull
     \item 6 bitlik gruplar, Base64 tablosundaki karakterlere dönüştürülür.
     \item Eğer veri tam 3 byte (24 bit) değilse, eksik kısımlar eşitlik (=) karakteriyle doldurulur.
 \end{enumerate}
+
+Base64 tablosunda, 0-25 arası indekslerde A-Z, 26-51 arası indekslerde a-z, 52-61 arası indekslerde 0-9, 62. indekste "+" ve 63. indiste "/" bulunur. Şifrelenecek mesaj önce üçerli gruplara bölünür. Bunun nedeni her karakterin 8 bit olması ve bu blokların 6 bitlik yeni bloklara bölünecek olmasıdır. 6 ve 8'ın EKOK'u 24'tür. Her üçerli blokta 24 bit bulunur. 24 bit ile 6 bitlik 4 blok oluşturulur. Örneğin, Base64 ile "KARACA" kelimesini şifreleyelim. "KARACA" mesajını "KAR" ve "ACA" olmak üzere ikiye ayıralım. Her parçada 3 karakter var, her karakter 8 bit ise 24 bit elde ettik. Bu 24 biti de 6 bitlik 4 gruba böleceğiz.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+  & ASCII Değeri & Binary Değeri \\ \hline
+K & 75 & 01001011 \\ \hline
+A & 65 & 01000001 \\ \hline
+R & 82 & 01010010 \\ \hline
+A & 65 & 01000001 \\ \hline
+C & 67 & 01000011 \\ \hline
+A & 65 & 01000001 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Böylece:
+
+\begin{itemize}
+    \item KAR: 010010110100000101010010
+    \item ACA: 010000010100001101000001
+\end{itemize}
+
+Elde edildi. Şimdi bu mesajları 6 bitlik gruplara bölelim
+
+\begin{itemize}
+    \item KAR: 010010 110100 000101 010010
+    \item ACA: 010000 010100 001101 000001
+\end{itemize}
+
+Bu değerlerin ASCII değerinin tablodaki karşılığını alarak mesajı şifreleyelim.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+Binary Değeri & Decimal Değeri & Tablodaki Karakter \\ \hline
+010010 & 18 & S \\ \hline
+110100 & 52 & 0 \\ \hline
+000101 & 5  & F \\ \hline
+010010 & 18 & S \\ \hline
+010000 & 16 & Q \\ \hline
+010100 & 20 & U \\ \hline
+001101 & 13 & N \\ \hline
+000001 & 1  & B \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+"KARACA" kelimesinin base64 ile şifrelenmiş hali "S0FSQUNB" elde edildi. Şifre çözme aşamasında ise bu karakterlerin binary karşılıklarının 8 bitlik gruplar halinde bölünür ve bu grupların decimal değerinin tablodaki karşılığı elde edilerek mesaj çözülür.
 
 \subsubsection{Python Kodu}
 

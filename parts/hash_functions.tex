@@ -852,13 +852,13 @@ print(f"MD2: {hash_value}")
 
 \subsection{MD5 (Message Digest 5)}
 
-1992 yılında Ronald Rivest tarafından geliştirilmiştir. MD5, bir mesajın değişken uzunluktaki içeriğini sabit uzunlukta 128 bitlik (16 byte) bir özet değerine dönüştürür.
+1992 yılında Ronald Rivest tarafından geliştirilmiştir. MD5, bir mesajın değişken uzunluktaki içeriğini sabit uzunlukta 128 bitlik (16 byte) bir özet değerine dönüştürür. Veri bütünlüğünü doğrulamak için kullanılır. Web üzerinden bir dosya indirirken, dosyanın tam olarak indirilip indirilmediğini kontrol etme işlemlerinde MD5 kullanılır. Şifre çözülmesi teorik olarak imkansız olmasına rağmen geçmişte bazı saldırı girişleri yapılmıştır. 1993 yılında Antoon Bossalaers ve Bert den Boer, iki farklı girdi için MD5 algoritmasında çakışma bulmuşlardır. Bu olay, MD5'e olan güveni sarsmıştır. 2004 yılında MD5CRK isimli bir projede, 1 saat içinde MD5 algoritmasına yapılan bazı saldırıların başarılı sonuçlar verdiğini gözlemlemişlerdir. RainbrowCrack isimli bir projede, büyük-küçük harf, rakam gibi tek karakterden başlayıp sonsuz karakter kadar değerlerin MD5 özeti hesaplanarak bir tabloda (rainbow table) saklanmıştır. Daha sonra bu tablo kullanılarak, brute force saldırıları yapılmıştır. Bu tür brute force saldırılarından korunmak için MD5 özeti çıkarılan bir bilginin tekrar tekrar MD5 özetleri çıkarılmıştır. 2008'de bir grup sahte SSL sertifikasını doğrulamak için MD5 algoritmasını kullanmıştır. 
 
 \subsubsection{Çalışma Adımları}
 
 \begin{enumerate}
     \item Veri, 512 bitlik (64 byte) bloklara bölünür. Mesajın uzunluğu 512'nin katı değilse, veri padding ile tamamlanır. İlk olarak, bir 1 biti eklenir, ardından 0 bitleri eklenir. Mesajın toplam uzunluğu (bit cinsinden) son 64 bitlik bir alana yerleştirilir.
-    \item MD4, dört adet 32-bitlik değişken (A, B, C, D) kullanır. Bu değişkenler sabit başlangıç değerlerine sahiptir:
+    \item MD5, dört adet 32-bitlik değişken (A, B, C, D) kullanır. Bu değişkenler sabit başlangıç değerlerine sahiptir:
     \begin{itemize}
         \item \textbf{A}: 0x67452301
         \item \textbf{B}: 0xEFCDAB89
@@ -884,7 +884,7 @@ print(f"MD2: {hash_value}")
 
 \subsection{MD6 (Message Digest 6)}
 
-2008 yılında Ronald Rivest ve ekibi tarafından geliştirilmiştir. MD6, bir ağacı andıran yapıya sahip, oldukça hızlı ve paralelleştirilebilir bir algoritmadır. Modern donanımlarda yüksek performans sağlar ve kullanıcı tarafından özelleştirilebilir bir güvenlik parametresi (derinlik) sunar. Çıkış uzunluğu esnektir.  Çakışmaya, ön-görüntüye ve ikinci ön-görüntüye karşı güçlüdür. MD6'nın tasarımı, ağaca benzer bir yapı kullanır, bu da paralel işleme için uygundur.
+2008 yılında Ronald Rivest ve ekibi tarafından geliştirilmiştir. MD6, bir ağacı andıran yapıya sahip, oldukça hızlı ve paralelleştirilebilir bir algoritmadır. Çok uzun verileri paralel olarak işleyebilmek için dörtlü Merkle ağacı yapısını kullanılır. Modern donanımlarda yüksek performans sağlar ve kullanıcı tarafından özelleştirilebilir bir güvenlik parametresi (derinlik) sunar. Çıkış uzunluğu esnektir. Çakışmaya, ön-görüntüye ve ikinci ön-görüntüye karşı güçlüdür. MD6'nın tasarımı, ağaca benzer bir yapı kullanır, bu da paralel işleme için uygundur. Algoritma içerisindeki çevrim sayısı $r$ şöyle hesaplanır; $r = 40 + (\frac{d}{4})$. Burada d, özet uzunluğudur. Ağaç içerisindeki her bir düğümün dört çocuğu olmalıdır ve veri bu çocuklara yerleştirilir. Eğer çocuk sayısı az ise içeriği 0 olan düğümler eklenir. Yapraklarda veri saklanırken düğümlerde sıkıştırma işlemleri yapılır. İşlem yönü aşağıdan yukarıya yani çocuklardan düğümlere doğrudur. 
 
 \newpage
 
@@ -893,9 +893,9 @@ print(f"MD2: {hash_value}")
 İlk olarak NSA tarafından tasarlanmış ve NIST tarafından standartlaştırılmıştır. SHA algoritması birkaç farklı versiyondan oluşur. Her biri farklı çıkış boyutlarına ve güvenlik seviyelerine sahiptir:
 
 \begin{itemize}
-    \item \textbf{SHA-1}: 160 bit çıkışa sahiptir. Çakışma saldırılarına karşı zayıf olduğu için artık önerilmez.
-    \item \textbf{SHA-2}: Çıkış 224, 256, 384 veya 512 bit olabilir. Güçlü ve modern uygulamalarda yaygın olarak kullanılır.
-    \item \textbf{SHA-3}: Çıkış 224, 256, 384 veya 512 bit olabilir. SHA-2'nin daha da güçlendirilmiş bir versiyonu. Keccak algoritmasına dayanır.
+    \item \textbf{SHA-1}: 160 bit çıkışa sahiptir. Çakışma saldırılarına karşı zayıf olduğu için artık önerilmez. Çakışma bulabilmek için brute force saldırısıyla $2^{80}$ adet deneme yapmak gerekir. 2005 yılında Yiqun Lisa Yin ve ekibi, çalışmalarında $2^{69}$'dan daha az işlem yaparak çakışma elde edilebileceğini söylemiştir. 2010 yılında Marc Steven tarafından yapılan çalışmalarda bu sayının $2^{61}$'e düşürüldüğünü tahmin etmiştir. SHA-1 üzerinde birçok çalışma yapılmasına rağmen hepsi teorik olarak kalmıştır, bu yüzden algoritma hala güvenilir olarak kabul edilir.
+    \item \textbf{SHA-2}: Çıkış 224, 256, 384 veya 512 bit olabilir. Güçlü ve modern uygulamalarda yaygın olarak kullanılır. SHA-1 hala güvenli olarak kabul edildiği için pek kullanım gerekliliği duyulmamıştır.
+    \item \textbf{SHA-3}: Çıkış 224, 256, 384 veya 512 bit olabilir. SHA-2'nin daha da güçlendirilmiş bir versiyonu. Keccak algoritmasına dayanır. SHAKE128 ve SHAKE256 olmak üzere iki XOF (genişletilebilir çıktı fonksiyonu) bulunur. XOF, çıktıyı herhangi bir uzunlukta genişletebilen fonksiyondur. 128 ve 256 çıktının uzunluğunu değil, algoritmanın gücünü belirtir. SHA-3 fonksiyonları permütasyon tabanlıdır. İçerisinde bulunan sponge fonksiyonu, mesajı belirli bloklara ayırır ve blok bazı permütasyon işlemlerinin ardından özet blokları birleştirilir. 
 \end{itemize}
 
 \subsubsection{Python Kodu}
