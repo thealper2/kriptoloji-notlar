@@ -302,14 +302,48 @@ caesar_brute_force(ciphertext)
 
 \newpage
 
-\subsection{Differential Cryptoanalysis}
+\subsection{Differential Cryptanalysis}
 
 Differential Cryptanalysis (Diferansiyel Kriptoanaliz), simetrik şifreleme algoritmalarını analiz etmek ve zayıflıklarını bulmak için kullanılan bir yöntemdir. Feistel şifreleme yapıları ve blok şifreleme algoritmaları üzerinde etkili bir analiz yöntemidir. Bu yöntem, şifreleme algoritmasındaki farklılıkların (differentials) şifreleme sürecinde nasıl yayıldığını inceleyerek anahtar bilgisine ulaşmayı amaçlar. İki farklı düz metin arasındaki farkların şifrelenmiş metne nasıl yansıdığını gözlemleyerek saldırgan, anahtar hakkında bilgi elde etmeye çalışır.
 
 \newpage
 
-\subsection{Integral Crytpoanalysis}
+\subsection{Integral Cryptanalysis}
 
 Integral Cryptanalysis Attack, blok şifreleme algoritmalarında kullanılan bir kriptoanaliz yöntemidir. Bu saldırı türü, algoritmanın yapısındaki kısmi giriş/çıkış bağımsızlıklarını analiz eder. Feistel şifreleme yapıları ve SPN (Substitution-Permutation Network) tabanlı algoritmalar üzerinde kullanılır. Bu yöntem, algoritmanın iç durumlarının belirli bir kısmının değişmez kaldığı durumları tespit ederek şifreleme sürecini incelemeye odaklanır. Integral kriptoanaliz, özellikle algoritmanın birden fazla turuna yayılan aktif bitlerin (active bits) yayılımını analiz eder. Bu analiz sonucunda şifreleme algoritmasının zayıf noktalarını bulmak ve anahtarın bazı bölümlerini veya tamamını tahmin etmek mümkündür.
+
+\newpage
+
+\subsection{Square Attack}
+
+Square Attack, simetrik blok şifrelemelerindeki zayıflıkları ortaya çıkarmak için kullanılır. Düşük tur sayısına sahip şifreleme sistemlerini hedef alır. İlk olarak, Rijndael şifreleme algoritmasını analiz etmek için geliştirilmiştir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir blok şifreleme algoritması için aynı anahtar kullanılarak 256 farklı giriş değeri şifrelenir. Bu, hedeflenen şifrelme algoritmasının diferansiyel yapısını ortaya çıkarmaya yardımcı olur.
+    \item Giriş verileri algoritma üzerinden şifrelenir ve çıktı blokları kaydedilir.
+    \item XOR işlemi uygulayarak belirli desenler veya simetriler araştırılır. Bu analiz, algoritmanın belirli tur işlemleri sonnucunda farklılıkları nasıl işlediğini anlamayı sağlar.
+    \item Herhangi bir tur işleminden sonra, algoritmanın bazı belirli yapıları koruyup korumadığı incelenir. Örneğin XOR sonucunun 0 olduğu bayt pozisyonları aranır.
+    \item Algoritmanın bazı turlarını analiz ederek, kullanılan anahtarın parçaları hakkında bilgi elde edilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{Davies Attack}
+
+Davies Attack, simetrik şifreleme algoritmalarında kullanılan bir kriptoanaliz yöntemidir. DES algoritmasına yönelik geliştirilmiştir. Algoritmanın zayıf alt-anahtarlar (subkeys) ürettiği durumları analiz eder. Bu saldırı, şifreleme işlemi sırasında anahtarların oluşturulma şekline ve şifreleme turlarındaki belirli desenlere dayanarak, şifreleme anahtarının bir kısmını veya tamamını tahmin etmeye çalışır.
+
+\newpage
+
+\subsection{Linear Cryptanalysis}
+
+Linear Cryptanalysis, blok şifreleme algoritmalarını çözmek için kullanılan bir kriptanaliz tekniğidir. Bu yöntem, şifreleme algoritmasının lineer bir modelle yaklaşık olarak temsil edilebileceğini varsayar. Amaç, algoritmanın belirli tur fonksiyonları arasında doğrusal bir ilişki bulmaktır ve bu ilişkilerden anahtar bilgisi çıkarmaktır. DES ve diğer simetrik şifreleme algoritmalarına uygulanmıştır.
+
+\newpage
+
+\subsection{Impossible Differential Cryptoanalysis}
+
+Impossible Differential Cryptoanalysis, modern blok şifreleme algoritmalarına yönelik bir kriptoanaliz tekniğidir. Bu yöntemde, belirli bir şifreleme algoritmasında mümkün olmayan diferansiyeller tespit edilir ve bu bilgi kullanılarak anahtar uzayı daraltılır. Yani, belirli bir giriş ve çıkış farkı kombinasyonunun hiçbir şekilde oluşamayacağı kanıtlanır ve bu bilgi, şifreleme sisteminin zayıflıklarını keşfetmek için kullanılır.
 
 \newpage

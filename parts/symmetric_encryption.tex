@@ -111,10 +111,10 @@ AES (Advanced Encryption Standard), 2001 yılında Rijndael algoritması temel a
     \item Düz metin, ilk olarak anahtar ile XOR işlemine girer.
     \item Her tür şu 4 adımdan oluşur:
     \begin{itemize}
-        \item \textbf{SubBytes}: Her bayt, S-box adı verilern bir tablo yardımıyla bir başkasıyla değiştirilir.
-        \item \textbf{ShiftRows}: Veri bloğundaki satırlar belirli bir düzene göre kaydırılır.
-        \item \textbf{MixColumns}: Sütunlar matematiksel bir işlemle karıştırılır.
-        \item \textbf{AddRoundKey}: Veri bloğu, o tura ait alt anahtar ile XOR yapılır.
+        \item \textbf{SubBytes (Bayt Değiştirme)}: Her bayt, S-box adı verilen bir tablo yardımıyla bir başkasıyla değiştirilir. Doğrusal olmayan bir işlemdir. Durum matrisi üzerinde uygulanır. 128 bitlik bir anahtar için durum matrixi her elemanı 8 bit olan 4x4'lük bir matristir. Bu matrisin her bir elemanı 16'lık sayı tabanında yazılır. Durum matrisindeki her eleman, elemanın satır-sütun koordinatı ile S kutusu üzerindeki o koordinatta bulunan değerle değiştirilir.
+        \item \textbf{ShiftRows (Satır Kaydırma)}: Veri bloğundaki satırlar belirli bir düzene göre kaydırılır. Güncellenmiş durum matrisi üzerinde uygulanır. Her satır belirli bir oranda kaydırılır. Her n. satırda $n - 1$'lik bir kaydırma yapılır, yani ilk satırda herhangi bir kaydırma olmazken, diğer satırlarda kendisinin bir eksiği kadar kaydırma yapılır.
+        \item \textbf{MixColumns (Sütun Karıştırma)}: Sütunlar matematiksel bir işlemle karıştırılır. Kaydırılan durum matrisi, sabit bir matris ile çarpılır.
+        \item \textbf{AddRoundKey (Tur Anahtarı Ekleme)}: Veri bloğu, o tura ait alt anahtar ile XOR yapılır. Toplama işlemi sütun bazlı yapılır.
     \end{itemize}
     \item Son turda, SubBytes, ShiftRows ve AddRoundKey işlemleri yapılır. MixColumns atlanır.
     \item Tüm turlar tamamlandıktan sonra şifreli metin elde edilir.
@@ -149,5 +149,34 @@ decrypted = triple_des_decrypt(encrypted, key)
 print("Encrypted:", encrypted)
 print("Decrypted:", decrypted)
 \end{lstlisting}
+
+\newpage
+
+\subsection{Kuantum Kriptografi}
+
+Kuantum kriptografi, kuantum mekaniğinin temel ilkelerine dayanan bir şifreleme yöntemidir. Diğer yöntemlerden farklı olarak, veri güvenliğini matematiksel hesaplamaların karmaşıklığından ziyade fiziksel prensiplere dayandırır. Bilgiler, kuantum bitleri (qubit) ile temsil edilir. Qubit'ler 0, 1 veya bu ikisinin süperpozisyonu şeklinde olabilir. Kuantum Kriptografi, Heisenberg Belirsizlik İlkesini kullanır. Kuantum parçacığının özelliklerini ölçmek, o parçacığın durumunu değiştirir. Bu özellik, dinleme girişimlerini tespit etmeyi sağlar. Kuantum durumları, birbiriyle çakışmayan bazlarda ölçüldüğünde kesin bilgi vermez. Bu, iletişim güvenliğini artırır. Dolaşıklık (Entanglement), iki veya daha fazla parçacığın durumlarının birbirine bağlı olması durumudur. Bu bağlantı, fiziksel olarak ayrı yerlerde bile ölçümler arasında güçlü bir bağıntı sağlar.
+
+\subsubsection{BB84 Algorithm}
+
+BB84 Algoritması, 1984 yılında Charless Bennett ve Gilles Brassard tarafından geliştirilen ilk kuantum anahtar dağıtım protokolüdür. 
+
+\begin{enumerate}
+    \item Alice, rastgele bir bit dizisi ve baz dizisi seçer. Bitleri seçilen bazlara göre kuantum durumlarına dönüştürür ve Bob'a gönderir.
+    \item Bob, rastgele bazlar seçerek kuantum bitlerini ölçer. Bazlar doğru seçildiyse, Alice'in gönderdiği biti doğru şekilde ölçer; aksi takdirde rastgele bir sonuç elde eder.
+    \item Alice ve Bob, bir kanal üzerinden hangi bazları kullandıklarını paylaşır, bitlerin kendisini paylaşmazlar. Sadece aynı bazda ölçülen bitler korunur ve diğerleri atılır.
+    \item Kalan bitler, ortak bir gizli anahtar olarak kullanılır.
+    \item Alice ve Bob, anahtarın bir kısmını karşılaştırarak Eve'in dinleme girişimlerini tespit eder. Eğer müdahale varsa, kuantum durumlarındaki değişimden dolayı hata oranı artar.
+\end{enumerate}
+
+\subsubsection{EPR-Ekert Protocol}
+
+EPR-Ekert Protokolü, 1991 yılında Artur Ekert tarafından önerilen bir kuantum anahtar dağıtım protokolüdür. Bu protokol, Einstein-Podolsky-Rosen (EPR) dolaşıklığı üzerine kuruludur. 
+
+\begin{enumerate}
+    \item Alice ve Bob, dolaşık kuantum parçacıkları alır. Bu parçacıklar, birbirinden bağımsız iki uzak yerde ölçülür.
+    \item Alice ve Bob, ölçümlerini farklı yönlerde rastgele yapar. Ölçüm sonuçları, kuantum mekaniğinin yasaları nedeniyle güçlü bir şekilde korelasyonludur.
+    \item Eğer Eve, kuantum kanalı dinlemeye çalışırsa, dolaşıklık bozulur ve korelasyonlar değişir. Bu, dinleme girişimlerini tespit etmeyi sağlar.
+    \item Alice ve Bob, ölçüm sonuçlarının korelasyonuna dayanarak bir gizli anahtar oluşturur.
+\end{enumerate}
 
 \newpage

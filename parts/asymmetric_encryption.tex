@@ -4,7 +4,7 @@ Asimetrik şifrelemede, birbiriyle matematiksel olarak ilişkili iki farklı ana
 
 \subsection{RSA (Rivest-Shamir-Adleman)}
 
-1977 yılında Ron Rivest, Adi Shamir ve Leonard Adleman tarafından geliştirilmiştir. RSA, büyük asal sayıların çarpanlarına ayrılmasının zorluğuna dayanan bir algoritmadır. RSA, hem şifreleme hem de dijital imzalama için kullanılır. 
+1977 yılında Ron Rivest, Adi Shamir ve Leonard Adleman tarafından geliştirilmiştir. İsmini kendisini geliştiren ekibin baş harflerinden alır. RSA, büyük asal sayıların çarpanlarına ayrılmasının zorluğuna dayanan bir algoritmadır. RSA, hem şifreleme hem de dijital imzalama için kullanılır. RSA'ya matematik ve yan kanal kriptanaliz saldırları yapılmıştır. Yan kanal saldırıları başarılı bir sonuç verirken, matematiksel saldırılar başarısız olmuştur. Algoritmanın gücü, asal sayıların büyüklüğüyle orantılıdır. Yeni saldırılar daha büyük bir asal sayı kullanır fakat büyük asal sayılar daha fazla matematiksel işlem doğurur.
 
 \subsubsection{Encryption}
 
@@ -91,7 +91,7 @@ Mesaj bir noktaya (M) dönüştürülür. Rastgele bir sayı (k) seçilir: $1 \l
 
 \subsection{DSA (Digital Signature Algorithm)}
 
-DSA, NIST tarafından dijital imzalar için geliştirilmiş bir açık anahtarlı şifreleme algoritmasıdır. DSA, dijital bir mesajın kaynağını doğrulamak ve mesajın değiştirilip değiştirilmediğini kontrol etmek için kullanılır. Bu algoritma, şifreleme için değil, dijital imzalama ve doğrulama işlemleri için tasarlanmıştır.
+DSA, NIST tarafından dijital imzalar için geliştirilmiş bir açık anahtarlı şifreleme algoritmasıdır. DSA, dijital bir mesajın kaynağını doğrulamak ve mesajın değiştirilip değiştirilmediğini kontrol etmek için kullanılır. Bu algoritma, şifreleme için değil, dijital imzalama ve doğrulama işlemleri için tasarlanmıştır. Geliştirilirken, ElGamal algoritmasından yararlanılmıştır. 
 
 \subsubsection{Encryption}
 
@@ -169,9 +169,9 @@ print("Is Valid:", is_valid)
 
 \subsection{ElGamal}
 
-ElGamal, açık anahtarlı şifreleme için kullanılan bir algoritmadır. Hem şifreleme hem de dijital imzalama işlemleri için kullanılabilir. ElGamal, Diffie-Hellman anahtar değişimi üzerine kuruludur ve büyük asal sayıların modüler aritmetiği üzerinde çalışır. 
+1984 yılında Taher ElGamal tarafından geliştirimiştir. ElGamal, açık anahtarlı şifreleme için kullanılan bir algoritmadır. Hem şifreleme hem de dijital imzalama işlemleri için kullanılabilir. RSA yöntemine benzerdir. ElGamal, Diffie-Hellman anahtar değişimi üzerine kuruludur ve büyük asal sayıların modüler aritmetiği üzerinde çalışır. 
 
-\subsubsection{Encrpytion}
+\subsubsection{Encryption}
 
 Anahtarlar oluşturulur.
 
@@ -239,9 +239,9 @@ print("Decrypted:", decrypted_message)
 
 \subsection{Paillier Cipher}
 
-Paillier Cipher, 1999 yılında Pascal Paillier tarafından geliştirilmiştir. Bu algoritma, homomorfik şifreleme özelliği sayesinde, şifreli veriler üzerinde işlem yapmayı mümkün kılar. Bu özellik, gizli veriler üzerinde matematiksel işlemlerin yapılmasını gerektiren uygulamalarda kullanılır.
+Paillier Cipher, 1999 yılında Pascal Paillier tarafından geliştirilmiştir. Bu algoritma, homomorfik şifreleme özelliği sayesinde, şifreli veriler üzerinde işlem yapmayı mümkün kılar. Bu özellik, gizli veriler üzerinde matematiksel işlemlerin yapılmasını gerektiren uygulamalarda kullanılır. Homomorfik şifreleme, şifreli mesajı çözmeden şifreli mesaj üzerinden işlemler yapılabilmesini sağlar. Şifreli mesaj üzerindeki işlemlerin sonucu, şifresiz mesaj üzerindeki işlemlerin sonuçlarıyla aynıdır.
 
-\subsubsection{Encrpytion}
+\subsubsection{Encryption}
 
 Anahtarlar oluşturulur.
 
@@ -303,6 +303,317 @@ def diffie_hellman(p=23, g=5, a=6, b=15):
         print("The shared key has been created successfully.")
     else:
         print("Shared key did not match.")
+\end{lstlisting}
+
+\newpage
+
+\subsection{Merkle-Hellman Cipher}
+
+Merkle-Hellman şifreleme, 1978'de Ralph Merkle ve Martin Hellman tarafından önerilmiş olup, ilk açık anahtarlı şifreleme yöntemlerinden biridir. Bu yöntem, süper artan altküme toplamları kullanılarak verileri şifreler. Şifreleme, NP-Complete bir problem olan sırt çantası (knapsack) probleminin bir varyantına dayanır. NP-Complete, belirsiz Turing makineleri ile çok terimli (polinomsal) zamanda çözülebilen problemleri içerir. 
+
+\subsubsection{Encryption}
+
+İlk olarak anahtar çifti oluşturulur.
+
+\begin{enumerate}
+    \item Süper artan alt küme dizisi, özel bir dizi ($W$) seçilir. Bu dizide her sayı, kendinden önceki sayıların toplamından büyüktür.
+    \item Modül ($m$), diziden büyük bir asal sayı seçilir.
+    \item Çarpan ($n$), m ile aralarında asal bir sayı seçilir.
+    \item Açık anahtar ($B$): $B[i] = (W[i] \cdot n) \text{ mod } m$ ile hesaplanır.
+\end{enumerate}
+
+Daha sonra şifreleme işlemine geçilir.
+
+\begin{enumerate}
+    \item Mesaj, binary hale getirilir.
+    \item Her bir bit, açık anahtar ($B$) ile çarpılır ve sonuçların toplamı ($C$) şifreli mesaj olarak elde edilir.
+\end{enumerate}
+
+Şifre çözmek için:
+
+\begin{enumerate}
+    \item Şifreli mesaj ($C$) ile $n^{-1} \text{ mod } m$ ile hesaplanır.
+    \item Bu değer, özel anahtar dizisi ($W$) kullanılarak orijinal mesajın bitleri çözülür.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+W = [2, 3, 6, 14, 30]
+m = 61
+n = 17
+B = [(w * n) % m for w in W]
+
+def merkle_hellman_encrypt(plaintext, B):
+    message_bits = [int(bit) for bit in message]
+    C = sum([message_bits[i] * B[i] for i in range(len(message_bits))])
+    return C
+
+def merkle_hellman_decrypt(C, W, m, n):
+    n_inv = pow(n, -1, m)
+    C_prime = (C * n_inv) % m
+    decrypted_bits = []
+    for w in reversed(W):
+        if C_prime >= w:
+            decrypted_bits.insert(0, 1)
+            C_prime -= w
+        else:
+            decrypted_bits.insert(0, 0)
+
+    return "".join(map(str, decrypted_bits))
+
+plaintext = "10101"
+encrypted = merkle_hellman_encrypt(plaintext, B)
+decrypted = merkle_hellman_decrypt(encrypted, W, m, n)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Okamoto-Uchiyama Cipher}
+
+Okamoto-Uchiyama şifreleme sistemi, 1998 yılında Tatsuaki Okamoto ve Shigenori Uchiyama tarafından önerilen bir açık kaynak anahtarlı şifreleme yöntemidir. Bu sistem, tam homomorfik şifreleme özelliklerine sahiptir ve sayı teorisine dayalıdır. Güvenliği, modüler üs alma ve modüler logaritma problemleri üzerine kuruludur.
+
+\subsubsection{Encryption}
+
+Önce anahtarlar oluşturulur.
+
+\begin{enumerate}
+    \item Büyük asal sayılar $p$ ve $q$ seçilir. $n = p^{2} \cdot q$ hesaplanır.
+    \item $g$, $Z_{n^2}^{*}$ kümesinden rastgele seçilir ve şu koşul sağlanır: $g^{p-1} \text{ mod } p^2 \neq 1$.
+    \item Açık anahtar: $(n, q)$.
+    \item Gizli anahtar: $(p, q)$. 
+\end{enumerate}
+
+Mesaj $m$ şifrelenir.
+
+\begin{enumerate}
+    \item $r$, $Z_{n}^{*}$ kümesinden rastgele seçilir.
+    \item Şifreli metin: $c = g^m \cdot r^n \text{ mod } n^2$.
+\end{enumerate}
+
+Şifre çözmek için:
+
+\begin{enumerate}
+    \item Şifre çözmek için $c$, gizli anahtar $p$ kullanılarak çözülür: $u = c^{p-1} \text{ mod } p^2$.
+    \item $L(u) = \frac{u - 1}{p}$.
+    \item $m = \frac{L(u)}{L(g^{p-1} \text{ mod } p^2)} \text{ mod } p$.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+from math import gcd
+
+def generate_keys():
+    p = 23
+    q = 29
+    n = p**2 * q
+    
+    while True:
+        g = random.randint(2, n**2 - 1)
+        if pow(g, p - 1, p**2) != 1:
+            break
+    
+    public_key = (n, g)
+    private_key = (p, q)
+    return public_key, private_key
+
+def okamoto_uchiyama_encrypt(plaintext, public_key):
+    n, g = public_key
+    r = random.randint(2, n - 1)
+    while gcd(r, n) != 1:
+        r = random.randint(2, n - 1)
+
+    c = (pow(g, plaintext, n ** 2) * pow(r, n, n ** 2)) % (n ** 2)
+    return c
+
+def okamoto_uchiyama_decrypt(ciphertext, public_key, private_key):
+    n, g = public_key
+    p, _ = private_key
+    u = pow(ciphertext, p - 1, p ** 2)
+    l_u = (u - 1) // p
+    g_p = pow(g, p - 1, p ** 2)
+    l_g_p = (g_p - 1) // p
+    m = (l_u * pow(l_g_p, -1, p)) % p
+    return m
+
+public_key, private_key = generate_keys()
+plaintext = 42
+ciphertext = okamoto_uchiyama_encrypt(plaintext, public_key)
+decrypted = okamoto_uchiyama_decrypt(ciphertext, public_key, private_key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Goldwasser-Micali Cipher}
+
+1982 yılında Shafi Goldwasser ve Silvio Michali tarafından geliştirimiştir. Olasılıklı açık anahtarlı şifreleme algoritmasıdır. Bu sistem, semantik güvenlik kavramının öncüsü olup, kriptolojik sağlamlık açısından önemli bir yere sahiptir. Goldwasser-Micali, yalnızca bit düzeyinde şifreleme yapar ve güvenliği, kuadratik kalıntı problemine dayanır.
+
+\subsubsection{Encryption}
+
+Anahtar çiftleri oluşturulur.
+
+\begin{enumerate}
+    \item İki büyük asal sayı $p$ ve $q$ seçilir. $n = p \cdot q$ hesaplanır.
+    \item $n$'nin kuadratik kalıntısı olmayan bir y değeri rastgele seçilir: $y \in Z_{n}^{*}$ ve $(\frac{y}{n}) = -1$. Burada $(\frac{y}{n})$, Jacobi sembolünü ifade eder.
+    \item Açık anahtar: $(n, y)$.
+    \item Gizli anahtar: $(p, q)$.
+\end{enumerate}
+
+Mesaj $m$ şifrelenir.
+
+\begin{enumerate}
+    \item $r$, $Z_{n}^{*}$ kümesinden rastgele seçilir.
+    \item Şifreli metin: $c = r^2 \cdot y^m \text{ mod } n$. Eğer $m = 0$ ise, $c = r^2 \text{ mod } n$. Eğer $m = 1$ ise, $c = r^2 \cdot y \text{ mod } n$.
+\end{enumerate}
+
+Şifre çözmek için gizli anahtar kullanılarak c'nin kuadratik kalıntı olup olmadığı kontrol edilir. Eğer $c$, $n$ modülünde kuadratik kalıntıysa $m = 0$, değilse $m = 1$.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+from sympy import isprime, jacobi_symbol
+
+def generate_keys(bit_length=16):
+    while True:
+        p = random.getrandbits(bit_length)
+        if isprime(p):
+            break
+    while True:
+        q = random.getrandbits(bit_length)
+        if isprime(q):
+            break
+    
+    n = p * q 
+    while True:
+        y = random.randint(2, n - 1)
+        if jacobi_symbol(y, n) == -1:
+            break
+    
+    public_key = (n, y)
+    private_key = (p, q)
+    return public_key, private_key
+
+def goldwasser_micali_encrypt(bit, public_key):
+    n, y = public_key
+    r = random.randint(1, n - 1)
+    c = (pow(r, 2, n) * (y if bit == 1 else 1)) % n
+    return c
+
+def goldwasser_micali_decrypt(ciphertext, public_key, private_key):
+    n, _ = public_key
+    p, q = private_key
+    if pow(ciphertext, (p - 1) // 2, p) == 1 and pow(ciphertext, (q - 1) // 2, q) == 1:
+        return 0
+    else:
+        return 1
+
+public_key, private_key = generate_keys()
+message_bit = 1
+ciphertext = goldwasser_micali_encrypt(message_bit, public_key)
+decrypted = goldwasser_micali_decrypt(ciphertext, public_key, private_key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Blum-Goldwasser Cipher}
+
+Blum-Goldwasser şifreleme, olasılıklı bir açık anahtarlı şifreleme algoritmasıdır. Bu yöntem semantik güvenliğe sahip olup, verilerin şifrelenmesi sırasında bir rastgelelik unsuru kullanır. Blum Blum Shub (BBS) adı verilen bir rastgele sayı üreticisi üzerine kuruludur ve doğrusal olmayan bir kelebek yapısıyla çalışır. Güvenliği, kuadratik kalıntı probleminin çözümünün zorluğuna dayanır. Blum Blum Shub algoritması:
+
+\[ x_0 = \text{seed} \]
+\[ x_t = ((x * 2) \text{ mod } n) \]
+\[ \text{random bit} = \text{ mod } 2 \]
+
+Burada, $x_0$ başlangıçta seed değeri, $x_t$ belirtilen uzunluk boyunca güncellenen x değeri, $n$ modülüs değeri, $\text{random bit}$ yapılan işlemler sonucunda oluşturulan rastgele bittir.
+
+\subsubsection{Encryption}
+
+Anahtar üretimi yapılır.
+
+\begin{enumerate}
+    \item Büyük asal sayılar $p$ ve $q$ seçilir.
+    \item Modül $n$ hesaplanır: $n = p \cdot q$
+    \item $n$ açık anahtar olarak kullanılır.
+    \item $p$ ve $q$ gizli anahtar olarak kullanılır.
+\end{enumerate}
+
+Mesaj şifrelenir.
+
+\begin{enumerate}
+    \item Şifrelenecek mesaj ikili formata çevirilir.
+    \item Başlangıç değeri $x_0$, $n$'nin bir elemanı olacak şekilde rastgele seçilir.
+    \item Blum Blum Shub algoritması kullanılarak $x_0$'dan itibaren rastgele bitler üretilir.
+    \item Mesaj, üretilen bitlerle XOR işlemine girer ve şifrelenmiş mesaj elde edilir. $C = M \oplus \text{random bits}$.
+    \item Son üretilen durum $x_t$ ve C, alıcıya iletilir.
+\end{enumerate}
+
+Şifre çözme için
+
+\begin{enumerate}
+    \item Alıcı, gizli anahtarlar $p$ ve $q$'yu kullanarak başlangıç değeri $x_0$'ı yeniden hesaplar.
+    \item Blum Blum Shub algoritması kullanılarak şifre çözmek için aynı rastgele bitler tekrar üretilir.
+    \item Şifre çözülür: $M = C \oplus \text{random bits}$.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+from sympy import isprime
+
+def generate_keys(bit_length=16):
+    while True:
+        p = random.getrandbits(bit_length)
+        if isprime(p) and p % 4 == 3:
+            break
+    while True:
+        q = random.getrandbits(bit_length)
+        if isprime(q) and q % 4 == 3:
+            break
+    
+    n = p * q
+    return (n, p, q)
+
+def blum_blum_shub(seed, n, length):
+    random_bits = []
+    x = seed
+    for _ in range(length):
+        x = pow(x, 2, n)
+        random_bits.append(x % 2)
+    return random_bits, x
+
+def blum_goldwasser_encrypt(message, public_key):
+    n = public_key
+    seed = random.randint(1, n - 1)
+    message_bits = ''.join(format(ord(char), '08b') for char in message)
+    random_bits, final_state = blum_blum_shub(seed, n, len(message_bits))
+    cipher_bits = ''.join(str(int(b1) ^ int(b2)) for b1, b2 in zip(message_bits, random_bits))
+    return cipher_bits, seed, final_state
+
+def blum_goldwasser_decrypt(cipher_bits, private_key, seed):
+    n, p, q = private_key
+    message_length = len(cipher_bits)
+    random_bits, _ = blum_blum_shub(seed, n, message_length)
+    message_bits = ''.join(str(int(b1) ^ int(b2)) for b1, b2 in zip(cipher_bits, random_bits))
+    chars = [chr(int(message_bits[i:i+8], 2)) for i in range(0, len(message_bits), 8)]
+    decrypted = ''.join(chars)
+    return decrypted
+
+public_key, private_key = generate_keys(16)[0], generate_keys(16)[1:]
+message = "karaca"
+seed = 42
+cipher_bits, seed, final_state = blum_goldwasser_encrypt(message, public_key)
+decrypted = blum_goldwasser_decrypt(cipher_bits, (public_key, *private_key), seed)
+print("Encrypted (Bits):", cipher_bits)
+print("Decrypted:", decrypted)
 \end{lstlisting}
 
 \newpage
