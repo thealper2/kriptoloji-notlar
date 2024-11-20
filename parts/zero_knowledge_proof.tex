@@ -1,0 +1,95 @@
+\section{Zero-Knowledge Proof}
+
+Zero-Knowledge Proofs (Sıfır Bilgi İspatları), bir tarafın bir başka tarafa, belirli bir bilgiyi ifşa etmeden, o bilgiye sahip olduğunu kanıtlamasını sağlayan bir kriptografik yöntemdir. Bu süreçte kanıt sunucu, doğrulayıcıyı, gerçeği bildiğine ikna eder ancak bu gerçek hakkında hiçbir ek bilgi paylaşmaz. Bilgi sızdırmadan doğrualama yapılmasını sağlar. Şifre veya biyometrik veri paylaşmadan kimlik doğrulama yapılabilir. Kripto para işlemlerinde gizlilik odaklı protokoller için kullanılır.
+
+\begin{itemize}
+    \item \textbf{Tamlık (Completeness)}: Eğer kanıt sunucu doğru bilgiye sahipse, doğrulayıcı bunu kabul eder.
+    \item \textbf{Sağlamlık (Soundness)}: Kanıt sunucu yanlış bilgiye sahipse, doğrulayıcı kandırılamaz.
+    \item \textbf{Sıfır Bilgi (Zero-Knowledge)}: Doğrulayıcı, bilgiye dair hiçbir şey öğrenemez.
+\end{itemize}
+
+Zero-Knowledge Proof türleri:
+
+\begin{enumerate}
+    \item \textbf{Interactive Zero-Knowledge Proof}: Kanıt sunucu ile doğrulayıcı arasında interaktif (karşılıklı) bir iletişim vardır. Kanıt sunucu, doğrulayıcı tarafından sorulan sorulara yanıt verir.
+    \item \textbf{Non-Interactive Zero-Knowledge Proof}: Kanıt süreci interaktif değildir. Bir defa oluşturulan kanıt herkes tarafından doğrulanabilir. Kriptografik protokollerde daha yaygındır.
+    \item \textbf{Perfect Zero-Knowledge Proof}: Doğrulayıcı, kanıtın geçerliliğini yüzde yüz kesinlikle anlar.
+    \item \textbf{Statistical Zero-Knowledge Proof}: Kanıt, doğrulayıcıyı neredeyse kesin olarak ikna eder.
+    \item \textbf{Computational Zero-Knowledge Proof}: Kanıt, doğrulayıcıyı yalnızca belirli bir hesaplama gücüyle ikna eder.
+\end{enumerate}
+
+\newpage
+
+\subsubsection{"Ali Baba Mağarası" Problemi}
+
+Bir mağara, iki yola ayrılıyor (A ve B). Yolun sonunda bir kapı var ve bu kapıyı açmak için bir şifre gerekiyor. Kanıt sunucu, bu kapıyı açabildiğini doğrulayıcıya ispatlamak istiyor, ancak şifreyi açıklamak istemiyor. Doğrulayıcı, kanıt sunucunun gerçekten şifreyi bildiğinden emin olmak ister. Kanıt sunucu, mağaraya (A veya B yoluna) girer ve kapıya ulaşır. Doğrulayıcı, rastgele bir yol seçer ve kanıt sunucusundan o yoldan çıkmasını ister. Eğer kanıt sunucu şifreyi biliyorsa, kapıyı açarak doğru yolu takip eder ve çıkışı sağlar. Eğer kanıt sunucu şifreyi bilmiyorsa, her seferinde doğru yolu tahmin etmesi gerekecektir.
+
+Buradaki ZKP; kanıt sunucu, doğrulayıcıya şifreyi bildiğini ispat eder, ancak şifre hakkında hiçbir bilgi vermez. Bu işlem birkaç kez tekrarlandığında, kanıt sunucunun gerçekten şifreyi bildiği doğrulayıcı tarafından güvenle kabul edilebilir. Zero-Knowledge özelliği, doğrulayıcının sadece doğru bilgiye sahip olunduğunu öğrenmesi, ancak şifreyi asla öğrenmemesidir.
+
+\newpage
+
+\subsection{"Renk Körü Arkadaş ve İki Top" Problemi}
+
+Bu problemde, bir kişi renk körüdür ve iki topu (biri kırmızı, diğeri mavi) ayırt edememektedir. Diğer kişi ise renk körü değildir ve iki topu birbirinden ayırabilmektedir. Kanıt sunucu, doğrulayıcıya bu iki topun rengini bildiğini ispatlamak ister. Kanıt sunucu, topu gizlice bir torbaya koyar ve doğrulayıcıya hangi topun hangi torbada olduğunu gösterir. Doğrulayıcı, rastgele bir top seçer ve kanıt sunucusundan bu topu torbadan çıkarıp hangi renk olduğunu söylemesini ister. Eğer kanıt sunucu doğru yanıt verirse, doğrulayıcı ona güvenebilir ve kanıt sunucunun topun rengini bildiğini kabul edebilir.
+
+Buradaki ZKP; doğrulayıcı, kanıt sunucunun rengin doğru olduğunu bildiğini ispatlayabilir, ancak kanıt sunucu, rengin ne olduğunu doğrudan göstermez. Eğer bu işlem birkaç kez yapılırsa, doğrulayıcı kanıt sunucunun doğru bilgiye sahip olduğuna ikna olabilir, ancak rengin ne olduğunu öğrenmez.
+
+\newpage
+
+\subsection{"Waldo Nerede ?" Problemi}
+
+Bu problemde, bir kişi "Where's Waldo?" adlı bir çizgi romanda "Waldo"yu bulduğunu iddia eder ve bunu doğrulamak ister. Kanıt sunucu, çizgi romanda "Waldo"yu bulduğunu iddia eder. Doğrulayıcı, kanıt sunucusunun Waldo'yu gerçekten bulduğunu, ancak bu bilgiyi ifşa etmeden doğrulamak ister. Kanıt sunucu, çizgi romanın bir kısmını gösterir, ancak sadece Waldo'yu değil, aynı zamanda etrafındaki diğer öğeleri gizler. Doğrulayıcı, Waldo'yu görmeden sadece doğru yerin göstergelerini (örneğin, diğer karakterler veya çevresel unsurlar) izleyerek Waldo'nun bulunduğuna dair güvence alır.
+
+Buradaki ZKP; kanıt sunucu, doğrulayıcıyı Waldo'nun yerini bulduğuna ikna eder, ancak doğrulayıcı, Waldo'nun tam olarak nerede olduğunu öğrenmez. Bu durum, doğrulayıcının kanıt sunucunun bilgiyi ifşa etmeden. doğru bilgiyi bildiğini kabul etmesini sağlar.
+
+\newpage
+
+\subsection{Interactive Zero-Knowledge Proof}
+
+Bu türde kanıt sunucu ve doğrulayıcı arasında bir dizi interaktif (karşılıklı) adım gerçekleşir. Yani, kanıt sunucu ile doğrulayıcı arasındaki etkileşim, kanıtın geçerliliğini doğrulamak için gereklidir. Kanıt sunucu ve doğrulayıcı arasındaki iletişim birden fazla adımda gerçekleşir. Kanıt sunucu, doğrulayıcı tarafından yapılan rastgele sorulara cevap verir. Doğrulayıcı, kanıt sunucusunun doğru bilgiye sahip olduğunu doğrular, ancak kanıt sunucusunun bildiği gerçek bilgi hakkında hiçbir şey öğrenmez. Birçok etkileşimden sonra doğrulayıcı, kanıt sunucusunun gerçekten doğru bilgiye sahip olduğuna ikna olur. IZKP’lerde her etkileşimde doğrulayıcı, kanıt sunucusunun doğru bilgiye sahip olduğunu \%100 kesinlikle öğrenmez. Bunun yerine, belirli bir olasılıkla doğrulayıcı kanıt sunucusunun doğru bilgiye sahip olduğuna kanaat getirir ancak bu olasılık çok sayıda etkileşim ile sıfıra yaklaşır.
+
+\begin{enumerate}
+    \item Kanıt sunucu, doğrulayıcıya bir bilgi verir ancak bu bilgi doğrudan açıklanmaz.
+    \item Doğrulayıcı, rastgele sorular sorar veya belirli bir bilgi hakkında daha fazla ayrıntı ister. Bu sorular, kanıt sunucusunun gerçek bilgiye sahip olup olmadığını anlamaya yöneliktir.
+    \item Kanıt sunucu, doğrulayıcının sorularına doğru yanıtlar verir. Bu yanıtlar, kanıt sunucusunun belirli bir bilgiye sahip olduğunu ispatlar.
+    \item Bu süreç birkaç kez tekrarlanabilir. Kanıt sunucu, her seferinde doğru yanıtlar vererek doğrulayıcıyı ikna eder.
+\end{enumerate}
+
+\newpage
+
+\subsection{Non-Interactive Zero-Knowledge Proof}
+
+Non-Interactive ZKP, kanıtın yalnızca tek bir mesajla doğrulayıcıya sunulması prensibine dayanır. Bu türde, kanıt sunucu ve doğrulayıcı arasında karşılıklı soru-cevap aşamaları yoktur. Bunun yerine, kanıt sunucu tek bir mesajla kanıtı iletir ve doğrulayıcı bu kanıtı kullanarak doğrulama işlemini gerçekleştirir. Kanıt sunucu, tek bir mesaj ile kanıtı sunar ve doğrulayıcı bu kanıtı inceleyerek geçerliliği doğrular. Bir kez oluşturulmuş bir kanıt, sınırsız sayıda doğrulayıcı tarafından incelenebilir. Bu da sistemin verimliliğini artırır. Bu, zaman tasarrufu sağlar ve işlemi hızlandırır. Tıpkı IZKP'lerde olduğu gibi, kanıt sunucu doğru bilgiye sahip olduğunu ispatlar, ancak doğrulayıcı kanıt sunucusunun bilgilerini öğrenmez. Non-interactive ZKP'ler,  özel matematiksel yapılar ve kriptografik teknikler kullanılarak oluşturulur. Fiat-Shamir Yöntemi, bu tür ZKP'lerin en yaygın kullanılan yapılarından biridir.
+
+Fiat-Shamir Heuristic (FSH), interaktif ZKP'yi non-interaktif hale getirmek için kullanılan bir tekniktir. Bu yöntem, etkileşimi ortadan kaldırmak için kriptografik hash fonksiyonları kullanır. Fiat-Shamir Heuristic, doğrulayıcıyı simüle eder ve kanıt sunucu, doğrulayıcıya gerekli bilgileri gönderecek şekilde tek bir mesaj oluşturur. Doğrulayıcı bu mesajı doğrulamak için önceden belirlenmiş bir kriptografik hash fonksiyonunu kullanarak doğrulamayı yapar. FSH, rastgele soruları doğrudan hash fonksiyonu ile belirler ve bu, etkileşim gerektirmeyen bir doğrulama süreci oluşturur. Bu sayede kanıt sunucu, doğrulayıcıya bir mesaj gönderir ve doğrulayıcı, bu mesajı doğrulamak için önceden belirlenmiş bir kuralı (örneğin hash fonksiyonu) kullanır.
+
+\begin{enumerate}
+    \item Kanıt sunucu, doğrulayıcıya bir bilgi kanıtı gönderir. Bu kanıt, yalnızca tek bir mesajda sunulur.
+    \item Kanıt sunucu, doğrulayıcıya bir kanıt gönderir. Bu kanıt bir kriptografik imza veya hash içerebilir.
+    \item Doğrulayıcı, kanıtı alır ve önceden belirlenen matematiksel yapıları kullanarak bu kanıtın geçerliliğini kontrol eder. Eğer kanıt geçerliyse, doğrulayıcı kanıt sunucusunun doğru bilgiye sahip olduğunu kabul eder.
+\end{enumerate}
+
+\newpage
+
+\subsection{Perfect Zero-Knowledge Proof}
+
+Perfect ZKP, doğrulayıcıya, kanıt sunucusunun doğru bilgiye sahip olduğuna dair hiçbir bilgi vermezken aynı zamand tam gizlilik (perfect privacy) ve tam güvenlik (perfect soundness) özelliklerini sağlar. Bu tür bir kanıtın doğru olduğuna dair hiçbir şüpheye yer bırakmaz ve doğrulayıcı hiçbir bilgi elde etmeden doğrulama işlemini tamamlar. Diğer ZKP türlerinde probabilistic (olasılıksal) güvenlik sağlanırken, PZKP'de güvenlik ve gizlilik kesin olarak sağlanır.
+
+\begin{itemize}
+    \item \textbf{Tam Gizlilik (Perfect Privacy)}: Kanıt sunucusunun sahip olduğu bilginin doğrulayıcıya tamamen gizli kalması gerektiğini ifade eder. Doğrulayıcı, kanıtı incelediğinde, kanıtın içeriğini asla öğrenemez. Yani doğrulayıcı yalnızca doğru bilgiye sahip olduğunun doğruluğunu onaylar, ancak bu bilgiyi öğrenmez.
+    \item \textbf{Tam Güvenlik (Perfect Soundness)}: Kanıt sunucusunun yanlış bilgi sunması, yani yalan söylemesi, sıfır olasılıkla mümkün olmalıdır. Bu, kanıtın geçerliliğini bozan hiçbir hata veya çelişki olmaması anlamına gelir. Eğer kanıt sunucu doğru bilgiye sahip değilse, doğrulayıcı bunun farkına varır. Yani, geçerli olmayan bir kanıtın doğrulayıcıya sunulması imkansızdır.
+\end{itemize}
+
+\newpage
+
+\subsection{Statistical Zero-Knowledge Proof}
+
+Statistical ZKP, doğrulama sürecinde doğrulayıcıya hiçbir bilgi vermeden doğrulayıcının belirli bir iddianın doğru olduğuna ikna edilmesini sağlar. Ancak, tam gizlilik ve tam güvenlik yerine olasılıksal güvenlik sağlar. Yani, doğrulayıcının doğru bilgiye sahip olduğuna dair kesin bir garanti vermez, ancak verilen iddianın doğru olduğu konusunda yüksek olasılıkla güvenilir bir sonuç elde eder. Yani doğrulayıcıya verilen kanıt doğru olabilir, ancak bu doğruyu bulma olasılığı bir denemede \%100 değildir. Ancak, genellikle birkaç deneme ile doğrulayıcı doğruya ulaşabilir. Bu, kanıt sunucusunun yanlış bilgi verdiği durumların düşük olasılıkla gerçekleşmesini sağlar. Ancak yanlış bir kanıtın doğrulayıcıya kabul edilmesi tamamen imkansız değildir.
+
+\newpage
+
+\subsection{Computational Zero-Knowledge Proof}
+
+Computational ZKP, hesaplamalı güvenlik sağlar, yani doğrulayıcılar doğru bilgiye sahip olma konusunda yüksek bir güvence alırken, bu doğrulama işlemi belirli bir hesaplama gücüne dayanır. Bu tür kanıtlar, doğrulayıcıyı, belirli bir iddianın doğruluğuna ikna etmek için kullanılan hesaplama süreçlerinin güvenliğini ve gizliliğini sağlamak amacıyla tasarlanmıştır. Computational ZKP tam gizlilik sağlamaz. Bunun yerine, doğrulayıcıya belirli bir iddianın doğruluğunu sağlamanın yollarını sunar. Ancak doğrulayıcı, kanıtın doğruluğuna tam güven duyarken, kanıt sunucusunun iddia ettiği hakkında bilgi edinmez.
+
+\newpage

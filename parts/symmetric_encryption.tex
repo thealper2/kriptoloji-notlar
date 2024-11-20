@@ -152,6 +152,46 @@ print("Decrypted:", decrypted)
 
 \newpage
 
+\subsection{Salsa20}
+
+2005 yılında Daniel J. Bernstein tarafından tasarlananmış bir akış şifreleme algoritmasıdır. Yüksek hızda ve düşük donanım gereksinimleriyle çalışması için geliştirilmiştir. Salsa20, sabit zamanlı algoritma olarak tasarlanmıştır, bu da yan kanal saldırılarına karşı dayanıklılık sağlar. Anahtar uzunluğu 256 bittir. Temel olarak, XOR, ekleme, döndürme ve karıştırma işlemlerine dayanır. Bir anahtar ve 64 bitlik nonce (keyfi sayı) kullanarak bir keystream oluşturur ve bu keystream ile veriyi XOR işlemini sokarak şifreler. Nonce, aynı anahtarla şifreleme yapılırken keystream'lerin farklı olmasını sağlar. Blok sayacı, bloklar arasında tekrar eden keystream olmasını önler.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item 512 bitlik bir başlangıç durumu oluşturulur. Bu durum; sabit dizi, anahtar, nonce ve blok sayacından oluşur.
+    \item 20 tur boyunca durum üzerinde XOR, quarterround (çeyrek tur), rowround (satır turu) ve columnround (sütun turu) işlemleri yapılır.
+    \item Bu turlar sonucunda oluşan veri keystream olarak adlandırılır.
+    \item Düz metin bu keystream ile XOR işlemine sokularak şifrelenir. Aynı keystream ile şifrelenmiş metin tekrar XOR işlemine sokularak düz metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import Salsa20
+
+def salsa20_encrypt(plaintext, key):
+    cipher = Salsa20.new(key=key)
+    encrypted = cipher.encrypt(plaintext.encode())
+    ciphertext = cipher.nonce + encrypted
+    return ciphertext
+
+def salsa20_decrypt(ciphertext, key):
+    nonce = ciphertext[:8]
+    cipher = Salsa20.new(key=key, nonce=nonce)
+    plaintext = cipher.decrypt(ciphertext[8:]).decode()
+    return plaintext
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+ciphertext = salsa20_encrypt(plaintext, key)
+decrypted = salsa20_decrypt(ciphertext, key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
 \subsection{Kuantum Kriptografi}
 
 Kuantum kriptografi, kuantum mekaniğinin temel ilkelerine dayanan bir şifreleme yöntemidir. Diğer yöntemlerden farklı olarak, veri güvenliğini matematiksel hesaplamaların karmaşıklığından ziyade fiziksel prensiplere dayandırır. Bilgiler, kuantum bitleri (qubit) ile temsil edilir. Qubit'ler 0, 1 veya bu ikisinin süperpozisyonu şeklinde olabilir. Kuantum Kriptografi, Heisenberg Belirsizlik İlkesini kullanır. Kuantum parçacığının özelliklerini ölçmek, o parçacığın durumunu değiştirir. Bu özellik, dinleme girişimlerini tespit etmeyi sağlar. Kuantum durumları, birbiriyle çakışmayan bazlarda ölçüldüğünde kesin bilgi vermez. Bu, iletişim güvenliğini artırır. Dolaşıklık (Entanglement), iki veya daha fazla parçacığın durumlarının birbirine bağlı olması durumudur. Bu bağlantı, fiziksel olarak ayrı yerlerde bile ölçümler arasında güçlü bir bağıntı sağlar.
@@ -178,5 +218,21 @@ EPR-Ekert Protokolü, 1991 yılında Artur Ekert tarafından önerilen bir kuant
     \item Eğer Eve, kuantum kanalı dinlemeye çalışırsa, dolaşıklık bozulur ve korelasyonlar değişir. Bu, dinleme girişimlerini tespit etmeyi sağlar.
     \item Alice ve Bob, ölçüm sonuçlarının korelasyonuna dayanarak bir gizli anahtar oluşturur.
 \end{enumerate}
+
+\newpage
+
+\subsection{Post-Kuantum Kriptografi (PQC)}
+
+Post-Kuantum Kriptografi, kuantum bilgisayarların geleneksel kriptografi yöntemlerini tehdit etmesinden dolayı ortaya çıkmıştır. Geleneksel şifreleme yöntemleri büyük ölçüde matematiksel problemlerin çözüm zorluğuna dayanır. Ancak kuantum bilgisayarlar, güçlü algoritmalar sayesinde bu matematiksel problemleri etkili bir şekilde çözebilir. Post-Kuantum Kriptografi, kuantum bilgisayarların bu potansiyel tehditlerine karşı dayanıklı algoritmalar sunmayı amaçlar. Bu algoritmalar, kuan tum bilgisayarların güçlü işlem kapasitesine dayanacak şekilde tasarlanmıştır. Sadece kuantum saldırıları değil, aynı zamanda klasik bilgisayarların saldırılarına karşı da dayanıklıdır. Henüz tam olarak benimsenmiş standartlar yoktur ve standartlaştırma süreci devam etmektedir. PQC, problem kategorileri;
+
+\begin{itemize}
+    \item \textbf{Izgara (Lattice)}: Çok boyutlu geometrik ızgaralarda kısa vektörlerin bulunması zorluğuna dayanır. Kullanılan algoritmalar: Learning with Errors (LWE), NTRU.
+    \item \textbf{Kodlama (Code)}: Hata düzeltme kodlarının çözümündeki zorluğa dayanır. Kullanılan algoritmalar: McEliece.
+    \item \textbf{Çok Değişkenli Polinomlar (Multivariate Polynomials)}: Çok değişkenli polinomların sıfırlarının bulunmasındaki zorluğa dayanır. Kullanılan algoritmalar: Rainbow, UOV (Unbalanced Oil and Vinegar).
+    \item \textbf{Hash}: Güvenli hash fonksiyonlarına dayanır. Kullanılan algoritmalar: SPHINCS+.
+    \item \textbf{Diğer}: Farklı matematiksel zorluklardan yararlanır. Kullanılan algoritmalar: Supersingular Elliptic Curve Isogeny (SIEC).
+\end{itemize}
+
+
 
 \newpage

@@ -1,0 +1,216 @@
+\section{Block Cipher Modes}
+
+Blok şifreleme modu, kriptografik blok şifreleme algoritmalarının nasıl kullanılacağını belirleyen bir yöntemdir. Tek başına bir blok şifreleme algoritması (AES, DES), sabit uzunlukta blokları şifreleyebilir. Ancak gerçekte veri genellikle sabit uzunlukta bloklara bölünemez. Blok şifreleme modları, bu algoritmaları verimli ve güvenli bir şekilde kullanmayı sağlar. Bu modlar, veri bütünlüğünü, gizliliğini ve gerektiğinde doğrulamayı garanti altına almak için tasarlanmıştır. Blok şifreleme şu algoritmalarla birlikte kullanılır:
+
+\begin{itemize}
+    \item \textbf{AES}: CBC, CTR, GCM modlarıyla kullanılır.
+    \item \textbf{DES}: Eski bir algoritma olup ECB ve CBC modlarında çalışır.
+    \item \textbf{Blowfish ve Twofish}: CBC ve CTR modlarıyla çalışır.
+\end{itemize}
+
+\newpage
+
+\subsection{Electronic Codebook Mode (ECB)}
+
+ECB, en basit şifreleme modlarından biridir. Bu modda, veri sabit boyutlu bloklara bölünür ve her blok bağımsız bir şekilde şifrelenir. Aynı giriş blokları, her zaman aynı çıkışı üretir. Her şifrelenmiş blok, aynı algoritma kullanılarak çözülür. Basit ve hızlıdır. Paralel işleme uygundur çünkü her blok bağımsızdır. Aynı giriş blokları, aynı şifreli blokları üretir (deterministic). Bu, desenlerin ortaya çıkmasına yol açar ve şifrelemeyi zayıf kılar. Güvenlik açısından kritik durumlarda önerilmez. CBC modu, sabit bir yapıya sahip dosyaların güvenliğini sağlamak için idealdir.
+
+\[ \text{Encryption } C_i = E_k [P_i] \]
+\[ \text{Decryption } P_i = D_k [C_i] \]
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+
+cipher = AES.new(key, AES.MODE_ECB) # ECB Mode
+padded_plaintext = pad(plaintext.encode("utf-8"), AES.block_size)
+ciphertext = cipher.encrypt(padded_plaintext)
+decrypted_data = cipher.decrypt(ciphertext)
+decrypted = unpad(decrypted_data, AES.block_size).decode("utf-8")
+
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Cipher Block Chaining Mode (CBC)}
+
+CBC, her bir veri bloğunun şifrelenmesi sırasında önceki bloğun şifreli çıktısını kullanır. Bu yöntem, aynı düz metin bloklarının farklı şifreli metin blokları üretmesini sağlar. Desenlerin görünmesini engeller. İlk blok, bir başlangıç vektörü (Initialization Vector - IV) ile XOR yapılarak şifrelenir. Sonraki her blok, önceki şifrelenmiş blok ile XOR yapılarak şifrelenir. Aynı düz metin blokları farklı şifreli metinler üretir, desenleri gizler. Paralel şifrelemeye uygun değildir çünkü her blok bir öncekine bağlıdır. IV'nin güvenli bir şekilde iletilmesi gerekir.
+
+Encryption için:
+\[ C_0 = \text{IV} \]
+\[ C_i = E_k [P_i \oplus C_{i-1}] \]
+
+Decryption için:
+\[ C_0 = \text{IV} \]
+\[ P_i = C_{i-1} \oplus D_k [C_i] \]
+
+\subsubsection{Encryption}
+
+\begin{itemize}
+    \item İlk blok için bir başlangıç vektörü kullanılır. Bu, ilk bloğun şifreleme işlemini başlatmak için gereklidir. IV rastgele olmalıdır ve her şifreleme oturumu için farklı seçilmelidir. 
+    \item Her düz metin bloğu, şifreleme işleminden önce önceki bloğun şifreli metniyle XOR işlemine tabi tutulur. Elde edilen sonuç, blok şifreleme algoritması ile şifrelenir. İlk blok için IV kullanılır.
+    \item Şifreli blok çözülür ve önceki şifreli blokla XOR işlemine tabi tutularak orijinal düz metin elde edilir.
+\end{itemize}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+
+iv = get_random_bytes(AES.block_size)
+cipher = AES.new(key, AES.MODE_CBC, iv) # CBC Mode
+padded_plaintext = pad(plaintext.encode("utf-8"), AES.block_size)
+ciphertext = cipher.encrypt(padded_plaintext)
+cipher = AES.new(key, AES.MODE_CBC, iv)
+decrypted_data = cipher.decrypt(ciphertext)
+decrypted = unpad(decrypted_data, AES.block_size).decode("utf-8")
+
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Cipher Feedback Mode (CFB)}
+
+CFB, blok boyutunda veri işlemeye gerek duymadan bir akış şifresi gibi davranabilir. Bu, CFB'nin blok boyutundan bağımsız olarak bayt düzeyinde veri şifrelemesi yapmasını sağlar. IV veya önceki şifreli blok, şifreleme algoritması ile şifrelenir ve çıktısı düz metinle XOR yapılarak şifrelenmiş blok üretilir. Bir hata bir bloktan sonraki tüm blokları etkileyebilir (geribesleme nedeniyle). Paralel işleme uygun değildir. Blok boyutundan bağımsız olarak bayt düzeyinde şifreleme sağlar. Sadece şifreleme algoritması gerektiği için çözme işlemi de şifreleme algoritmasıyla yapılabilir.
+
+Encryption için:
+\[ C_0 = \text{IV} \]
+\[ C_i = E_k [C_{i-1}] + P_i \]
+
+Decryption için:
+\[ C_0 = \text{IV} \]
+\[ P_i = E_k [C_{i-1}] + C_i \]
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item İlk işlem için bir başlangıç vektörü gereklidir. IV, rastgele bir değer olmalı ve şifreleme güvenliğini artırmak için kullanılmalıdır.
+    \item IV, blok şifreleme algoritması ile şifrelenir.
+    \item Şifreleme sonucunda elde edilen ilk blok, düz metinle XOR işlemine girer. XOR işleminin sonucu, şifreli metin bloğunu oluşturur.
+    \item Daha sonra, bu şifreli blok, sırada işlemler için geri besleme (feedback) olarak kullanılır.
+    \item Her bir şifreli metin bloğu, bir sonraki işlem için şifreleme algoritmasına girdi olarak verilir ve bu süreç devam eder.
+    \item Şifreli metin bloğu, önce blok şifreleme algoritmasının çıktısıyla XOR işlemine girer. Bu işlem düz metin bloğunu verir. Çözülen blok, sonraki işlemler için geri besleme olarak kullanılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+
+iv = get_random_bytes(AES.block_size)
+cipher = AES.new(key, AES.MODE_CFB, iv) # CFB Mode
+padded_plaintext = pad(plaintext.encode("utf-8"), AES.block_size)
+ciphertext = cipher.encrypt(padded_plaintext)
+cipher = AES.new(key, AES.MODE_CFB, iv)
+decrypted_data = cipher.decrypt(ciphertext)
+decrypted = unpad(decrypted_data, AES.block_size).decode("utf-8")
+
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Output Feedback Mode (OFB)}
+
+OFB, bir şifreleme algoritmasının çıktısını kullanarak düz metni şifreler veya şifreli metni çözer. Geri besleme (feedback) yöntemiyle çalışmasına rağmen, şifreleme işlemi sırasında düz metin veya şifreli metin şifreleme algoritmasına girdi olarak verilmez. IV, sürekli olarak şifreleme algoritmasından geçirilir. Her adımda elde edilen çıktı, düz metinle XOR yapılarak şifreli metin oluşturulur. Şifreleme ve çözme aynı IV ile başlamalıdır. Fakat aynı IV ve anahtar kullanılınca şifreleme kırılabilir. Bir blokta oluşan hata, sonraki blokları etkilemez. Bloklar bağımsız olduğundan hata yayılımı engellenir.
+
+Encryption için:
+\[ X_0 = \text{IV} \]
+\[ X_i = E_k [X_{i-1}] \]
+\[ C_i = P_i + X_i \]
+
+Decryption için:
+\[ X_0 = \text{IV} \]
+\[ X_i = E_k [X_{i-1}] \]
+\[ P_i = C_i + X_i \]
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item OFB, rastgele bir IV kullanarak başlar. Bu vektör, ilk bloğun şifrelenmesi için gereklidir ve güvenli bir şekilde saklanmalıdır.
+    \item İlk olarak, IV, blok şifreleme algoritması ile şifrelenir ve bir çıktı üretir. Bu şifrelenmiş çıktı, düz metinle XOR işlemine girer. XOR işleminin sonucu, şifreli metin bloğunu oluşturur.
+    \item Her şifreleme adımnda, şifreleme algoritamsının çıktısı bir sonraki bloğa girer. Şifreleme algoritmasının bu yeni çıktısı, sıradaki düz metin bloğunu XOR ile şifreler.
+    \item Şifreli metin, şifreleme algoritmasının çıktısı ile XOR işlemine tabi tutularak düz metin elde edilir. Şifreleme algoritmasının çıktısı, bir sonraki işlem için kullanılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+
+iv = get_random_bytes(AES.block_size)
+cipher = AES.new(key, AES.MODE_OFB, iv)
+ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
+cipher = AES.new(key, AES.MODE_OFB, iv)
+decrypted_data = cipher.decrypt(ciphertext)
+decrypted = decrypted_data.decode("utf-8")
+
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Counter Mode (CTR)}
+
+CTR modunda, şifreleme ve çözme işlemleri için şifreleme algoritmasının bir sayacı (counter) girdisi olarak kullanılır. Her blok için bir sayaç değeri hesaplanır, bu değer şifreleme algoritmasıyla şifrelenir ve düz metin veya şifreli metin ile XOR işlemine tabi tutulur. Sayaç her blok için artırılır. Paralel işleme uygundur, hızlıdır. Sayaç değeri yeniden kullanılırsa güvenlik riski oluşturur.
+
+\[ X_i = E_k [\text{Counter} + i] \]
+\[ C_i = P_i \oplus X_i \]
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Rastgele bir başlangıç değeri (nonce) kullanılır. Bu değer her şifreleme işleminde farklı olmalıdır.
+    \item Her blok için bir sayaç değeri oluşturulur. Sayaç genellikle başlangıç değeri ve blok sırasına göre artar.
+    \item Nonce ve sayaç birleştirilerek bir giriş bloğu oluşturulur. Bu giriş bloğu şifreleme algoritmasıyla şifrelenir. Şifrelenmiş sayaç değeri, düz metin bloğu ile XOR işlemine girer. Bu işlem sonucunda şifreli metin bloğu oluşturulur.
+    \item Sayaç değeri bir artırılır ve süreç diğer bloklar için tekrar eder.
+    \item Şifreleme ile aynı sayaç ve nonce değerleri kullanılarak şifreleme algoritmasının çıktıları üretilir. Şifreli metin bloğu, şifreleme algoritmasından gelen değerle XOR işlemine tabi tutulur. Bu işlem sonucunda düz metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+
+nonce = b"12345678"
+ctr = Counter.new(64, prefix=nonce, initial_value=0)
+cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
+ctr = Counter.new(64, prefix=nonce, initial_value=0)
+cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+decrypted_data = cipher.decrypt(ciphertext)
+decrypted = decrypted_data.decode("utf-8")
+
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
