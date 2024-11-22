@@ -8,6 +8,79 @@ Simetrik şifrelemede, aynı anahtar hem şifreleme hem de şifre çözme işlem
     \item \textbf{Hybrid Yaklaşımlar}: Akış ve blok şifrelemenin avantajlarını birleştirir. Çoğu modern protokolde hibrit modeller tercih edilir.
 \end{itemize}
 
+\subsection{Feistel Cipher}
+
+Feistel Yapısı, modern blok şifreleme algoritmalarının temelinde yatan bir yapıdır. Bu yapı, veriyi birden fazla turda işleyerek şifreleme veya deşifreleme işlemi gerçekleştirir. Feistel Yapısı'nın en önemli özelliği, aynı algoritmanın hem şifreleme hem de deşifreleme için kullanılabilmesidir. 
+
+\subsubsection{Encrpytion}
+
+\[ L_{i + 1} = R_i \]
+\[ R_{i + 1} = L_i \oplus F(R_i, K_i) \]
+
+Burada, $F$ karmaşıklık ekleyen bir fonksiyondur ve $K_i$, tur anahtarıdır.
+
+\begin{enumerate}
+    \item Açık metin eşit boyutta iki parçaya bölünür: Sol ($L$) ve Sağ ($R$).
+    \item Birden fazla tur uygulanır. Her turda, bir tur anahtarı kullanılır ve bu anahtar, her tur için farklı olabilir. Sol ve sağ parçalar birbiriyle değiştirilir ve bir fonksiyon (F) uygulanır. Bu fonksiyon, karmaşıklık katmak için tasarlanmıştır. Giriş verisi üzerinde matematiksel veya bit manipülasyonu işlemleri yapar.
+    \item Tüm turlar tamamlandıktan sonra $R$ ve $L$ birleştirilir.
+    \item Şifre çözmek için, şifreleme sırasında uygulanan işlemler ters sırada gerçekleştirilerek yapılır.
+\end{enumerate}
+
+Örneğin, "00111010" anahtarını şifreleyelim. $K_0 = 0111$ ve $K_1 = 1001$ olsun. Fonksiyon olarak OR işlemini kullanalım. Tur sayımızı (round) 2 olsun.
+
+\begin{enumerate}
+    \item Birinci turda;
+    \begin{itemize}
+        \item Metin iki parçaya bölünür: "0011" ve "1010".
+        \item $L_0 = 0011$ ve $R_0 = 1010$ için $R_1 = L_0 \oplus F(R_0, K_0)$ işlemi yapılır. $F(R_0, K_0) = 1010 OR 0111 = 1111$ elde edilir. Şimdi bu değer ile $L_0$ XOR işlemine girer, $L_0 \oplus 1111 = 1010 \oplus 1111 = 1100$. Bu değer bizim yeni $R_1$ değerimizdir. Artık $L_1 = 1010$ ve $R_1 = 1100$ oldu. 
+    \end{itemize}
+    \item İkinci turda;
+    \begin{itemize}
+        \item $R_2 = L_1 \oplus F(R_1, K_1)$ için $F(R_1, K_1) = 1100 OR 1001 = 1101$ elde edilir. Bu değer ile $L_1$ XOR işlemine girer, $L_1 = \oplus 1101 = 1010 \oplus 1101 = 0111$. Bu değer bizim yeni $R_2$ değerimizdir. Artık $L_2 = 1100$ ve $R_2 = 0111$ oldu. 
+    \end{itemize}
+    \item Swap işlemi yapılır, yani $L_2 = 0111$ ve $R_2 = 1100$ olur. Böylece şifrelenmiş veri "01111100" elde edilir.
+    \item Şifre çözme işlemi için de aynı işlemler yapılır. Fakat bu sefer anahtarlar tersten kullanılır yani ilk olarak $K_1$ anahtarı kullanılır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def feistel_encrypt(plaintext, keys):
+    L = plaintext >> 32
+    R = plaintext & 0xFFFFFFFF
+    for key in keys:
+        F_output = R ^ key
+        new_L = R
+        new_R = L ^ F_output
+        L = new_L
+        R = new_R
+
+    ciphertext = (R << 32) | L
+    return ciphertext
+
+def feistel_decrypt(ciphertext, keys):
+    L = ciphertext >> 32
+    R = ciphertext & 0xFFFFFFFF
+    for key in keys[::-1]:
+        F_output = R ^ key
+        new_L = R
+        new_R = L ^ F_output
+        L = new_L
+        R = new_R
+
+    decrypted = (R << 32) | L
+    return decrypted
+
+plaintext = 0x0000003A
+keys = [0x00000007, 0x00000009]
+ciphertext = feistel_encrypt(plaintext, keys)
+decrypted = feistel_decrypt(ciphertext, keys)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
 \subsection{DES (Data Encryption Standard)}
 
 DES, 1970'lerde IBM tarafından geliştirilmiş ve ABD hükümeti tarafından standart olarak kabul edilmiş bir blok şifreleme algoritmasıdır. Veriyi 64 bitlik bloklar halinde işler ve 56 bit bir anahtar kullanır. Her bloğun son bit parity için kullanıldığından şifreleme işleminde kullanılmaz, bu yüzden 56 bit anahtar kullanır. 56-bit anahtar uzunluğu kısa olduğundan brute-force saldırılarına karşı zayıftır. Şifreleme ve şifre çözme için Feistel yapısını kullanır ve şifreleme işlemi toplamda 16 tur gerçekleştirir. Her turda farklı bir alt anahtar kullanarak veriyi işler. 
@@ -192,6 +265,193 @@ print("Decrypted:", decrypted)
 
 \newpage
 
+\subsection{Blowfish}
+
+1993 yılında Bruce Schneier tarafından tasarlanmıştır. Blok boyutu 64 bittir, bu nedenle modern protokoller kadar güçlü değildir. 32 bit ile 448 bit arasında anahtar uzunluğuna sahip olabilir. Feistel ağına dayalıdır. Hem donanım hem de yazılımda hızlıdır. Patent veya lisans kısıtlaması yoktur.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Kullanıcı tarafından verilen anahtar, P-dizisi ve dört S-box'ı başlatır. Toplamda yaklaşık 4168 baytlık bir yapı kullanılır.
+    \item Düz metin 64-bitlik iki parçaya bölünür: $L$ (sol) ve $R$ (sağ).
+    \item $L$ ve $R$ parçaları 16 tur boyunca işlem görür. Her turda, $L$ ve $R$ bir P-değeri ve S-box'lar kullanılarak değiştirilir. 16 tur sonunda $L$ ve $R$ yer değiştirir ve birleştirilir. XOR işlemleriyle şifreli metin elde edilir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import Blowfish
+from Crypto.Util.Padding import pad, unpad
+
+def blowfish_encrypt(plaintext, key):
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC)
+    iv = cipher.iv
+    padded_text = pad(plaintext.encode(), Blowfish.block_size)
+    ciphertext = cipher.encrypt(padded_text)
+    return iv + ciphertext
+
+def blowfish_decrypt(ciphertext, key):
+    iv = ciphertext[:Blowfish.block_size]
+    actual_ciphertext = ciphertext[Blowfish.block_size:]
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    padded_plaintext = cipher.decrypt(actual_ciphertext)
+    plaintext = unpad(padded_plaintext, Blowfish.block_size)
+    decrypted = plaintext.decode()
+    return decrypted
+
+key = b"secretsecretkey!"
+plaintext = "Hello, World!"
+ciphertext = blowfish_encrypt(plaintext, key)
+decrypted = blowfish_decrypt(ciphertext, key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Twofish}
+
+Bruce Schneier tarafından tasarlanmıştır. Blok boyutu 128 bittir. Anahtar uzunluğu 128, 192, 256 bit olabilir. Feistel yapısına dayanır. Tescil ya da lisans kısıtlaması yoktur. Twofish, Feistel ağı ve MD5 matrisleri kullanır.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Kullanıcının verdiği anahtar, anahtar programlama işlemi ile genişletilir. Subkey (alt anahtar) ve S-box tabloları oluşturulur.
+    \item Düz metin, 16 baytlık bloklara ayrılır. Her turda, düz metin bloğuna alt anahtarlarla XOR işlemi uygulanır. Veriler, S-boxlar ile karıştırılır. Pseudo Hamart Transform (PHT) ile veriler arasındaki karışım artırılır. Veriler, bit seviyesinde döndürülür.
+    \item Tüm şifreleme turları tamamlandıktan sonra son bir XOR işlemi yapılır ve şifreli metin elde edilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{ChaCha20}
+
+Daniel J. Bernstein tarafından geliştirilmiştir. Hızlı, güvenli ve basit bir akış şifreleme algoritmasıdır. Salsa20 algoritmasının geliştirilmiş bir versiyonudur. Anahtar uzunluğu 256 bit (32 bayt). Nonce değeri, 96 bittir. Blok boyutu 512 bit (64 bayt). 
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item 256 bit uzunluğunda bir gizli anahtar (key) ve 96 bitlik bir nonce gerektirir. 32 bitlik bir sayaç ile çalışır.
+    \item 4 sabit değer, 256 bitlik anahtar, 96 bit nonce değeri ve 32 bit sayaç birleştirilerek 4x4 boyutunda durum matrisi oluşturulur.
+    \item Durum matrisi üzerinde bir dizi "Quarter Round" işlemi yapılır. Toplamda 20 tur round yapılır.
+    \item Durum matrisi kullanılarak bir anahtar akışı (key stream) oluşturulur. Şifreleme ve şifre çözme için bu akış kullanılır.
+    \item Anahtar akışı ile düz metin XOR işlemine girer böylece şifreli metin elde edilir. 
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import ChaCha20
+from Crypto.Random import get_random_bytes
+
+def chacha20_encrypt(plaintext, key):
+    nonce = get_random_bytes(12)
+    cipher = ChaCha20.new(key=key, nonce=nonce)
+    ciphertext = cipher.encrypt(plaintext.encode())
+    return nonce, ciphertext
+
+def chacha20_decrypt(ciphertext, key, nonce):
+    cipher = ChaCha20.new(key=key, nonce=nonce)
+    plaintext = cipher.decrypt(ciphertext).decode()
+    return plaintext
+
+key = get_random_bytes(32)
+plaintext = "Hello, World!"
+nonce, ciphertext = chacha20_encrypt(plaintext, key)
+decrypted = chacha20_decrypt(ciphertext, key, nonce)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{RC2 (Rivest Cipher 2)}
+
+RC2, Ron Rivest tarafından 1987 yılında tasarlanmıştır. 64 bitlik blok boyutlarıyla çalışır. Anahtar boyutu 1-128 bit olabilir. ARC2 olarak da bilinir.
+
+\subsubsection{Encrpytion}
+
+\begin{enumerate}
+    \item Anahtar türetme algoritması, kullanıcının sağladığı anahtarı belirli bir uzunluğa genişletir.
+    \item Veri, 64 bitlik bloklara bölünür.
+    \item Her blok üzerinde RC2'nin belirlediği dönüşümler uygulanır.
+    \item Çıkış, şifrelenmiş veri bloklarıdır.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Cipher import ARC2
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+def rc2_encrypt(plaintext, key):
+    cipher = ARC2.new(key, ARC2.MODE_CBC)
+    ciphertext = cipher.encrypt(pad(plaintext.encode(), ARC2.block_size))
+    return ciphertext, cipher.iv
+
+def rc2_decrypt(ciphertext, key, iv):
+    cipher = ARC2.new(key, ARC2.MODE_CBC, iv)
+    plaintext = unpad(cipher.decrypt(ciphertext), ARC2.block_size)
+    return plaintext.decode()
+
+key = get_random_bytes(16)
+plaintext = "Hello, World!"
+ciphertext, iv = rc2_encrypt(plaintext, key)
+decrypted = rc2_decrypt(ciphertext, key, iv)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{RC4 (Rivest Cipher 4)}
+
+RC4, Ron Rivest tarafından 1987 yılında tasarlanmıştır. Artık güvenli kabul edilmemektedir.
+
+\subsubsection{Encrpytion}
+
+\begin{enumerate}
+    \item Bir KSA (Key Scheduling Algorithm) ile, bir anahtar kullanılarak 256 baytlık bir S-box oluşturulur. S-box, anahtarın başlangıç durumunu temsil eder. S-box, 0'dan 255'e kadar tüm bayt değerlerini içerir.
+    \item Pseudo-random Generation Algorithm (PRGA) ile S-box kullanılarak bir rastgele bayt akışı üretilir. Bu rastgele bayt akışı, açık metinle XOR işlemine girerek şifreli metnini üretir.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def ksa(key):
+    S = list(range(256))
+    j = 0
+    for i in range(256):
+        j = (j + S[i] + key[i % len(key)]) % 256
+        S[i], S[j] = S[j], S[i]
+    return S
+
+def prga(S):
+    i = 0
+    j = 0
+    while True:
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        yield S[(S[i] + S[j]) % 256]
+
+def rc4_encrypt_decrypt(message, key):
+    key = [ord(c) for c in key]
+    S = ksa(key)
+    keystream = prga(S)
+    result = bytes([message[i] ^ next(keystream) for i in range(len(message))])
+    return result
+
+key = "secretkey"
+plaintext = "Hello, World!"
+ciphertext = rc4_encrypt_decrypt(plaintext.encode(), key)
+decrypted = rc4_encrypt_decrypt(ciphertext, key)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted.decode())
+\end{lstlisting}
+
+\newpage
+
 \subsection{Kuantum Kriptografi}
 
 Kuantum kriptografi, kuantum mekaniğinin temel ilkelerine dayanan bir şifreleme yöntemidir. Diğer yöntemlerden farklı olarak, veri güvenliğini matematiksel hesaplamaların karmaşıklığından ziyade fiziksel prensiplere dayandırır. Bilgiler, kuantum bitleri (qubit) ile temsil edilir. Qubit'ler 0, 1 veya bu ikisinin süperpozisyonu şeklinde olabilir. Kuantum Kriptografi, Heisenberg Belirsizlik İlkesini kullanır. Kuantum parçacığının özelliklerini ölçmek, o parçacığın durumunu değiştirir. Bu özellik, dinleme girişimlerini tespit etmeyi sağlar. Kuantum durumları, birbiriyle çakışmayan bazlarda ölçüldüğünde kesin bilgi vermez. Bu, iletişim güvenliğini artırır. Dolaşıklık (Entanglement), iki veya daha fazla parçacığın durumlarının birbirine bağlı olması durumudur. Bu bağlantı, fiziksel olarak ayrı yerlerde bile ölçümler arasında güçlü bir bağıntı sağlar.
@@ -232,7 +492,5 @@ Post-Kuantum Kriptografi, kuantum bilgisayarların geleneksel kriptografi yönte
     \item \textbf{Hash}: Güvenli hash fonksiyonlarına dayanır. Kullanılan algoritmalar: SPHINCS+.
     \item \textbf{Diğer}: Farklı matematiksel zorluklardan yararlanır. Kullanılan algoritmalar: Supersingular Elliptic Curve Isogeny (SIEC).
 \end{itemize}
-
-
 
 \newpage

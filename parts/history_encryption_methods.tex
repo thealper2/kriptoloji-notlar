@@ -1117,3 +1117,152 @@ print("Decrypted:", decrypted)
 \end{lstlisting}
 
 \newpage
+
+\subsection{Rail Fence Technique}
+
+Rail Fence, bir transpozisyon şifreleme tekniğidir. Veriyi belirli bir sayıda ray boyunca zikzak şeklinde yazmayı ve ardından bu raylarda yer alan karakterleri birleştirerek şifrelenmiş metni oluşturmayı içerir.
+
+\subsubsection{Encrpytion}
+
+\begin{enumerate}
+    \item Şifrelenecek metin bir dizi ray boyunca zikzak şeklinde yazılır.
+    \item Raylardaki karakterler sırayla birleştirilerek şifrelenmiş metin elde edilir.
+\end{enumerate}
+
+Örneğin "ALPERKARACA" kelimesini şifreleyelim. Ray sayımız 2 olsun.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+A &   & P &   & R &   & A &   & A &   & A \\ \hline
+  & L &   & E &   & K &   & R &   & C &   \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şifreli metin, "APRAAALEKRC" elde edilmiştir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def rail_fence_encrypt(plaintext, num_rails):
+    rails = ['' for _ in range(num_rails)]
+    rail = 0
+    direction = 1  # 1: Down, -1: Up
+
+    for char in plaintext:
+        rails[rail] += char
+        rail += direction
+        if rail == 0 or rail == num_rails - 1:
+            direction *= -1
+
+    return ''.join(rails)
+
+def rail_fence_decrypt(ciphertext, num_rails):
+    rail_lengths = [0] * num_rails
+    rail = 0
+    direction = 1
+
+    for _ in ciphertext:
+        rail_lengths[rail] += 1
+        rail += direction
+        if rail == 0 or rail == num_rails - 1:
+            direction *= -1
+
+    rails = []
+    idx = 0
+    for length in rail_lengths:
+        rails.append(list(ciphertext[idx:idx + length]))
+        idx += length
+
+    result = []
+    rail = 0
+    direction = 1
+
+    for _ in ciphertext:
+        result.append(rails[rail].pop(0))
+        rail += direction
+        if rail == 0 or rail == num_rails - 1:
+            direction *= -1
+
+    return ''.join(result)
+
+num_rails = 2
+plaintext = "ALPERKARACA"
+ciphertext = rail_fence_encrypt(plaintext, num_rails)
+decrypted = rail_fence_decrypt(ciphertext, num_rails)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage
+
+\subsection{Row-Column Transposition Cipher}
+
+Row-Column Transposition Cipher, metin şifrelemek için kullanılan bir transpozisyon şifreleme yöntemidir. Bu yöntemde metin, belirli bir satır ve sütun düzenine göre bir tabloya yerleştirilir. Şifreleme işlemi, tablodaki karakterleri sırasıyla sütunlar veya satırlar üzerinden okumayı içerir.
+
+\subsubsection{Encryption}
+
+\begin{enumerate}
+    \item Şifrelenecek metin uzunluğu, belirlenen tablo boyutlarına uygun olacak şekilde düzenlenir. Gerekirse metne dolgu karakterleri eklenir.
+    \item Metin, tabloya satır satır yerleştirilir.
+    \item Tablodaki metin sütun sütun okunarak şifrelenmiş metin oluşturulur.
+\end{enumerate}
+
+Örneğin, "ALPERKARACA" mesajını şifreleyelim. 4 sütun ve 3 satır olsun.
+
+\begin{table}[ht]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+A & L & P & E \\ \hline
+R & K & A & R \\ \hline
+A & C & A & X \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+Şifrelenmiş metin, "ARALKCPAAERX" elde edilmiştir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import math
+
+def row_column_encrypt(plaintext, num_cols):
+    num_rows = math.ceil(len(plaintext) / num_cols)
+    padded_length = num_rows * num_cols
+    plaintext = plaintext.ljust(padded_length, 'X')
+
+    ciphertext = ""
+    for col in range(num_cols):
+        for row in range(num_rows):
+            idx = row * num_cols + col
+            ciphertext += plaintext[idx]
+
+    return ciphertext
+
+def row_column_decrypt(ciphertext, num_cols):
+    num_rows = math.ceil(len(ciphertext) / num_cols)
+    plaintext = [""] * len(ciphertext)
+    idx = 0
+    for col in range(num_cols):
+        for row in range(num_rows):
+            if idx < len(ciphertext):
+                plaintext[row * num_cols + col] = ciphertext[idx]
+                idx += 1
+
+    return "".join(plaintext).rstrip('X')
+
+num_cols = 4
+plaintext = "ALPERKARACA"
+ciphertext = row_column_encrypt(plaintext, num_cols)
+decrypted = row_column_decrypt(ciphertext, num_cols)
+print("Encrypted:", ciphertext)
+print("Decrypted:", decrypted)
+\end{lstlisting}
+
+\newpage

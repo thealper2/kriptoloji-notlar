@@ -951,3 +951,48 @@ print(f"SHA3-256 Hash: {hash_value}")
 \end{enumerate}
 
 \newpage
+
+\subsection{Poly1305}
+
+Daniel J. Bernstein tarafından tasarlanmıştır. Poly1305, hızlı ve güvenli bir mesaj doğrulama kodu algoritmasıdır. Bir şireleme algoritmasıyla birlikte kullanılarak veri bütünlüğünü ve kimlik doğrulamasını sağlar. Anahtar uzunluğu 256 bit (32 bayt). Blok boyutu 16 bayttır. 128 bitlik nonce kullanır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Anahtar iki parçaya ayrılır. 128-bit r, mesaj üzerinde matematiksel işlemler içinde kullanılır. r, bir sabit değerdir ve her zaman aynı kalır. 128-bit s, nihai MAC hesaplamasında kullanılan bir kayma değeridir.
+    \item Mesaj 16 baytlık bloklara bölünür. Son blok eksikse uygun şekilde doldurulur.
+    \item Her blok için modüler aritmetik kullanılarak bir toplama yapılır. $P = 2^{130} - 5$ modülü ile işlem yapılır.
+    \item Toplam hesaplama sonucunda, s ile birleştirilerek doğrulama kodu oluşturulur.
+    \item Alıcı, aynı anahtar ve nonce'u kullanarak doğrulama kodunu hesaplar ve gönderilen doğrulama kodu ile eşleşip eşleşmediğini kontrol eder.
+\end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+from Crypto.Hash import Poly1305
+from Crypto.Random import get_random_bytes
+from Crypto.Cipher import AES
+
+def poly1305_generate_mac(message, key):
+    mac = Poly1305.new(key=key, cipher=AES)
+    mac.update(message.encode())
+    return mac.hexdigest()
+
+def poly1305_verify_mac(message, key, received_mac):
+    mac = Poly1305.new(key=key, cipher=AES)
+    mac.update(message.encode())
+    try:
+        mac.hexverify(received_mac)
+        return True
+    except:
+        return False
+
+key = get_random_bytes(32)
+message = "Hello, World!"
+mac = poly1305_generate_mac(message, key)
+is_valid = poly1305_verify_mac(message, key, mac)
+print("MAC:", mac)
+print("Is Valid:", is_valid)
+\end{lstlisting}
+
+\newpage

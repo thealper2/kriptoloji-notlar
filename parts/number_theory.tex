@@ -1,0 +1,559 @@
+\section{Number Theory}
+
+Sayılar teorisi, matematiğin pozitif tam sayılar ve onların özellikleri ile ilgilenen bir alt dalıdır. Bu teori, asal sayılar, modüler aritmetik, çarpanlara ayırma, Diophantine denklemleri gibi konuları kapsar. Eski Yunanlılardan günümüze kadar uzanan tarihsel bir geçmişi olan Sayılar Teorisi, soyut matematik alanında temel bir rol oynar ve birçok pratik uygulama bulur. Sayılar Teorisi, özellikle modern kriptosistemlerin temelini oluşturur.
+
+\subsubsection{Asal Sayılar}
+
+Asal sayılar, yalnızca 1 ve kendisine bölünebilen pozitif tam sayılardır. Sayılar Teorisi'nde asal sayılarla ilgili derinlemesine araştırmalar yapılır. Kriptolojide ise asal sayılar:
+
+\begin{itemize}
+    \item \textbf{RSA Algoritması}: RSA, büyük asal sayıların çarpımına dayanır. Bu sistemin güvenliği, büyük sayıları çarpanlarına ayırmanın zorluğuna bağlıdır.
+    \item \textbf{Anahtar Üretimi}: Asal sayılar, kriptografik anahtarların üretilmesinde kullanılır.
+\end{itemize}
+
+\subsubsection{Modüler Aritmetik}
+
+Modüler aritmetik, bir sayının bir modulo (bölümden kalan) içinde nasıl davrandığını inceler. Şifreleme sistemlerinde sıkça kullanılır:
+
+\begin{itemize}
+    \item \textbf{Diffie-Hellman Anahtar Değişimi}: Modüler üs alma işlemi sayesinde, iki tarafın ortak bir gizli anahtar oluşturmasına olanak tanır.
+    \item \textbf{Eliptik Eğri Kriptografisi}: Modüler aritmetik, eliptik eğrilerin üzerinde yapılan işlemlerde temel bir rol oynar.
+\end{itemize}
+
+\newpage
+
+\subsection{Modular Arithmetic}
+
+Modüler aritmetik, sayılar üzerinde işlem yaparken belirli bir modulo (bölümden kalan) kullanarak işlemleri sınırlandırma yöntemidir. Matematikte, bir tam sayının bir modulo’ya göre kalanı incelenir. Bu, sayıları bir çember üzerinde tekrar eden bir sistem gibi düşünülmesini sağlar. $a \text{ mod } n$ ifadesi, $a$ sayısının $n$ sayısına bölündüğünde kalanı ifade eder. Modüler aritmetik, modern kriptolojinin temelini oluşturur:
+
+\begin{itemize}
+    \item \textbf{RSA Algoritması}: Modüler üs alma, RSA'nın hem şifreleme hem de çözme süreçlerinde kullanılır.
+    \item \textbf{Diffie-Hellman Anahtar Değişimi}: Güvenli bir şekilde ortak anahtar oluşturmak için modüler aritmetik kullanılır.
+    \item \textbf{Eliptik Eğri Kriptografisi (ECC)}: Eliptik eğriler üzerinde yapılan işlemler modüler aritmetiğe dayanır.
+\end{itemize}
+
+\subsubsection{Modüler Aritmetiğin İşleyişi}
+
+\begin{itemize}
+    \item \textbf{Toplama}: $(a + b) \text{ mod } n = ((a \text{ mod } n) + (b \text{ mod } n)) \text{ mod } n$.
+    \item \textbf{Çıkarma}: $(a - b) \text{ mod } n = ((a \text{ mod } n) - (b \text{ mod } n)) \text{ mod } n$.
+    \item \textbf{Çarpma}: $(a \cdot b) \text{ mod } n = ((a \text{ mod } n) \cdot (b \text{ mod } n)) \text{ mod } n$.
+    \item \textbf{Üs Alma}: $a^b \text{ mod } n$, büyük sayılarla çalışırken modüler üs alma yöntemleri kullanılır.
+\end{itemize}
+
+Örneğin $(17 \cdot 13 + 5^3) \text{ mod } 7$ şöyle ifade edilebilir:
+
+\[ (17 \cdot 13 + 5^3) \text{ mod } 7 = ((17 \cdot 13 \text{ mod } 7) + (5^3 \text{ mod } 7)) \text{ mod } 7 \]
+\[ (17 \cdot 13 + 5^3) \text{ mod } 7 = ((221 \text{ mod } 7) + (125 \text{ mod } 7)) \text{ mod } 7 \]
+
+
+Buradanda sonuç $(4 + 6) \text{ mod } 7 = 3$ çıkar.
+
+\newpage
+
+\subsection{Modular Exponentiation}
+
+Modüler üs alma, bir sayının büyük üslerini bir modül üzerinde hesaplama yöntemidir. Amaç, sayıyı doğrudan üs alarak hesaplamak yerine, hesaplama süresini azaltmak ve büyük sayılarla çalışırken performans artışı sağlamaktır. RSA, Diffie-Hellman Anahtar Değişimi, Eliptik Eğri Kriptografisi (ECC) gibi algoritmalarda kritik bir rol oynar.
+
+\[ C = (A^B) \text{ mod } N \]
+
+Burada, $A$ taban (base), $B$ üs (exponent), $N$ modulo (bölüm), $C$ kalan temsil eder.
+
+Kriptolojide modüler üs alma:
+
+\begin{itemize}
+    \item \textbf{RSA Şifreleme}: Mesajı şifreli hale getirirken kullanılır: $C = M^e \text{ mod } N$.
+    \item \textbf{Diffie-Hellman Anahtar Değişimi}: Paylaşılan gizli anahtar, modüler üs alma ile hesaplanır.
+    \item \textbf{Eliptik Eğriler}: Eliptik eğri tabanlı kriptografik algoritmalar modüler üs alma prensiplerini kullanır.
+\end{itemize}
+
+Örneğin, $5^{117} \text{ mod } 13$ işlemini hesaplayalım. $5^{117}$ çok büyük bir sayı olduğundan, doğrudan üs alma verimsiz olur. Bunun yerine modüler üs alma yöntemi kullanılır. Modüler aritmetik kuralına göre:
+
+\[ 5^{117} \text{ mod } 13 = ((5 \text{ mod } 13)^{117}) \text{ mod } 13 \]
+
+$ 5 \text{ mod } 13 = 5$. Bu yüzden:
+
+\[ 5^{117} \text{ mod } 13 = 5^{117} \text{ mod } 13 \]
+
+Modüler üs alma yöntemi kullanılarak büyük üsler adım adım azaltılır:
+
+\begin{itemize}
+    \item $5^2 = 25; 25 \text{ mod } 13 = 12$.
+    \item $5^4 = (5^{2})^2 = 12^2 = 144; 144 \text{ mod } 13 = 1$.
+    \item $5^{117} = (5^4)^29 \cdot 5 = 1^{29} \cdot 5 = 5$.
+    \item Sonuç: $5^{117} \text{ mod } 13 = 5$.
+\end{itemize}
+
+\newpage
+
+\subsection{GCD and Euclidean Algorithm}
+
+GCD (En büyük ortak bölen), iki tam sayının ortak bölenlerinin en büyüğüdür. Öklid algoritması, GCD'yi hesaplamak için kullanılan verimli bir algoritmadır. Algoritma, tekrar eden modüler işlemleri kullanılarak GCD'yi bulur. Şu prensibe dayanır.
+
+\[ \text{GCD}(a, b) = \text{GCD}(b, a \text{ mod } b) \]
+
+Burada $a > b$ kabul edilir. İşlemler b sıfıra eşit olana kadar tekrarlanır. Son kalan $a$, GCD değeridir. Kriptolojide RSA algoritmasında, modüler ters eleman bulma işleminde ve diffie-hellman anahtar değişminde kullanılır.
+
+\begin{itemize}
+    \item \textbf{RSA Algoritması}: RSA'da, açık anahtar üssü $e$ seçilirken $\text{GCD}(e, \phi(n)) = 1$ şartı aranır. Burada $\phi(n)$, Euler'in Totient Fonksiyonudur. Bu şart, $e$'nin $\phi(n)$ ile aralarında asal olmasını sağlar.
+    \item \textbf{Modüler Ters Eleman Bulma}: Euclidean Algorithm, Extended Euclidean Algorithm ile birlikte, modüler ters eleman hesaplamak için kullanılır. Modüler ters, kriptografik algoritmalarda şifre çözme anahtarını üretmek için gereklidir.
+    \item \textbf{Anahtar Değişimi ve Dijital İmza}: Diffie-Hellman ve dijital imza protokollerinde sayılar arasındaki asal ilişkiler hesaplanırken kullanılır.
+\end{itemize}
+
+Örneğin, $\text{GCD}(48, 18)$ bulalım.
+
+\begin{enumerate}
+    \item $a = 48$ ve $b = 18$'dir.
+    \item Birinci adım $\text{GCD}(48, 18) = \text{GCD}(18, 48 \text{ mod } 18)$ buradan 12 elde edilir, $a = 18$ ve $b = 12$.
+    \item İkinci adım $\text{GCD}(18, 12) = \text{GCD}(12, 18 \text{ mod } 12)$ buradan 6 elde edilir, $a = 12$ ve $b = 6$.
+    \item Üçüncü adım $\text{GCD}(12, 6) = \text{GCD}(6, 12 \text{ mod } 6)$ buradan 0 elde edilir, $a = 6$ ve $b = 0$ ve bitirilir.
+    \item Sonuç: $\text{GCD}(48, 18) = 6$.
+\end{enumerate}
+
+\newpage
+
+\subsection{Relatively Prime (Co-Prime) Numbers}
+
+Aralarında asal sayılar, iki sayının ortak bir böleninin sadece 1 olduğu durumları ifade eder. Yani $\text{GCD}(a, b) = 1$ olan iki sayı aralarında asaldır. Relatively Prime Numbers, kriptografide ve sayılar teorisinde şu alanlarda önemli bir rol oynar:
+
+Örneğin 35 ve 64'ün aralarında asal olup olmadığına bakalım.
+
+\begin{enumerate}
+    \item $a = 35$ ve $b = 64$'dir.
+    \item Birinci adım $\text{GCD}(35, 64) = \text{GCD}(64, 35 \text{ mod } 64)$ buradan 35 elde edilir, $a = 64$ ve $b = 35$.
+    \item İkinci adım $\text{GCD}(64, 35) = \text{GCD}(35, 65 \text{ mod } 35)$ buradan 29 elde edilir, $a = 35$ ve $b = 29$.
+    \item Üçüncü adım $\text{GCD}(35, 29) = \text{GCD}(29, 35 \text{ mod } 29)$ buradan 6 elde edilir, $a = 29$ ve $b = 6$.
+    \item Dördüncü adım $\text{GCD}(29, 6) = \text{GCD}(6, 29 \text{ mod } 6)$ buradan 5 elde edilir, $a = 6$ ve $b = 5$.
+    \item Dördüncü adım $\text{GCD}(6, 5) = \text{GCD}(5, 6 \text{ mod } 5)$ buradan 1 elde edilir, $a = 5$ ve $b = 1$.
+    \item Beşinci adım $\text{GCD}(5, 1) = \text{GCD}(1, 5 \text{ mod } 1)$ buradan 1 elde edilir ve bitirilir.
+    \item Sonuç: $\text{GCD}(35, 64) = 1$ olduğu için 35 ve 64 aralarında asaldır..
+\end{enumerate}
+
+\newpage
+
+\subsection{Euler's Totient Function (Phi Function)}
+
+Euler's Totient Function ($\phi(n)$), pozitif tam sayı $n$ ile aralarında asal olan 1'den $n$'e kadar olan pozitif tam sayıların sayısını verir. 
+
+\[ \phi(n) = |\{ k \in Z^{+} \| 1 \leq k \leq n, \text{GCD}(k, n) = 1 \}\ \]
+
+Yani $\phi(n)$, $n$'den küçük ve $n$ ile aralarında asal sayıların toplamıdır. $\phi(n)$, modüler sistemlerinde davranışını anlamak için kullanılır. RSA şifrelemede $\phi(n)$, şifreleme ve çözme anahtarlarının üretiminde kullanılır.
+
+Eğer n bir asal sayıysa, $\phi(n) = n - 1$, çünkü asal sayının kendisi hariç tüm sayılar onunla aralarında asaldır.
+
+Eğer $n = p_{1}^{e^1} \cdot p_{2}^{e^2} ... p_{k}^{e^k}$ şeklinde asal çarpanlarına ayrılmışsa:
+
+\[ \phi(n) = n \cdot (1 - \frac{1}{p_1}) \cdot (1 - \frac{1}{p_2}) ... (1 - \frac{1}{p_k}) \]
+
+Örneğin, $n = 36$ için $\phi(36)$'yı hesaplayalım.
+
+İlk olarak 36'yı asal çarpanlarına ayıralım.
+
+\[ 36 = 2^2 \cdot 3^2 \]
+
+Totient fonksiyonuna göre;
+
+\[ \phi(n) = n \cdot (1 - \frac{1}{p_1}) \cdot (1 - \frac{1}{p_2}) \]
+
+Burada $p_1 = 2$ ve $p_2 = 3$ olur. Hesaplarsak:
+
+\[ \phi(36) = 36 \cdot (1 - \frac{1}{2}) \cdot (1 - \frac{1}{3}) \]
+\[ \phi(36) = 36 \cdot \frac{1}{2} \cdot \frac{2}{3} \]
+\[ \phi(36) = 36 \cdot \frac{1}{3} = 12 \]
+
+$\phi(36) = 12$ bulunur. Bu, 36 ile aralarında asal olan 12 pozitif sayı bulunduğunu gösterir.
+
+\newpage
+
+\subsection{Fermat's Little Theorem}
+
+Fermat'ın küçük teoremi, asal sayıların modüler aritmetik üzerindeki özel ifadelerini ifade eden bir matematik teoremidir. Eğer $p$ bir asal sayı ve $a$ bir tam sayıysa ve p'nin katı değilse;
+
+\[ a^{p-1} \text{ mod } p = 1 \]
+
+Eğer $p$, $a$'yı bölüyorsa $(p | a)$, bu durumda eşitlik geçerli değildir.
+
+Örneğin, $a = 3$, $p = 7$ için $3^6 \text{ mod } 7$'yi Fermat's Little Theorem ile hesaplayalım. Bu durumda:
+
+\[ 3^6 \text{ mod } 7 = 1 \]
+\[ (3^3 \text{ mod } 7)^2 \text{ mod } 7 \]
+
+Önce $3^3 \text{ mod } 7$'yi hesaplayalım.
+
+\[ 3^3 = 27 \]
+\[ 27 \text{ mod } 7 = 6 \]
+
+Daha sonra $(3^3 \text{ mod } 7)^2 \text{ mod } 7$'yi hesaplayalım.
+
+\[ 6^2 = 36 \]
+\[ 36 \text{ mod } 7 = 1 \]
+
+Sonuç $3^6 \text{ mod } 7 = 1$'dir.
+
+\newpage
+
+\subsection{Euler's Theorem}
+
+Euler Teoremi, modüler aritmetik üzerine kurulmuş bir teoremdir. Asal olmayan modüllerle çalışan problemlerde kullanılır ve Fermat'ın Küçük Teoremi'nin bir genellemesi olarak kabul edilir. Eğer $n$ ve $a$ aralarında asal $\text{GCD}(a, n) = 1$ ise:
+
+\[ a^{\phi(n)} \text{ mod } n = 1 \]
+
+Burada $\phi(n)$, Euler'in Totient fonksiyonudur ve $n$'den küçük $n$ ile aralarında asal olan sayıların sayısını ifade eder. Euler Teoremi, asimetrik kriptografide anahtar oluşturma ve şifreleme işlemlerinde kullanılır. Büyük modüllerle çalışmayı kolaylaştırır ve performansı artırır. 
+
+Örneğin, $a = 7$, $n = 12$ için $7^{\phi(12)} \text{ mod } 12$'yi Euler's Theorem ile hesaplayalım.
+
+$n = 12$ için Totient fonksiyonu ($\phi(n)$):
+
+\[ \phi(n) = n \cdot \prod_{p | n} (1 - \frac{1}{p}) \]
+
+Burada $p$, $n$'in asal çarpanlarıdır. 12'nin asal çarpanları 2 ve 3'tür:
+
+\[ \phi(12) = 12 \cdot (1 - \frac{1}{2}) \cdot (1 - \frac{1}{3}) \]
+\[ \phi(12) = 12 \cdot \frac{1}{2} \cdot \frac{2}{3} = 4\]
+
+$\phi(12) = 4$ kullanarak Euler's Theorem formülünü uygulayalım.
+
+\[ 7^4 \text{ mod } 12 = 1 \]
+\[ 7^2 = 49\]
+\[ 49 \text{ mod } 12 = 1 \]
+\[ (7^2)^2 \text{ mod } 12 = 1 \]
+
+\newpage
+
+\subsection{Primitive Root}
+
+İlkel kök, modüler aritmetikte bir tam sayıdır ve belirli bir modül $n$'ye göre tüm birim grubunu oluşturur. İlkel kök, mod $n$'ye göre, modüler üs alma yoluyla $\phi(n)$ farklı kalanı oluşturabilen bir sayıdır. Bir tam sayı $g$, mod $n$'ye göre bir primitive root (ilkel kök) ise:
+
+\[ \{ g^1 \text{ mod } n, g^2 \text{ mod } n, ..., g^{\phi(n)} \text{ mod } n \} \]
+
+kümesi, $\phi(n)$'nin tamamını oluşturur. Burada $\phi(n)$, Euler's Totient Function'dır. Primitive Roots, Diffie-Hellman gibi şifreleme protokollerinde kullanılır. Bu protokollerde bir primitive root seçilerek güvenli anahtar alışverişi yapılır. Primitive Roots, Discrete Logarithm probleminin temelini oluşturur. Bu problem, günümüz şifreleme sistemlerinin güvenlik yapısını destekler.
+
+Örneğin, $n = 7$ için tüm ilkel kökleri bulalım. Euler's Totient Function'a göre, $n = 7$ bir asal sayı olduğundan:
+
+\[ \phi(7) = 7 - 1 = 6 \]
+
+İlkel kök, mod 7'ye göre $\phi(7) = 6$ farklı kalan oluşturmalıdır. Bir $g$ sayısı, mod 7'ye göre bir ilkel kök olabilmek için $g^k \text{ mod } 7 (1 \leq k \leq \phi(7))$ değerlerinin hepsinin farklı ve $\{ 1, 2, 3, 4, 5, 6 \}$'yi oluşturması gerekir. Burda işlemler tek tek yapılmamıştır fakat tek tek denenirse 7'nin ilkel köklerinin 3 ve 5 olduğu bulunur. Yani;
+
+$g = 3$ için:
+
+\begin{enumerate}
+    \item $3^1 \text{ mod } 7 = 3$.
+    \item $3^2 \text{ mod } 7 = 9 \text{ mod } 7 = 2$.
+    \item $3^3 \text{ mod } 7 = 27 \text{ mod } 7 = 6$.
+    \item $3^4 \text{ mod } 7 = 81 \text{ mod } 7 = 4$.
+    \item $3^5 \text{ mod } 7 = 243 \text{ mod } 7 = 5$.
+    \item $3^6 \text{ mod } 7 = 729 \text{ mod } 7 = 1$.
+\end{enumerate}
+
+$g = 3$ için $\{ 3, 2, 6, 4, 5, 1 \}$ kümesi oluşturulur. Bu küme, $\{ 1, 2, 3, 4, 5, 6 \}$'yı oluşturur. Dolayısıyla $g = 3$ bir ilkel köktür.
+
+\newpage
+
+\subsection{Multiplicative Inverse (Çarpımsal Ters)}
+
+Çarpımsal ters, modüler aritmetikte bir sayının, belirli bir modül $n$'ye göre tersidir. Bir tam sayı $a$, mod $n$'ye göre bir çarpımsal tersi $x$'e sahiptir, eğer:
+
+\[ a \cdot x \equiv 1 (\text{ mod } n) \]
+
+şartını sağlayan bir $x$ varsa. RSA, ElGamal gibi asimetrik şifreleme yöntemlerinde modüler çarpımsal tersler, anahtar oluşturma ve şifre çözme işlemlerinde kullanılır. Modüler tersler, özel anahtarların üretilmesinde kullanılır.
+
+Örneğin, $a = 3$ ve $n = 7$ için mod 7'ye göre $a$'nın çarpımsal tersini bulun.
+
+Bir sayının çarpımsal tersi yalnızca $a$ ve $n$ aralarında asal (relatively prime) ise vardır. Yani:
+
+\[ \text{GCD}(a, n) = 1\]
+
+3 ve 7 aralarında asal olduğu için çarpımsal ters vardır.
+
+\[ 3 \cdot x \equiv 1 (\text{ mod } 7) \]
+
+Deneme yanılma yöntemiyle hesaplayalım:
+
+\begin{itemize}
+    \item $x = 1$ için, $ 3 \cdot 1 \text{ mod } 7 \neq 1$.
+    \item $x = 2$ için, $ 3 \cdot 2 \text{ mod } 7 \neq 1$.
+    \item $x = 3$ için, $ 3 \cdot 3 \text{ mod } 7 \neq 1$.
+    \item $x = 5$ için, $ 3 \cdot 5 \text{ mod } 7 = 1$.
+\end{itemize}
+
+Sonuç $x = 5$'tir. Extended Euclidean Algorithm ile bu soru daha hızlı çözülür.
+
+\[ 7 = 2 \cdot 3 + 1 \]
+\[ 1 = 7 - 2 \cdot 3 \]
+\[ -2 \text{ mod } 7 = 5 \]
+
+\newpage
+
+\subsection{Extended Euclidean Algorithm}
+
+Genişletilmiş öklid algoritması, iki sayı $a$ ve $b$ için ortak bölenlerin en büyüğünü bulur ve şu denklemi çözer:
+
+\[ ax + by = \text{GCD}(a, b) \]
+
+Burada $x$ ve $y$, $\text{GCD}(a, b)$ için bulunan Diophantine katsayılarıdır. Bu katsayılar sayesinde modüler aritmetikte çarpımsal ters bulma gibi işlemler yapılır. Asimetrik şifreleme algoritmalarında anahtar oluşturmada kullanılır.
+
+Örneğin, $a = 30$ ve $b = 50$ için hesaplayalım. Öncelikle, öklid algoritması ile iki sayının en büyük ortak böleni bulunur:
+
+\[ \text{GCD}(a, b) = \text{GCD}(b, a \text{ mod } b) \]
+
+Hesaplamalar:
+
+\begin{enumerate}
+    \item $a = 30$ ve $b = 50$ için $30 \text{ mod } 50 = 30$.
+    \item $a = 50$ ve $b = 30$ için $50 \text{ mod } 30 = 20$.
+    \item $a = 30$ ve $b = 20$ için $30 \text{ mod } 20 = 10$.
+    \item $a = 20$ ve $b = 10$ için $20 \text{ mod } 10 = 0 $.
+\end{enumerate}
+
+$\text{GCD}(30, 50) = 10$ için geriye doğru çalışarak $x$ ve $y$'yi buluruz.
+
+\begin{itemize}
+    \item $10 = 30 - 1 \cdot 20$
+    \item $10 = 30 - 1 \cdot (50 - 1 \cdot 30)$
+    \item $10 = 30 - 1 \cdot 50 + 1 \cdot 30$
+    \item $10 = 2 \cdot 30 - 1 \cdot 50$
+\end{itemize}
+
+Sonuç, $x = 2$ ve $y = -1$ bulunur.
+
+\newpage
+
+\subsection{Chinese Remainder Problem}
+
+Chinese Remainder Problem, modüler aritmetik alanıda bir problem çözme yeteneğidir. CRT, birbirinden ayrık (coprime) modüllerle verilen birden fazla denklem sistemi için bir çözüm bulmayı sağlar.
+
+\[ x \equiv a_1 \text{ mod } m_1 \]
+\[ x \equiv a_2 \text{ mod } m_2 \]
+\[ x \equiv a_n \text{ mod } m_n \]
+
+Burada:
+
+\begin{itemize}
+    \item $m_1, m_2, ..., m_n$ modülleri çift çift coprime (birbirleriyle asal) olmalıdır.
+    \item CRT, bu denklem sisteminin tekil bir çözümünü mod $M = m_1 \cdot m_2 \cdot ... \cdot m_n$ içinde bulur.
+\end{itemize}
+
+Büyük sayılarla yapılan modüler hesaplamaları daha küçük alt problemlere ayırır, bu da verimlilik sağlar. RSA şifreleme sisteminde hızlı modüler üs alma ve deşifre işlemlerinde kullanılır. Asimetrik şifreleme algoritmalarında modüller arasındaki ilişkileri yönetmek için kullanılır.
+
+Örneğin, aşağıdaki denklem sistemini çözelim.
+
+\[ x \equiv 2 \text{ mod } 3 \]
+\[ x \equiv 3 \text{ mod } 5 \]
+\[ x \equiv 2 \text{ mod } 7 \]
+
+$M = 3 \cdot 5 \cdot 7 = 105$'tir. Her modül için $M_i$ hesaplanır.
+
+\[ M_i = \frac{M}{m_i} \]
+
+\begin{itemize}
+    \item $M_1 = \frac{105}{3} = 35$
+    \item $M_2 = \frac{105}{5} = 21$
+    \item $M_3 = \frac{105}{7} = 15$
+\end{itemize}
+
+Her $M_i$ için modüler ters $N_i$:
+
+\[ M_i \cdot N_i \equiv 1 \text{ mod } m_i \]
+
+$N_1$: $35 \cdot N_1 \equiv 1 \text{ mod } 3$ için:
+
+\begin{itemize}
+    \item $35 \text{ mod } 3 = 2$
+    \item $2 \cdot N_1 \equiv 1 \text{ mod } 3$
+    \item $N_1 = 2$ (modüler ters).
+\end{itemize}
+
+$N_2$: $21 \cdot N_2 \equiv 1 \text{ mod } 5$ için:
+
+\begin{itemize}
+    \item $21 \text{ mod } 5 = 1$
+    \item $1 \cdot N_2 \equiv 1 \text{ mod } 5$
+    \item $N_2 = 1$ (modüler ters).
+\end{itemize}
+
+$N_3$: $15 \cdot N_3 \equiv 1 \text{ mod } 7$ için:
+
+\begin{itemize}
+    \item $15 \text{ mod } 7 = 1$
+    \item $1 \cdot N_3 \equiv 1 \text{ mod } 7$
+    \item $N_3 = 1$ (modüler ters).
+\end{itemize}
+
+Genel çözüm hesaplanır:
+
+\[ x = \sum_{i=1}^{n} a_i \cdot M_i \cdot N_i \text{ mod } M \]
+\[ x = (2 \cdot 35 \cdot 2) + (3 \cdot 21 \cdot 1) + (2 \cdot 15 \cdot 1) \text{ mod } 105 \]
+\[ x = (140) + (63) + (30) \text{ mod } 105 \]
+\[ x = 233 \text{ mod } 105 = 23 \]
+
+Sonuç $x = 23$'tür.
+
+\newpage
+
+\subsection{Discrete Logarithm Problem}
+
+DLP, bir gruptaki modüler üs alma işleminin tersini bulma problemidir.
+
+\[ g^x \equiv y \text{ mod } p \]
+
+Burada:
+
+\begin{itemize}
+    \item $g$: bir taban (generator veya primitive root).
+    \item $p$: bir asal sayı (modülüs).
+    \item $x$: bilinmeyen.
+    \item $y$: verilen sonuç.
+\end{itemize}
+
+DLP, asimetrik kriptografide gizliliği korumak için kullanılır. DLP'nin çözümü büyük sayılar için çok zor olduğundan, birçok modern kriptografik algoritmada güvenlik temeli olarak kullanılır. 
+
+Örneğin, $2^x = 11 \text{ mod } 19$ problemini çözelim.
+
+\begin{itemize}
+    \item $x = 1$ için $2^1 \text{ mod } 19 = 2, 2 \neq 11$
+    \item $x = 2$ için $2^2 \text{ mod } 19 = 4, 4 \neq 11$
+    \item $x = 3$ için $2^3 \text{ mod } 19 = 8, 8 \neq 11$
+    \item $x = 4$ için $2^4 \text{ mod } 19 = 16, 16 \neq 11$
+    \item $x = 5$ için $2^5 \text{ mod } 19 = 13, 13 \neq 11$
+    \item $x = 6$ için $2^6 \text{ mod } 19 = 7, 7 \neq 11$
+    \item $x = 7$ için $2^7 \text{ mod } 19 = 14, 14 \neq 11$
+    \item $x = 8$ için $2^8 \text{ mod } 19 = 9, 9 \neq 11$
+    \item $x = 9$ için $2^9 \text{ mod } 19 = 18, 18 \neq 11$
+    \item $x = 10$ için $2^10 \text{ mod } 19 = 11$
+\end{itemize}
+
+Sonuç $x = 10$'dur.
+
+\newpage
+
+\subsection{Fermat's Factoring Method}
+
+Fermat'ın çarpanlara ayırma yöntemi, bir sayıyı asal çarpanlarına ayırmak için kullanılır. $n$ sayısının iki kare farkı olarak yazılmasını temel alır. Eğer $n$ tek bir sayı ise, bu sayı iki kare farkı olarak yazılabilir:
+
+\[ n = a^2 - b^2 = (a - b)(a + b) \]
+
+$n$ sayısını asal çarpanlarına ayırmak için, ilk olarak $n$ sayısına en yakın kare bulunur. Bu kare $a^2$ olarak alınır ve $b^2 = a^2 - n$ için $b$ değeri bulunur. Yani, çarpanlar $a - b$ ve $a + b$ olur. 
+
+RSA şifreleme algoritmasında temel olarak büyük sayılar kullanılır. RSA’nın güvenliği, büyük bir sayıyı asal çarpanlarına ayırmanın zor olmasına dayanır. Fermat’ın yönteminin uygulanabilirliği, sayının asal çarpanlarını bulmanın zorluğunu gözler önüne serer.
+
+Örneğin, $n = 5959$ sayısının asal çarpanlarını bulalım.
+
+İlk adımda $n = 5959$ sayısına en yakın olan kareyi bulmamız gerekir.
+
+\[ \sqrt{5959} \approx 77.19 \]
+
+Yani, $a = 78$ seçiyoruz. Şimdi $a = 78$'i kullanarak $b^2$ bulunur:
+
+\[ b^2 = a^2 - n = 78^2 - 5959 = 6084 - 5959 = 125 \]
+
+$b^2 = 125$, bu bir tam kare değildir, bu yüzden $a$'yı bir artırarak bu işlemler tekrarlanır.
+
+\newpage
+
+\subsection{Fermat's Primality Test}
+
+Fermat'ın asal sayı testi, bir sayının asal olup olmadığını kontrol etmek için kullanılan bir algoritmadır. Bu test, Fermat'ın Küçük Teoremi üzerine inşa edilmiştir. Fermat'ın Küçük Teoremi, $p$ sayısının asal bir sayı olduğunu bildiğimizde, her $a$ için şu eşitliğin doğru olduğunu söyler:
+
+\[ a^{p-1} \equiv 1 (\text{ mod } p) \]
+
+Burada $p$ asal bir sayı ve $a$ ise $p$'den küçük bir tam sayıdır. Fermat Primality Testi, bu teoreme dayanarak bir sayının asal olup olmadığını test eder. Verilen $n$ sayısının asal olup olmadığını test etmek için, rastgele bir $a$ değeri seçilir. Eğer $a^{n-1} \equiv 1 (\text{ mod } n)$ ise, n sayısının asal olma ihtimali yüksektir. Ancak bu test her zaman doğru sonu. vermez, çünkü bazı bileşik sayılar, testten geçebilen Fermat sahte asal sayıları olabilir.
+
+Fermat’ın Asal Testi, kriptografi alanında büyük öneme sahiptir, özellikle şifreleme algoritmalarında kullanılır. RSA gibi algoritmalar büyük asal sayılar kullanarak güvenlik sağlar. Fermat’ın testi, sayının asal olup olmadığını hızlı bir şekilde kontrol etmek için kullanılan ilk adımlardan birisidir.
+
+Örneğin, $n = 11$ için Fermat'ın Asal Testi'ni uygulayalım. Test için $n$'den küçük $a = 2$ sayısını seçelim. Fermat'a göre:
+
+\[ a^{n-1} \equiv 1 (\text{ mod } n) \]
+\[ 2^10 \text{ mod } 11 = 1 \]
+
+Bu sonnuç, Fermat'ın asal testine göre $n = 11$'in asal olduğuna karar verir.
+
+\newpage
+
+\subsection{Miller-Rabin Primality Test}
+
+Miller-Rabin testi, büyük sayıların asal olup olmadığını kontrol etmek için kullanılan olasılıksal bir algoritmadır. Fermat asal testinin geliştirilmiş bir versiyonudur. Fermat testinde, sahte asal sayılar yanlış sonuç verebilir fakat Miller-Rabin testinde bu tür hatalar önemli ölçüde azaltılmıştır. Miller-Rabin testine göre; eğer bir sayı asal ise, belirli bir eşitlik ve işlem kümesini her zaman sağlamalıdır. Eğer bir sayı bileşik ise, bu eşitlikler genellikle sağlanmaz, fakat nadiren de olsa sağlayabilir. Bu yüzden bu test probabilistik yani olasılıksal bir sonuç verir. Miller-Rabin testi, modüler üssün özelliklerini kullanarak bir sayının asal olup olmadığını test eder.
+
+\begin{enumerate}
+    \item $n - 1$ sayısı asal çarpanlarına ayrılır. $n - 1 = 2^s \times d$ şeklinde yazılır, burada $d$ tek bir sayı ve $s$ bir pozitif tam sayıdır.
+    \item Eğer $a^d \equiv 1 (\text{ mod } n)$ veya $a^{2^r \times d} \equiv n -^1 (\text{ mod } n)$ sağlanıyorsa, $n$ asal olabilir. Eğer bu eşitlik sağlanmazsa, $n$ kesinlikle bileşiktir.
+    \item Test birkaç kez tekrar edilir, her seferinde farklı bir $a$ seçilir.
+\end{enumerate}
+
+RSA Algoritması, büyük asal sayılarla çalışır. Bu asal sayılar, şifreleme anahtarları oluşturmak için gereklidir. Miller-Rabin testi, bu asal sayıları hızlı bir şekilde test eder ve güvenli anahtarlar oluşturulmasına olanak tanır.
+
+Örneğin, $n = 13$ sayısının asal olup olmadığını kontrol edelim. $n - 1 = 12$ için 12'yi asal çarpanlarına ayıralım:
+
+\[ 12 = 2^2 \times 3 \]
+
+Burada $s = 2$ ve $d = 3$ elde edilir. Rastgele bir $a$ seçilir: $a = 2$. Miller-Rabin testi uygulayalım. İlk olarak $a^d \text{ mod } n$'yi hesaplayalım:
+
+\[ 2^3 \text{ mod } 13 = 8, 8 \neq 1 \]
+
+Şimdi $a^{2^r \times d} \equiv n -^1 (\text{ mod } n)$ kontrol edelim (r = 1):
+
+\[ 2^{2 \times 3} \text{ mod } = 13 = 2^6 \text{ mod } = 13 = 64 \text{ mod } 13 = 12 \]
+
+$12 = n - 1$ eşit olduğu için, $n = 13$ asal olabilir. Eğer bu işlemler birçok $a$ için geçerliyse, $n$'in asal olma olasılığı yüksektir.
+
+\newpage
+
+\subsection{Group}
+
+Grup, bir matematiksel yapıdır ve üzerinde belirli bir işlem tanımlanmamış olan bir kümedir. Bir grup, dört özelliğe sahip olmalıdır:
+
+\begin{itemize}
+    \item \textbf{Kapalı Olma}: Eğer $a$ ve $b$ grup elemanları ise, $a * b$ işlemi de grup elemanı olmalıdır.
+    \item \textbf{Birlik Elemanı (Identity Element)}: Bir grup elemanının üzerinde işlem uygulandığında, bu eleman kendisiyle aynı kalmalıdır. Bu, grup işlemi ile birleştirilmiş bir elemandır. Örneğin, sayıların toplama işlemi ile birleştirildiğinde sıfır bir birlik elemanıdır, $0 + 0 = 0$.
+    \item \textbf{Ters Eleman (Inverse Element)}: Her grup elemanının tersine sahip olması gerekir. Yani, $a * a^{-1} = e$ olmalıdır. Burada $a^{-1}$ elemanı $a$ ile birleştirildiğinde birlik elemanı ($e$) verir.
+    \item \textbf{İşlem Özelliği (Associativity)}: Grup elemanları arasındaki işlem, birleştirme özelliğine sahip olmalıdır. Yani, $(a * b) * c = a * (b * c)$ olmalıdır.
+\end{itemize}
+
+\newpage
+
+\subsection{Abelian Group}
+
+Bir grup, üzerinde tanımlı işlem komütatif (sırasız) bir özellik gösteriyorsa o grup Abelian grup olarak adlandırılır. Yani, $a * b = b * a$ olmalıdır. Abel gruplarındaki işlemler sırasızdır. Tam sayılar kümesi, toplama işlemi altında bir abel grubu oluşturur çünkü toplama işlemi sırasızdır.
+
+\newpage
+
+\subsection{Cyclic Group}
+
+Bir grup, grubun elemanları bir tek elemanın (g) üssü olarak oluşturulabiliyorsa o grup döngüsel gruptur. Yani, $G = \{ g^0, g^1, ..., g^{n-1} \}$ şeklinde yazılabilir. Bu durumda grup elemanları, grup içinde sürekli olarak bir "g" elemanın kuvvetleriyle ifade edilebilir.
+
+\newpage
+
+\subsection{Rings}
+
+Bir ring (halka), belirli bir küme ve bu küme üzerinde tanımlı iki işlem içeren bir matematiksel yapıdır. Halkaların tanımlanabilmesi için şu şartlar sağlanmalıdır:
+
+\begin{itemize}
+    \item \textbf{Kapalı Olma (Closure)}: Eğer $a$ ve $b$ halkanın elemanları ise, $a + b$ ve $a \times b$ yine halkanın elemanlarıdır.
+    \item \textbf{Toplama için Abel Grubu}: Toplama işlemi, Abel grubunun özelliklerini taşımalıdır. Yani toplama işlemi komütatif (sırasız) ve birleşmeli olmalıdır ve sıfır elemanı olmalıdır.
+    \item \textbf{Çarpma için Dağılım Kuralı}: Çarpma işlemi, toplama işlemi üzerinde dağılım özelliğini sağlamalıdır. Yani, $a \times (b + c) = a \times b + a \times c$ olmalıdır.
+    \item Çarpma işlemi için birim elemanı olması zorunlu değildir.
+\end{itemize}
+
+\newpage
+
+\subsection{Fields}
+
+Bir field (cisim), bir ringin daha güçlü bir versiyonudur. Bir cisimde, çarpma işlemi için de ters elemanlar vardır. Yani, bir cisimde her elemanın bir çarpan tersi vardır. Cisim özellikleri:
+
+\begin{itemize}
+    \item \textbf{Toplama ve Çıkarma İşlemi}: Her iki işlem de Abel grubunun özelliklerini taşır.
+    \item \textbf{Çarpma için Ters Eleman}: Cisimde sıfır dışında her elemanın bir çarpan tersi vardır.
+    \item Çarpma ve toplama için dağılım kuralı geçerlidir.
+\end{itemize}
+
+\newpage
+
+\subsection{Finite Fields}
+
+Bir finite field (sonlu cisim), elemanlarının sayısı sonlu olan ve belirli özelliklere sahip bir cisimdir. Bu tür cisimler, kriptografide önemli bir rol oynar, çünkü sonlu sayılar üzerinde ilem yaparak güvenli anahtar değişimi ve şifreleme işlemleri gerçekleştirilir. Sonlu cisimlerin en bilinen örnekleri modüler aritmetik kullanılarak oluşturulan cisimlerdir. Sonlu alanların özellikleri:
+
+\begin{itemize}
+    \item Eleman sayısı asal bir sayı olan bir cisim oluşturulabilir. Bu cisim $Z_p$ olarak bilinir ve burada $p$ bir asal sayıdır.
+    \item $Z_p$ üzerinde yapılan işlemler asal bir modül altında toplama ve çarpma işlemlerini içerir.
+\end{itemize}
+
+\newpage
