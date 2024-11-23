@@ -30,7 +30,8 @@
 \renewcommand\cfttoctitlefont{\hfill\Large\bfseries}
 \renewcommand\cftaftertoctitle{\hfill\mbox{}}
 
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
 
 \title{Kriptoloji Notlar (www.cyberdatascience.com.tr)}
 \author{Alper Karaca}
@@ -65,6 +66,7 @@
 \tableofcontents
 \newpage
 
+\section{-------------- KRİPTOLOJİ --------------}
 \input{parts/kriptoloji_kriptografi.tex}
 \input{parts/number_theory.tex}
 \input{parts/hash_functions.tex}
@@ -74,5 +76,8 @@
 \input{parts/asymmetric_encryption.tex}
 \input{parts/cryptoanalysis.tex}
 \input{parts/zero_knowledge_proof.tex}
+
+\section{-------------- BLOCKCHAIN --------------}
+\input{parts/blockchain.tex}
 
 \end{document}

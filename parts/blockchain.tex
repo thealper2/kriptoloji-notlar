@@ -1,0 +1,136 @@
+\section{Blockchain}
+
+Blockchain, dijital bilgilerin (verilerin) dağıtık bir yapıda saklandığı, değiştirilemez bir güvenli kayıt sistemidir. Bloklar halinde organize edilen bir veri tabanıdır. Her block, kendinden önceki bloğa bir kriptografik bağl ile bağlıdır ve bu yapı bir zincir oluşturur.
+
+\begin{itemize}
+    \item \textbf{Dağıtık Defter (Distributed Ledger)}: Ağdaki tüm katılımcılar (node) aynı defterin bir kopyasını tutar.
+    \item \textbf{Değiştirilemezlik}: Bir blok onaylandığında, içeriği değiştirilemez hale getlir. Bu, sistemi manipülasyona karşı koruma sağlar.
+    \item \textbf{Şeffeflık}: Blokchain üzerindeki işlemler herkes tarafından görüntülenebilir.
+    \item \textbf{Merkeziyetsizlik}: Herhangi bir merkezi otoriteye bağlı olmadan, ağdaki tüm katılımcılar birbirleri arasında eşit haklara sahiptir. 
+\end{itemize}
+
+\subsection{Merkezi ve Merkeziyetsiz Sistemler}
+
+Merkezi sistemde tüm işlemler ve veriler tek bir otorite (merkezi sunucu) tarafından kontrol edilir. Tüm kullanıcılar bu merkezi otoriteye bağlıdır. Örneğin bankalar, sosyal medya platformları, kimlik yönetim sistemleri. Merkeziyetsiz sistemde veriler ve işlemler, birden fazla katılımcının olduğu bir ağ üzerinde dağıtık bir şekilde yönetilir. Tek bir otoriteye ihtiyaç duyulmaz. Örneğin dağıtık dosya paylaşım sistemleri, bitcoin ve ethereum gibi blockchain ağları.
+
+\begin{itemize}
+    \item \textbf{Kontrol ve Yönetim}: Merkezi sistem, tek bir otorite tarafından kontrol edilir. Merkeziyetsiz sistemde, ağa katılan her düğüm eşit haklara sahiptir; otorite yoktur.
+    \item \textbf{Veri Depolama}: Merkezi sistemde veriler merkezi bir sunucuda depolanır. Merkeziyetsiz sistemde veriler, ağdaki tüm kullanıcılar arasında dağıtılmış şekilde saklanır.
+    \item \textbf{Güvenlik}: Merkezi sistemde, merkezi sunucu saldırıya uğradığında tüm sistem riske girer. Merkeziyetsiz sistemde, güvenlik ağdaki tüm düğümler tarafından sağlanır. Merkezi bir zayıf nokta yoktur.
+    \item \textbf{Şeffaflık}: Merkezi sistemde, şeffaflık sınırlıdır; veriler otoritenin kontrolündedir. Merkeziyetsiz sistemde, işlemler herkese açık veya kısmen açık olabilir.
+    \item \textbf{Kapsam ve Ölçek}: Merkezi sistemde, merkezi yapı ölçeklenebilir, ancak yoğun trafik durumunda darboğaz oluşabilir. Merkeziyetsiz yapılar daha dayanıklıdır ancak ölçeklenebilirlik için optimizasyon gerektirir.
+    \item \textbf{Aracılar}: Merkezi sistemde işlemler genellikle bir aracı üzerinden gerçekleşir. Merkeziyetsiz sistemde işlemler doğrudan iki taraf arasında gerçekleşir.
+    \item \textbf{Performans}: Merkezi sistemde işlemler hızlıdır, çünkü tek bir otorite işlemleri doğrular. Merkeziyetsiz sistemde doğrulama işlemleri daha yavaştır.
+    \item \textbf{Giderler}: Merkezi sistemde yönetim ve bakım maliyetlidir. Merkeziyetsiz sistemde düşüktür.
+    \item \textbf{Arıza Dayanıklılığı}: Merkezi sistemde, bir sunucu çöktüğünde sistem tamamen durabilir. Merkeziyetsiz sistemde, dağıtık yapı sayesinde tek bir düğümün çökmesi sistemi etkilemez.
+    \item \textbf{Veri Manipülasyonu}: Merkezi sistemde, veri merkezi otorite tarafından değiştirilebilir. Merkeziyetsiz sistemde, bloklar onayladıktan sonra veri değiştirilemez, manipülasyona kapalıdır.
+\end{itemize}
+
+\subsection{Blockchain Yapısının Bileşenleri}
+
+\subsubsection{Blok}
+
+Blockchain'in temel yapı taşıdır. Her blok, belirli bir veriyi veya işlemleri saklar. Zincirdeki her blok, bir önceki bloğa bağlıdır. Bu bağlantı, sistemin güvenliğini artırır. Her blok, blok başlığı ve blok verisi olmak üzere iki kısımdan oluşur:
+
+\begin{itemize}
+    \item \textbf{Başlık (Block Header)}:
+    \begin{itemize}
+        \item \textbf{Önceki Blok Hash'i}: Zincirdeki önceki bloğun benzersiz hash değeri.
+        \item \textbf{Merkle Ağacı Kökü (Merkle Root)}: Bloğun içindeki tüm işlemleri özetleyen bir hash değeri.
+        \item \textbf{Zaman Damgası (Timestamp)}: Bloğun oluşturulduğu zamanı belirtir.
+        \item \textbf{Nonce}: Hash oluşturma sürecinde kullanılan rastgele bir sayı.
+    \end{itemize}
+    \item \textbf{Veri (Block Data)}: İşlem kayıtları veya saklanması gereken diğer veriler.
+\end{itemize}
+
+\subsubsection{Zincir}
+
+Zincir, blokların ardışık ve kronolojik bir şekilde birbirine bağlanarak oluşturduğu yapıdır. Her blok, önceki bloğun hash değerini içerir. Bu, bağlantı zincirini oluşturur. Zincirdeki bir bloğun değiştirilmesi, sonraki tüm blokların değiştirilmesini gerektirir, bu da neredeyse imkansızdır. Tüm zincir, ağdaki tüm düğümlerde saklanır.
+
+\subsubsection{Nonce}
+
+Nonce, "Number Only Used Once" kelimelerinin kısaltmasıdır. Bir blok hash'ini belirli bir zorluk seviyesine uydurmak için kullanılan rastgele bir sayıdır. Nonce, madencilik sürecinde hash değerini istenen zorluk seviyesine getirmek için sürekli değiştirilir. Doğru nonce bulunduğunda blok onaylanır ve zincire eklenir. Nonce değerini bulmak zaman alıcıdır ve hesaplama gücü gerektirir. 
+
+\subsubsection{Hash}
+
+Hash, giriş verilerini sabit uzunlukta benzersiz bir çıkışa dönüştüren matematiksel bir algoritmadır. Aynı veri için, her zaman aynı hash değeri üretilir (deterministik). Hash işlemleri hızlı yapılır. Veri küçük bir değişikliğe uğrasa bile hash tamamen farklı bir sonuç üretir. Hash'ten orijinal veriye geri dönüş yapılamaz. Her blok, önceki bloğun hash’ini içerir ve bu da zinciri oluşturur. Hash, verilerin değiştirilmediğini doğrulamak için kullanılır.
+
+\subsubsection{Konsensüs Mekanizması}
+
+Konsensüs mekanizması, ağdaki tüm düğümlerin bir bloğun geçerliliği üzerinde hemfikir olmasını sağlayan bir protokoldür. Blockchain'in güvenliğini salğar. Ağda sahte işlemlerin onaylanmasını engeller. Örneğin:
+
+\begin{itemize}
+    \item \textbf{Proof of Work (PoW)}: Bitcoin'de kullanılır. Madencilik yoluyla zorlu matematiksel problemler çözülerek blok oluşturulur.
+    \item \textbf{Proof of Stake (PoS)}: Ethereum'da kullanılır. Stake edilen varlık miktarına göre blok oluşturma yetkisi verilir.
+\end{itemize}
+
+\subsubsection{Düğümler}
+
+Düğümler, blockchain ağına katılan cihazlardır. Bir düğümün görevi; blockchain verilerini saklamak, işlemleri doğrulamak ve yeni blokların onaylanmasına katılmaktır. Tam Düğüm ve Hafif Düğüm olmak üzere iki tiptir:
+
+\begin{itemize}
+    \item \textbf{Tam Düğümler (Full Nodes)}: Blockchain'in tüm verisini saklar ve doğrulama yapar.
+    \item \textbf{Hafif Düğümler (Light Nodes)}: Yalnızca işlem doğrulama için gerekli verileri saklar.
+\end{itemize}
+
+\subsubsection{Akıllı Sözleşmeler}
+
+Akıllı sözleşmeler, blockchain üzerinde çalışan, önceden tanımlanmış kurallara göre otomatik olarak yürütülen kod parçalarıdır. İnsan müdahalesi olmadan otomatik işlem yapar. Ethereum gibi blockchain platformlarında yaygın olarak kullanılır.
+
+\subsection{Blockchain Türleri}
+
+\subsubsection{Public Blockchain}
+
+Public Blockchain, herkesin katılabileceği, işlem yapabileceği ve blokları doğrulayabileceği tamamen merkeziyetsiz bir blockchain türüdür. Herhangi bir kullanıcı, kimlik bilgisi vermeden bu tür blockchain ağına katılabilir. Hiçbir merkezi otoriteye bağlı değildir. Tüm işlemler ve veriler herkese açıktır. Proof of Work veya Proof of Stake gibi güçlü konsensüs mekanizmaları ile güvenliği sağlanır. Büyük ölçekle ağlarda işlem süreleri uzun olabilir. Proof of Work kullanan sistemlerde enerji tüketimi yüksektir. Bitcoin, Ethereum, dApps'da kullanılır.
+
+\subsubsection{Private Blockchain}
+
+Private Blockchain, yalnızca belirli bir grup insanın erişim ve kullanım iznine sahip olduğu kapalı bir blockchain türüdür. Kontrol bir organizasyon veya kurum tarafından sağlanır. Ağdaki düğümler yalnızca davet ile katılabilir. Bir organizasyon veya şirket tarafından yönetilir. Daha az düğüm olduğu için işlemler daha hızlıdır. Yalnızca yetkilendirilmiş kişiler işlemleri görebilir. Tam merkeziyetsizlik sağlanamaz. Bankacılık, sağlık gibi alanlarda kullanılır.
+
+\subsubsection{Hybrid Blockchain}
+
+Hybrid Blockchain, public ve private blockchain'in bir kombinasyonudur. Belirli kısımlar halka açık olabilirken, diğer kısımlar yalnızca yetkilendirilmiş kullanıcılar tarafından erişilebilir. Hangi verilerin açık olacağı ve hangi verilerin gizli kalacağı kontrol edilebilir. Bazı kararlar merkeziyetsiz bir şekilde alınabilir. Kurulum ve yönetimi daha zordur.
+
+\subsubsection{Consortium Blockchain}
+
+Consortium Blockchain, birden fazla organizasyonun ortaklaşa işlettiği özel bir blockchain türüdür. Kontrol, konsorsiyumu oluşturan üyeler arasında paylaşılır.  Yalnızca konsorsiyuma üye olan organizasyonlar ağa katılabilir. Merkezi kontrol yerine konsorsiyum üyeleri arasında yetki dağıtılır. Konsorsiyum üyeleri arasında bir güven mekanizması oluşturur. Üyeler arasında işlem şeffaflığı sağlanır. Halka açık kullanım için uygun değildir.
+
+\subsection{Byzantine Generals Problem}
+
+Bizans Generali Problemi, dağıtık sistemlerde güvenilir bir konsensüs (uzlaşma) mekanizması oluşturmanın zorluğunu ifade eder. Bu problem, düğümlerin bir kısmının kötü niyetli olduğu bir ortamda, sistemin doğrulukla çalışmasını sağlama amacıyla ilgilidir. Senaryo şöyledir;
+
+Bizans İmparatorluğu ordusunun generalleri bir şehri kuşatmıştır. Generaller farklı noktalarda kamp kurmuşlardır ve hepsi ya şehre saldırmalı ya da çekilmelidir. Ancak generaller yalnızca mesajlarla iletişim kurabilir. Bazı generaller ihanet edebilir ve yanlış mesajlar göndererek diğerlerini yanıltabilir. Amaç, ihanet eden generallerin varlığına rağmen, sadık generallerin hemfikir olduğu bir stratejide uzlaşmasıdır. 
+
+Bizans Generali Problemi'nin çözümü, sistemin kötü niyetli ya da hatalı aktörlerin (düğümlerin) varlığında doğru bir şekilde çalışabilmesini sağlamaktır. Bu sorunu çözmek için çeşitli konsensüs algoritmaları geliştirilmiştir.
+
+\begin{itemize}
+    \item \textbf{Proof of Work (PoW)}: Madenciler, işlemleri doğrulamak için zor matematiksel problemleri çözer. Çözümü ilk bulan ödüllendirilir ve işlemi blok zincirine ekler. Problem çözmek enerji ve kaynak gerektirdiği için kötü niyetli düğümler sistemi ele geçirmek için büyük kaynak ayırmak zorunda kalır.
+    \item \textbf{Proof of State (PoS)}: Kullanıcılar, sahip oldukları token miktarı oranında blok üretme hakkı kazanır. Düşük enerji tüketimiyle çalışır.
+    \item \textbf{Byzantine Fault Tolerance (BFT)}: Sistem, kötü niyetli aktörlerin oranı toplamının üçte birinden fazla olmadığında doğru bir şekilde çalışabilir. Tüm düğümler mesajları doğrular ve çoğunluk oyuna göre konsensüse ulaşılır.
+    \item \textbf{Delegated Proof of Stake (DPoS)}: Belirli düğümler (delegeler) oylama ile seçilir ve blokları doğrulamakla görevlendirilir. Sistem daha hızlı ve enerji verimlidir.
+\end{itemize}
+
+\subsection{Madenciler ve Mining İşlemi}
+
+Madenci, bir blockchain ağında işlemleri doğrulayan, yeni blokları oluşturan ve bu sürecin sonunda ödüller kazanan katılımcıya denir. Madenciler, blockchain sisteminin güvenliğini sağlar ve merkeziyetsiz yapısını destekler. Madenciler, kazım işlemi (mining) adı verilen bir süreçle çalışır. Bu süreç, işlemleri doğrulamak, blockchain'e yeni bloklar eklemek ve ağı saldırılara karşı korumak için gereklidir. Madencinin görevi;
+
+Madencilerin temel amacı, hem blockchain ağının işleyişine katkıda bulunmak hem de bunun karşılığında ödül kazanmaktır. Bu ödüller:
+
+\begin{itemize}
+    \item \textbf{Blok Ödülleri}: Yeni bir blok oluşturan madenciye verilen ödül.
+    \item \textbf{İşlem Ücretleri}: Kullanıcılar tarafından işlemlerinin onaylanması için ödenen küçük ücretler.
+\end{itemize}
+
+Kazım işlemi, bir konsensüs mekanizması ile gerçekleştirilir. Proof of Work yöntemi için kazma işlemleri;
+
+\begin{enumerate}
+    \item Ağdaki kullanıcılar işlemlerini gönderir. Bu işlemler madenciler tarafından alınır ve doğrulanır. Doğrulanan işlemler bir araya getirilerek bir kuyruk oluşturulur.
+    \item Madenci, işlemleri bir blok içine koyar ve bu bloğun ağın geri kalanıyla uyumlu olduğunu kanıtlamak için çalışmaya başlar.
+    \item Her blokta bir nonce adı verilen rastgele bir sayı bulunur. Madenci, bu nonce değerini değiştirerek, bloğun hash değerini belirli bir hedefin altına düşürmeye çalışır. Bu süreç, yoğun bir hesaplama gücü gerektirir çünkü hash değerini bulmak için birçok olasılık denenir.
+    \item Hash, bir bloğun kimlik kartıdır. Madenci, bloğun hash'ini doğru bir şekilde hesapladığında, bu hash diğer düğümler tarafından doğrulanır. Hash değeri, bloğun önceki blokla bağlantısını da içerir, bu da blockchain'in zincir yapısını oluşturur.
+    \item Madenci başarılı olduğunda, oluşturduğu blok tüm ağa gönderilir. Diğer düğümler bu bloğu doğrular ve zincire ekler.
+    \item Başarılı madenci, blok ödülü ve işlem ücretlerini alır.
+\end{enumerate}
+
+
+\newpage

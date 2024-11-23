@@ -8,6 +8,10 @@ Simetrik şifrelemede, aynı anahtar hem şifreleme hem de şifre çözme işlem
     \item \textbf{Hybrid Yaklaşımlar}: Akış ve blok şifrelemenin avantajlarını birleştirir. Çoğu modern protokolde hibrit modeller tercih edilir.
 \end{itemize}
 
+Stream Cipher, veriyi bit bazında işler. Yani, her bir veri bitini (1 veya 0) tek tek şifreler. Veriyi sürekli (stream) olarak işler ve her bit için bir anahtar akışı oluşturur. Şifreleme ve şifre çözme işlemleri aynıdır. Şifreleme işlemi nasıl yapılırsa şifre çözme işlemi de aynı şekilde yapılır. Veri sürekli akış halinde olduğu için verilerin sırası önemli değildir. Anahtar akışı anahtarın bir parçası veya şifreleme algoritması tarafından üretilen bir sıralı sayı ile oluşuturulur. Aynı anahtar birden fazla bitin şifrelenmesinde kullanılabilir. Bit bitin hatalı olması sadece o bitin deşifre edilmesini etkiler. Hatalı bir bit şifreli veride yalnızca bir bitin yanlış çözülmesine yol açar. Hızlıdır. Veri uzunluğu belirsiz veya çok büyük olduğunda verimlidir. Ses ve video akışları, Wi-Fi, GSM şifrelemeleri gibi alanlarda kullanılır. Düşük donanım gereksinimlerine sahip cihazlarda tercih edilir.
+
+Block Cipher, veriyi sabit uzunluktaki bloklar halinde işler. Veri birden fazla bitin bir bloğu olarak şifrelenir ve her blok, şifreleme işlemi sırsaında aynı anahtarı kullanır. Yavaştır. Şifreleme ve şifre çözme işlemleri ters sıralarda yapılır. Şifreleme ve şifre çözme algoritmaları birbirinden farklıdır. Sabit uzunluktaki veri bloklarını şifrelerken anahtar her blok için aynı kalır. Eğer bir blokta hata oluşursa, tüm blok etkilenir. Bu, hataların daha geniş bir alana yayılmasına yol açar. Dosya şifrelemeleri gibi alanlarda kullanılır. Daha güvenlidir.
+
 \subsection{Feistel Cipher}
 
 Feistel Yapısı, modern blok şifreleme algoritmalarının temelinde yatan bir yapıdır. Bu yapı, veriyi birden fazla turda işleyerek şifreleme veya deşifreleme işlemi gerçekleştirir. Feistel Yapısı'nın en önemli özelliği, aynı algoritmanın hem şifreleme hem de deşifreleme için kullanılabilmesidir. 
@@ -449,48 +453,5 @@ decrypted = rc4_encrypt_decrypt(ciphertext, key)
 print("Encrypted:", ciphertext)
 print("Decrypted:", decrypted.decode())
 \end{lstlisting}
-
-\newpage
-
-\subsection{Kuantum Kriptografi}
-
-Kuantum kriptografi, kuantum mekaniğinin temel ilkelerine dayanan bir şifreleme yöntemidir. Diğer yöntemlerden farklı olarak, veri güvenliğini matematiksel hesaplamaların karmaşıklığından ziyade fiziksel prensiplere dayandırır. Bilgiler, kuantum bitleri (qubit) ile temsil edilir. Qubit'ler 0, 1 veya bu ikisinin süperpozisyonu şeklinde olabilir. Kuantum Kriptografi, Heisenberg Belirsizlik İlkesini kullanır. Kuantum parçacığının özelliklerini ölçmek, o parçacığın durumunu değiştirir. Bu özellik, dinleme girişimlerini tespit etmeyi sağlar. Kuantum durumları, birbiriyle çakışmayan bazlarda ölçüldüğünde kesin bilgi vermez. Bu, iletişim güvenliğini artırır. Dolaşıklık (Entanglement), iki veya daha fazla parçacığın durumlarının birbirine bağlı olması durumudur. Bu bağlantı, fiziksel olarak ayrı yerlerde bile ölçümler arasında güçlü bir bağıntı sağlar.
-
-\subsubsection{BB84 Algorithm}
-
-BB84 Algoritması, 1984 yılında Charless Bennett ve Gilles Brassard tarafından geliştirilen ilk kuantum anahtar dağıtım protokolüdür. 
-
-\begin{enumerate}
-    \item Alice, rastgele bir bit dizisi ve baz dizisi seçer. Bitleri seçilen bazlara göre kuantum durumlarına dönüştürür ve Bob'a gönderir.
-    \item Bob, rastgele bazlar seçerek kuantum bitlerini ölçer. Bazlar doğru seçildiyse, Alice'in gönderdiği biti doğru şekilde ölçer; aksi takdirde rastgele bir sonuç elde eder.
-    \item Alice ve Bob, bir kanal üzerinden hangi bazları kullandıklarını paylaşır, bitlerin kendisini paylaşmazlar. Sadece aynı bazda ölçülen bitler korunur ve diğerleri atılır.
-    \item Kalan bitler, ortak bir gizli anahtar olarak kullanılır.
-    \item Alice ve Bob, anahtarın bir kısmını karşılaştırarak Eve'in dinleme girişimlerini tespit eder. Eğer müdahale varsa, kuantum durumlarındaki değişimden dolayı hata oranı artar.
-\end{enumerate}
-
-\subsubsection{EPR-Ekert Protocol}
-
-EPR-Ekert Protokolü, 1991 yılında Artur Ekert tarafından önerilen bir kuantum anahtar dağıtım protokolüdür. Bu protokol, Einstein-Podolsky-Rosen (EPR) dolaşıklığı üzerine kuruludur. 
-
-\begin{enumerate}
-    \item Alice ve Bob, dolaşık kuantum parçacıkları alır. Bu parçacıklar, birbirinden bağımsız iki uzak yerde ölçülür.
-    \item Alice ve Bob, ölçümlerini farklı yönlerde rastgele yapar. Ölçüm sonuçları, kuantum mekaniğinin yasaları nedeniyle güçlü bir şekilde korelasyonludur.
-    \item Eğer Eve, kuantum kanalı dinlemeye çalışırsa, dolaşıklık bozulur ve korelasyonlar değişir. Bu, dinleme girişimlerini tespit etmeyi sağlar.
-    \item Alice ve Bob, ölçüm sonuçlarının korelasyonuna dayanarak bir gizli anahtar oluşturur.
-\end{enumerate}
-
-\newpage
-
-\subsection{Post-Kuantum Kriptografi (PQC)}
-
-Post-Kuantum Kriptografi, kuantum bilgisayarların geleneksel kriptografi yöntemlerini tehdit etmesinden dolayı ortaya çıkmıştır. Geleneksel şifreleme yöntemleri büyük ölçüde matematiksel problemlerin çözüm zorluğuna dayanır. Ancak kuantum bilgisayarlar, güçlü algoritmalar sayesinde bu matematiksel problemleri etkili bir şekilde çözebilir. Post-Kuantum Kriptografi, kuantum bilgisayarların bu potansiyel tehditlerine karşı dayanıklı algoritmalar sunmayı amaçlar. Bu algoritmalar, kuan tum bilgisayarların güçlü işlem kapasitesine dayanacak şekilde tasarlanmıştır. Sadece kuantum saldırıları değil, aynı zamanda klasik bilgisayarların saldırılarına karşı da dayanıklıdır. Henüz tam olarak benimsenmiş standartlar yoktur ve standartlaştırma süreci devam etmektedir. PQC, problem kategorileri;
-
-\begin{itemize}
-    \item \textbf{Izgara (Lattice)}: Çok boyutlu geometrik ızgaralarda kısa vektörlerin bulunması zorluğuna dayanır. Kullanılan algoritmalar: Learning with Errors (LWE), NTRU.
-    \item \textbf{Kodlama (Code)}: Hata düzeltme kodlarının çözümündeki zorluğa dayanır. Kullanılan algoritmalar: McEliece.
-    \item \textbf{Çok Değişkenli Polinomlar (Multivariate Polynomials)}: Çok değişkenli polinomların sıfırlarının bulunmasındaki zorluğa dayanır. Kullanılan algoritmalar: Rainbow, UOV (Unbalanced Oil and Vinegar).
-    \item \textbf{Hash}: Güvenli hash fonksiyonlarına dayanır. Kullanılan algoritmalar: SPHINCS+.
-    \item \textbf{Diğer}: Farklı matematiksel zorluklardan yararlanır. Kullanılan algoritmalar: Supersingular Elliptic Curve Isogeny (SIEC).
-\end{itemize}
 
 \newpage
