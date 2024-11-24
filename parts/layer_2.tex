@@ -1,0 +1,78 @@
+\section{Layer-2}
+
+Layer-2, bir blockchain'in ana katmanı olan Layer-1 üzerine inşa edilen ikinci bir protokol veya ağ katmanıdır. Layer-2 çözümleri, temel blockchain'in işleyişini değiştirmeden ölçeklenebilirlik, işlem hızını artırma ve işlem maliyetlerini düşürme gibi sorunları çözmeyi hedefler. Layer-1 blockchain'ler düşük işlem kapasitesine sahiptir. Örneğin, Bitcoin yaklaşık 7 işlem/saniye (TPS), Ethereum ise 30 TPS civarında işlem yapabilir. Layer-2 çözümleri, bu kapasiteyi artırarak daha falza işlemi destekler. Layer-1 üzerinde her işlem için madencilik ücreti ödenir ve yoğun trafik sırasında bu ücretler çok artabilir. Layer-2, işlemleri daha ucuz hale getirir. Layer-1'in blok doğrulama süreleri, işlemleri yavaşlatabilir. Layer-2, bu işlemleri Layer-1'den bağımsız bir şekilde hızlandırır. Layer-2 çözümleri, Layer-1'in güvenlik protokollerini kullanmaya devam eder. Bu, Layer-2 ağlarının güvenli bir şekilde çalışmasını sağlar.
+
+Layer-2 Çözümleri, işlemleri Layer-1'den alır ve bu işlemleri kendi sistemde işler. Daha sonra işlemlerin özetini veya sonuçlarını Layer-1'e kaydeder. Bu yöntem sayesinde Layer-1 üzerindeki yük azaltılır. 
+
+\begin{enumerate}
+    \item Kullanıcılar, Layer-1 üzerinde bir kanal veya bağlantı oluşturur ve işlemlerini Layer-2'ye yönlendirir.
+    \item Layer-2, işlemleri kendi ağı içinde gerçekleştirir. Bu, işlemlerin hızlı ve düşük maliyetle tamamlanmasını sağlar.
+    \item İşlemlerin toplam sonucu veya bir özeti, güvenlik sağlamak için Layer-1 blockchain'ine kaydedilir. Bu, Layer-2 üzerindeki işlemlerin Layer-1 ile aynı güvenlik standartlarına sahip olmasını sağlar.
+\end{enumerate}
+
+\subsection{State Channels}
+
+State Channels, iki veya daha fazla taraf arasında bir bağlantı (kanal) oluşturarak işlemlerin büyük çoğunluğunu off-chain (zincir dışı) gerçekleştirir. Bu yöntemle, işlem sonuçları yalnızca kanal kapatıldığında veya bir anlaşmazlık durumunda on-chain (zincir üzerinde) kaydedilir. İşlemler, blockchain ağının onaylama süreçlerinden bağımsız bir şekilde gerçekleştirilir. Her bir işlem için madencilik ücreti ödenmesi gerekmediği için maliyetler büyük ölçüde azalır. İşlemler zincir dışı gerçekleştiği için Layer-1 üzerindeki trafik azalır. Zincir dışı işlemler, blockchain üzerinde görünmez. Bu, taraflar arasında daha fazla gizlilik sağlar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kanal açılırken, bir çoklu imza hesabı oluşturulur. Bu hesap, yalnızca tarafların imzalarının birleştirilmesiyle işlem yapabilir.
+    \item İki taraf, blockchain üzerinde bir akıllı sözleşme (smart contract) aracılığıyla bir kanal oluşturur. Taraflar, kanalda kullanılacak bir teminat (collateral) veya fonu akıllı sözleşmeyle kilitler. Bu aşamada kanalın başlangıç durumu blockchain'e kaydedilir.
+    \item Kanal açık olduğu sürece işlemler, taraflar arasında gerçekleşir. Her işlemde, taraflar yeni bir durum üzerinde anlaşır ve bu durum dijital olarak imzalanır. Bu, işlemlerin geçerliliğini ve üzerinde anlaşılan durumun değiştirilemeyeceğini garanti eder. İşlemler yalnızca taraflar arasında paylaşıldığı için blockchain'e kaydedilmez.
+    \item Kanal kapatılırken, taraflar son durum üzerinde anlaşır. Son durum blockchain'e kaydedilir ve kanal kapatılır.
+    \item Eğer bir anlaşmazlık olursa, akıllı sözleşme devreye girer ve önceki durumlardan hangisinin geçerli olduğunu belirler.
+\end{enumerate}
+
+\subsubsection{Bitcoin Lightning Network}
+
+Bitcoin işlemlerini hızlı ve ucuz hale getirmek için kullanılır. Kullanıcılar arasında sürekli ödeme yapılmasını sağlar.
+
+\subsubsection{Ethereum Raiden Network}
+
+Ethereum üzerinde token transferlerini hızlandırır ve maliyetleri düşürür.
+
+\subsection{Rollups}
+
+Rollups, çok sayıda işlemi zincir dışında birleştirir (roll-up) ve bu işlemlerin yalnızca özetini veya sıkıştırılmış halini ana zincire gönderir. Bu, hem Layer-1 güvenliğinden faydalanırken hem de Layer-2 üzerinde yüksek ölçeklenebilirlik sağlar. İşlemler Layer-2 üzerinde gerçekleştiği için Layer-1 üzerindeki gaz ücretleri büyük ölçüde azalır. Kullanıcılar çok daha düşük işlem ücretleri öder. Rollups, Layer-1'in güvenliğinden faydalanır. İşlemlerin geçerliliği ana zincir tarafından garanti edilir. Rollups, iki kategoriye ayrılır:
+
+\begin{itemize}
+    \item \textbf{Optimistic Rollups}: İşlemlerin geçerli olduğu varsayılır (optimistic) ancak bir işlemde hata olduğunda veya kötü niyetli bir girişim olduğunda itiraz edebilir. İtiraz süresi 1-2 hafta sürebilmesi nedeniyle fon çekme işlemleri daha uzun sürebilir. Bu itiraz sürecinde, işlem geçerliliğini kanıtlamak için "Fraud Proof" adı verilen bir mekanizma devreye girer. Fraud Proof, sahte veya geçersiz bir işlemi kanıtlamak için kullanılır. Kullanıcılar, yanlış bir işlemi fark ettiklerinde sahtekarlık kanıtı sunabilirler. 
+    \item \textbf{Zero-Knowledge Rollups}: İşlemlerin geçerliliği, sıfır bilgi kanıtı adı verilen kriptografik bir teknikle kanıtlanır. Her bir batch'in geçerliliği, Layer-1 üzerinde bir "Validity Proof" ile doğrulanır. Bu kanıtlar, işlemlerin doğru olduğunu Layer-1 üzerinde matematiksel olarak garanti eder. Daha hızlıdır çünkü itiraz sürecine gerek yoktur. 
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcılar işlemlerini Layer-2 üzerindeki bir rollup operatörüne (veya doğrulayıcıya) gönderir. Operatör, bu işlemleri toplar ve tek bir işlem halinde "roll-up" eder.
+    \item Rollup, işlemlerin toplamını veya özeti (merkle kökü gibi) Layer-1 blockchain'ine gönderir. Bu özet, işlemlerin geçerliliğini kanıtlar ve ana zincir üzerinde doğrulanır.
+    \item Rollup operatörü, Layer-2 durumunu sürekli olarak günceller ve bu durum Layer-1 zincirine bağlı kalır.
+\end{enumerate}
+
+\subsection{Plasma}
+
+Plasma, Ethereum blockchain’i ölçeklendirmek için önerilmiş bir Layer-2 çözümüdür. Plasma, 2017 yılında Vitalik Buterin ve Joseph Poon tarafından tanıtılmış bir konsepttir. Tasarımı, Layer-1’in güvenliğini kullanırken Layer-2 üzerinde yüksek ölçeklenebilirlik ve işlem hızı sağlamayı hedefler. Plasma, Ethereum ana zincirine (Layer-1) bağlı alt zincirler oluşturur. Bu alt zincirler, işlemleri Layer-2 üzerinde işleyerek ağın işlem kapasitesini artırır ve maliyetleri düşürür. Her alt zincir kendi akıllı sözleşmeleri ve kuralları ile çalışır ancak güvenliği ana zincirden alır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Ana zincir üzerinde bir Plasma akıllı sözleşmesi oluşturulur. Bu sözleşme, alt zincirlerin kurallarını ve durumlarını yönetir.
+    \item Kullanıcılar işlemlerini alt zincirlerde gerçekleştirir. Bu işlemler, alt zincirlerde birleştirilir ve sıkıştırılmış bir şekilde ana zincire gönderilir.
+    \item Alt zincirlerdeki işlemler, bleirli aralıklarla bir Merkle ağacı kökü olarak ana zincire kaydedilir (checkpoint).
+    \item Kullanıcılar, fonlarını alt zincirden ana zincire çekmek istediklerinde bir "exit" işlemi başlatır. Eğer alt zincirde sahte bir işlem olduğu düşünülüyorsa, kullanıcılar Fraud Proof mekanizması ile itiraz eder.
+\end{enumerate}
+
+\subsection{Sidechains}
+
+Sidechain (Yan Zincir), bir Layer-2 ölçeklendirme çözümü olarak kullanılan, ana blockchain'e bağlı ama ondan bağımsız bir blockchain ağını ifade eder. Sidechain'ler kendi konsensüs mekanizmalarına sahip ve ana zincirden (Layer-1) farklı kurallar çerçevesinde çalışan paralel ağlardır. Sidechain'ler, ana blockchain üzerinde işlem yapmadan, kullanıcıların daha hızlı ve düşük maliyetle işlem gerçekleştirmesini sağlar. Ana zincir ile sidechain arasındaki bağlantıyı bir iki yönlü köprü (two-way peg) kurar. Bu mekanizma, kullanıcıların token'larını ana zincirden sidechain'e ve geri taşımasına olanak tanır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Sidechain, ana zincirden bağımsız olarak çalışır ancak bir "iki yönlü köprü" ile ana zincire bağlıdır. Köprü, kullanıcıların token'larını ana zincirden sidechain'e taşımasına olanak tanır.
+    \item Ana zincirde bir token sidechain'e gönderildiğinde, bu token ana zincirde kilitlenir ve sidechain'de eşdeğer bir token oluşturulur. Benzer şekilde, sidechain'deki token ana zincire geri gönderildiğinde, ana zincirdeki kilitli token serbest bırakılır.
+    \item Sidechain'ler, kendi bağımsız konsensüs mekanizmalarına sahiptir.
+    \item Sidechain'deki işlemler, sidechain'in validator veya madencileri tarafından doğrulanır ve bloklar oluşturulur. Bu işlemler ana zincire doğrudan kaydedilmez.
+\end{enumerate}
+
+\newpage

@@ -46,8 +46,20 @@ Modüler aritmetik, sayılar üzerinde işlem yaparken belirli bir modulo (böl�
 \[ (17 \cdot 13 + 5^3) \text{ mod } 7 = ((17 \cdot 13 \text{ mod } 7) + (5^3 \text{ mod } 7)) \text{ mod } 7 \]
 \[ (17 \cdot 13 + 5^3) \text{ mod } 7 = ((221 \text{ mod } 7) + (125 \text{ mod } 7)) \text{ mod } 7 \]
 
-
 Buradanda sonuç $(4 + 6) \text{ mod } 7 = 3$ çıkar.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def modular_arithmetic(a, b, mod, base, exponent):
+    multiply_result = a * b
+    mod_multiply = multiply_result % mod
+    power_result = base ** exponent
+    mod_power = power_result % mod
+    total = mod_multiply + mod_power
+    result = total % mod
+    return result
+\end{lstlisting}
 
 \newpage
 
@@ -84,6 +96,22 @@ Modüler üs alma yöntemi kullanılarak büyük üsler adım adım azaltılır:
     \item Sonuç: $5^{117} \text{ mod } 13 = 5$.
 \end{itemize}
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def modular_exponentiation(base, exponent, mod):
+    result = 1
+    base = base % mod
+    while exponent > 0:
+        if exponent % 2 == 1:
+            result = (result * base) % mod
+
+        exponent = exponent // 2
+        base = (base * base) % mod
+
+    return result
+\end{lstlisting}
+
 \newpage
 
 \subsection{GCD and Euclidean Algorithm}
@@ -110,6 +138,16 @@ Burada $a > b$ kabul edilir. İşlemler b sıfıra eşit olana kadar tekrarlanı
     \item Sonuç: $\text{GCD}(48, 18) = 6$.
 \end{enumerate}
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+        
+    return a
+\end{lstlisting}
+
 \newpage
 
 \subsection{Relatively Prime (Co-Prime) Numbers}
@@ -128,6 +166,16 @@ Aralarında asal sayılar, iki sayının ortak bir böleninin sadece 1 olduğu d
     \item Beşinci adım $\text{GCD}(5, 1) = \text{GCD}(1, 5 \text{ mod } 1)$ buradan 1 elde edilir ve bitirilir.
     \item Sonuç: $\text{GCD}(35, 64) = 1$ olduğu için 35 ve 64 aralarında asaldır..
 \end{enumerate}
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def relatively_prime(a, b):
+    while b != 0:
+        a, b = b, a % b
+
+    return a == 1
+\end{lstlisting}
 
 \newpage
 
@@ -163,6 +211,27 @@ Burada $p_1 = 2$ ve $p_2 = 3$ olur. Hesaplarsak:
 
 $\phi(36) = 12$ bulunur. Bu, 36 ile aralarında asal olan 12 pozitif sayı bulunduğunu gösterir.
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def phi_function(n):
+    result = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+
+            result -= result // p
+
+        p += 1
+
+    if n > 1:
+        result -= result // n
+
+    return result
+\end{lstlisting}
+
 \newpage
 
 \subsection{Fermat's Little Theorem}
@@ -189,6 +258,15 @@ Daha sonra $(3^3 \text{ mod } 7)^2 \text{ mod } 7$'yi hesaplayalım.
 \[ 36 \text{ mod } 7 = 1 \]
 
 Sonuç $3^6 \text{ mod } 7 = 1$'dir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def format_mod_exp(a, n, p):
+    n = n % (p - 1)
+    result = pow(a, n, p)
+    return result
+\end{lstlisting}
 
 \newpage
 
@@ -218,6 +296,40 @@ $\phi(12) = 4$ kullanarak Euler's Theorem formülünü uygulayalım.
 \[ 49 \text{ mod } 12 = 1 \]
 \[ (7^2)^2 \text{ mod } 12 = 1 \]
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+        
+    return a
+
+def phi_function(n):
+    result = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+
+            result -= result // p
+
+        p += 1
+
+    if n > 1:
+        result -= result // n
+
+    return result
+
+def euler_mod_exp(a, n):
+    phi_n = phi_function(n)
+    if gcd(a, n) != 1:
+        raise ValueError("")
+
+    return pow(a, phi_n, n)
+\end{lstlisting}
+
 \newpage
 
 \subsection{Primitive Root}
@@ -246,6 +358,48 @@ $g = 3$ için:
 \end{enumerate}
 
 $g = 3$ için $\{ 3, 2, 6, 4, 5, 1 \}$ kümesi oluşturulur. Bu küme, $\{ 1, 2, 3, 4, 5, 6 \}$'yı oluşturur. Dolayısıyla $g = 3$ bir ilkel köktür.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+        
+    return a
+
+def phi_function(n):
+    result = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+
+            result -= result // p
+
+        p += 1
+
+    if n > 1:
+        result -= result // n
+
+    return result
+
+def is_primitive_root(g, n):
+    phi_n = phi_function(n)
+    residues = set()
+    for k in range(1, phi_n + 1):
+        residues.add(pow(g, k, n))
+    return len(residues) == phi_n
+
+def find_primitive_roots(n):
+    phi_n = phi_function(n)
+    primitive_roots = []
+    for g in range(1, n):
+        if gcd(g, n) == 1 and is_primitive_root(g, n):
+            primitive_roots.append(g)
+    return primitive_roots
+\end{lstlisting}
 
 \newpage
 
@@ -282,6 +436,26 @@ Sonuç $x = 5$'tir. Extended Euclidean Algorithm ile bu soru daha hızlı çöz�
 \[ 1 = 7 - 2 \cdot 3 \]
 \[ -2 \text{ mod } 7 = 5 \]
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def extended_gcd(a, n):
+    if n == 0:
+        return a, 1, 0
+
+    gcd_, x1, y1 = extended_gcd(n, a % n)
+    x = y1
+    y = x1 - (a // n) * y1
+    return gcd_, x, y
+
+def modular_inverse(a, n):
+    gcd_, x, _ = extended_gcd(a, n)
+    if gcd_ != 1:
+        raise ValueError("")
+
+    return x % n
+\end{lstlisting}
+
 \newpage
 
 \subsection{Extended Euclidean Algorithm}
@@ -315,6 +489,19 @@ $\text{GCD}(30, 50) = 10$ için geriye doğru çalışarak $x$ ve $y$'yi buluruz
 \end{itemize}
 
 Sonuç, $x = 2$ ve $y = -1$ bulunur.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def extended_gcd(a, n):
+    if n == 0:
+        return a, 1, 0
+
+    gcd_, x1, y1 = extended_gcd(n, a % n)
+    x = y1
+    y = x1 - (a // n) * y1
+    return gcd_, x, y
+\end{lstlisting}
 
 \newpage
 
@@ -388,6 +575,39 @@ Genel çözüm hesaplanır:
 
 Sonuç $x = 23$'tür.
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def extended_gcd(a, n):
+    if n == 0:
+        return a, 1, 0
+
+    gcd_, x1, y1 = extended_gcd(n, a % n)
+    x = y1
+    y = x1 - (a // n) * y1
+    return gcd_, x, y
+
+def modular_inverse(a, n):
+    gcd_, x, _ = extended_gcd(a, n)
+    if gcd_ != 1:
+        raise ValueError("")
+
+    return x % n
+
+def chinese_remainder_problem(a, m):
+    M = 1
+    for mod in m:
+        M *= mod
+
+    x = 0
+    for i in range(len(m)):
+        Mi = M // m[i]
+        Ni = modular_inverse(Mi, m[i])
+        x += a[i] * Mi * Ni
+
+    return x % M
+\end{lstlisting}
+
 \newpage
 
 \subsection{Discrete Logarithm Problem}
@@ -424,6 +644,17 @@ DLP, asimetrik kriptografide gizliliği korumak için kullanılır. DLP'nin çö
 
 Sonuç $x = 10$'dur.
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+def discrete_logarithm_problem(base, result, modulus):
+    for x in range(modulus):
+        if pow(base, x, modulus) == result:
+            return x
+
+    return None
+\end{lstlisting}
+
 \newpage
 
 \subsection{Fermat's Factoring Method}
@@ -448,6 +679,24 @@ Yani, $a = 78$ seçiyoruz. Şimdi $a = 78$'i kullanarak $b^2$ bulunur:
 
 $b^2 = 125$, bu bir tam kare değildir, bu yüzden $a$'yı bir artırarak bu işlemler tekrarlanır.
 
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import math
+
+def fermat_factoring_method(n):
+    a = math.isqrt(n) + 1
+    b2 = a * a - n
+    while not (int(math.isqrt(b2)) ** 2) == b2:
+        a += 1
+        b2 = a * a - n
+
+    b = int(math.isqrt(b2))
+    factor1 = a - b
+    factor2 = a + b
+    return factor1, factor2
+\end{lstlisting}
+
 \newpage
 
 \subsection{Fermat's Primality Test}
@@ -466,6 +715,20 @@ Fermat’ın Asal Testi, kriptografi alanında büyük öneme sahiptir, özellik
 \[ 2^10 \text{ mod } 11 = 1 \]
 
 Bu sonnuç, Fermat'ın asal testine göre $n = 11$'in asal olduğuna karar verir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+
+def fermat_primality_test(n, k=5):
+    for _ in range(k):
+        a = random.randint(2, n - 1)
+        if pow(a, n - 1, n) != 1:
+            return False
+
+    return True
+\end{lstlisting}
 
 \newpage
 
@@ -494,6 +757,40 @@ Burada $s = 2$ ve $d = 3$ elde edilir. Rastgele bir $a$ seçilir: $a = 2$. Mille
 \[ 2^{2 \times 3} \text{ mod } = 13 = 2^6 \text{ mod } = 13 = 64 \text{ mod } 13 = 12 \]
 
 $12 = n - 1$ eşit olduğu için, $n = 13$ asal olabilir. Eğer bu işlemler birçok $a$ için geçerliyse, $n$'in asal olma olasılığı yüksektir.
+
+\subsubsection{Python Kodu}
+
+\begin{lstlisting}[language=Python]
+import random
+
+def miller_rabin_test(n, k=5):
+    if n <= 1 or n == 4:
+        return False
+    
+    if n <= 3:
+        return True
+    
+    s, d = 0, n - 1
+    while d % 2 == 0:
+        s += 1
+        d //= 2
+
+    for _ in range(k):
+        a = random.randint(2, n - 2)
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        
+        for _ in range(s - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        
+        else:
+          return False
+            
+    return True
+\end{lstlisting}
 
 \newpage
 

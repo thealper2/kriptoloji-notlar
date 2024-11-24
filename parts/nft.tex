@@ -1,0 +1,39 @@
+\section{NFT (Non-Fungible Token)}
+
+NFT, benzersiz token anlamına gelir. NFT'ler, bir blockchain üzerinde saklanan dijital varlıklardır ve her biri benzersizdir. Bu, onları diğer dijital varlıklardan ayıran en önemli özelliktir. NFT'ler değiştirilemez ve takas edilemez (non-fungible) bir yapıya sahiptir, bu da onları fiziksel koleksiyonlarının dijital eşdeğerleri haline getirir. Her NFT'nin kendine özgü bir kimliği ve meta verisi vardır. Örneğin, bir sanat eserinin dijital versiyonu gibi, NFT başka bir NFT ile birebir takas edilemez. NFT'ler blockchain üzerinde saklandığı için kimin sahibi olduğu tamamen şeffaf bir şekilde izlenebilir. Çoğu NFT, bir bütün olarak alınıp satılır ve Bitcoin gibi parçalara bölünemez. NFT'ler genellikle Ethereum üzerinde çalışır ve standartlar (örneğin, ERC-721 ve ERC-1155) kullanılarak oluşturulur. Bu, geliştiricilerin yeni NFT'ler üretmesini kolaylaştırır. NFT'ler, kripto cüzdanlarda saklanabilir ve blockchain üzerinde kolayca transfer edilebilir. NFT'ler, akıllı sözleşmeler aracılığıyla oluşturulur. Bu sözleşmeler, NFT'nin benzersiz kimliğini ve meta verilerini saklar. NFT'lerin içinde dosyalar (görseller, videolar, müzik vb.) saklanmaz. Bunun yerine, bu dosyaların bağlantıları saklanır. Minting (NFT Oluşturma), NFT'ler bir dijital varlığın blockchain üzerinde kayıtlı hale getirilmesiyle oluşturulur. Bu işlem NFT platformlarında yapılır.
+
+\subsection{Cryptopunks Token Sözleşmesi}
+
+Cryptopunks, 2017 yılında Larva Labs tarafından başlatılan ilk NFT projelerinden biridir. Cryptopunks, NFT'lerin potansiyelini gösteren ilk projelerden biridir.Ethereum blockchain üzerindeki akıllı sözleşmelerle yönetilir. 10.000 benzersiz piksel sanat eseri koleksiyonundan oluşur. Her Cryptopunk, ERC-721 standardına dayalı bir NFT'dir. Her punk benzersizdir ve belirli bir özellik setine sahiptir. Cryptopunks, kendi özel token sözleşmesine sahiptir. Bu sözleşme:
+
+\begin{itemize}
+    \item Hangi adresin hangi punk'a sahip olduğunu kaydeder.
+    \item Kullanıcıların Cryptopunks alıp satmasını sağlra.
+    \item Her punk'un özelliklerini ve benzersiz kimliğini içerir.
+\end{itemize}
+
+Cryptopunks, NFT alanında devrim yaratmış ve NFT'lerin benimsenmesinde önemli bir rol oynamıştır. Birçok kişi için, NFT ekosisteminin başlangıcını temsil eder.
+
+\subsection{NFT Standartları}
+
+ERC (Ethereum Request for Comments), ethereum ekosisteminde, standartların ve protokollerin önerilmesi ve tartışılması için kullanılan bir süreçtir. ERC terimi, internet protokollerinin geliştirilmesinde kullanılan "Request for Comments (RFC)" sürecinden esinlenmiştir. Bu süreçte, yeni bir standart önerisi topluluğun görüşüne sunulur ve tartışmalar sonucunda kabul edilir veya reddedilir. ERC, ethereum ağında, akıllı sözleşmeler ve token standardizasyonu için önerilerin sunulması ve uygulamaya geçirilmesi amacıyla kullanılır. Öneriler, Github üzerindeki "Ethereum IPs" reposunda önerilir.
+
+EIP (Ethereum Improvement Proposal), ethereum ağında yapılacak geliştirme ve iyileştirme önerileri için kullanılan bir süreçtir. EIP terimi, yazılım geliştirme projelerinde kullanılan iyileştirme önerisi süreçlerinden türetilmiştir. Ethereum'un teknik altyapısına dair her türlü değişiklik veya geliştirme için kullanılır.
+
+\subsubsection{ERC-721 Standardı}
+
+ERC-721, Ethereum üzerindeki ilk NFT standardıdır. Her bir tokenin benzersiz olmasını sağlar. Her NFT'nin kendine özgü bir kimliği (token ID) vardır. Her token farklıdır ve bir diğer token ile takas edilemez. Her NFT'ye ait meta veriler, kimlik bilgileri ve varlık detayları bu standart üzerinde saklanır. Bir tokenin kime ait olduğu açık bir şekilde blockchain üzerinde saklanır. NFT'ler bir kullanıcıdan diğerine transfer edilebilir. CryptoKitties, benzersiz dijital kedi karakterleri oluşturup ticaret yapmayı sağlayan ilk popüler ERC-721 NFT uygulamasıdır.
+
+\subsubsection{ERC-1155 Standardı}
+
+ERC-1155, hem fungible (değiştirilebilir) hem de non-fungible (değiştirilemez) tokenleri destekleyen hibrit bir standarttır. Aynı sözleşme altında birden fazla token türünün oluşturulmasına olanak tanır. Transfer işlemleri optimize edilmiştir; birden fazla token tek bir işlemde transfer edilebilir. Meta veri ve sahiplik bilgileri daha az yer kalpar. Oyunlarda, hem benzersiz varlıklar (karakterler) hem de değiştirilebilir varlıklar (oyun içi altınlar) oluşturmak için kullanılır. Gods Unchained, ERC-1155 standardını kullanan bir dijital koleksiyon kart oyunudur.
+
+\subsubsection{ERC-998 Standardı}
+
+ERC-998, kombinasyonlu NFT'leri (Composable NFT) destekleyen bir standarttır. NFT'lerin diğer NFT'leri veya fungible tokenleri sahiplenmesine olanak tanır. Bir NFT başka bir NFT'nin veya tokenin sahibi olabilir. Dijital varlıklar, birden fazla bileşenden oluşan bir yapı oluşturabilir. Örneğin, bir karakterin kıyafetleri ve aksesuarları ayrı NFT'ler olarak tanımlanabilir ve bu karakterin sahibi bunları tek bir varlık olarak yönetebilir.
+
+\subsubsection{EIP-2309 Standardı}
+
+ERC-721'in bir uzantısı olarak tasarlanmıştır ve büyük miktarda NFT'lerin daha verimli bir şekilde mint edilmesine (oluşturulması) olanak tanır. Bir işlemde çok sayıda NFT oluşturulabilir. Çoklu NFT işlemlerini tek bir işlemde birleştirerek gaz ücretlerini düşürür. 
+
+\newpage

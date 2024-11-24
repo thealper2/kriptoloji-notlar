@@ -1,0 +1,31 @@
+\section{Smart Contracts (Akıllı Sözleşmeler)}
+
+Akıllı Contract (Smart Contract), Blockchain teknolojisinin temel özelliklerinden biri olan, kendi kendine yürütülebilen ve belirli koşullar sağlandığında otomatik olarak çalışan dijital sözleşmelerdir. Akıllı Contract, merkezi bir otoriteye ihtiyaç duymadan, şeffaf, güvenli ve değiştirilemez bir şekilde işlem yürütülmesini sağlar. Bu kontratlar, belirli kurallar ve koşullar tanımlanarak yazılır ve bu koşullar karşılandığında otomatik olarak işlemleri gerçekleştirirler. Akıllı kontratların kodları ve işlemleri Blockchain üzerinde saklanır, bu da onları şeffaf ve değiştirilmesi zor hale getirir. Akıllı kontrat, bir programlama diliyle (örneğin Solidity) yazılır ve "eğer-şart" türü kurallar belirlenir. Kontrat, dış girdilerle (örneğin bir ödemeyle) tetiklenir. Tanımlanan koşullar karşılandığında kontrat, programlandığı gibi işlemi gerçekleştirir
+
+\subsection{Ethereum Virtual Machine (EVM)}
+
+Ethereum Virtual Machine (EVM), Ethereum Blockchain’i üzerinde çalışan, programlanabilir bir ortam sağlayan ve Ethereum ağı üzerinde işlem gören akıllı kontratları çalıştırmak için kullanılan sanal bir makinedir. Akıllı kontratlar, Ethereum üzerinde merkeziyetsiz uygulamalar (DApp'ler) yaratmak için kullanılır ve bu kontratlar EVM’de çalıştırılır. EVM, Ethereum ağı üzerindeki tüm işlemleri işlemek ve doğrulamak için hesaplamalar yapar. Her işlem, EVM tarafından işlenir ve her düğüm bu işlemi kendi EVM’sinde tekrar doğrular.
+
+EVM’de her işlem belirli bir gas tüketir. Gas, işlem veya akıllı kontratın çalıştırılması için gereken hesaplama gücünü ifade eder. Gas ücretleri, işlemi gerçekleştiren kişiye Ethereum üzerinden ödenir. Gas ücretleri, EVM’nin işlem maliyetlerini dengelemek için kullanılır.
+
+\subsection{Gas Mekanizması}
+
+Gas Mekanizması, Ethereum ve diğer blockchain platformlarında, bir işlemi gerçekleştirmek için gereken hesaplama gücünün ve kaynakların fiyatını belirleyen bir sistemdir. Gas, Ethereum ağında her işlem veya akıllı kontrat çalıştırması için ödenmesi gereken ücret birimidir. Gas, ağın dengesini sağlamak, aşırı yüklenmeleri engellemek ve işlemlerin adil bir şekilde gerçekleşmesini sağlamak için kullanılır. Gas ücretlerinin, işlem türüne ve karmaşıklığına göre değişmesi, Ethereum ağının verimli çalışmasına yardımcı olur. Gas, işlem yaparken kullanılan hesaplama gücü, veri depolama, ve işlem doğrulama gibi kaynakları ölçer. Ethereum kullanıcıları, işlemleri gerçekleştirebilmek için yeterli gas sağlamak zorundadırlar. Bu ücretlerin hesaplanmasında iki bileşen bulunur:
+
+\[ \text{Gas Ücreti} = \text{Gas Limit} \times \text{Gas Price} \]
+
+\begin{itemize}
+    \item \textbf{Gas Limit}: Bir işlem için harcanabilecek maksimum gas miktarıdır. Gas limit, kullanıcının işlem başına belirlediği sınırdır. Bu limit, işlemin ne kadar karmaşık olduğunu ve işlem için ayrılacak gas miktarını belirler.
+    \item \textbf{Gas Price}: Gas başına ödenecek ücretin miktarıdır. Gas fiyatı, kullanıcıların ödemek istediği fiyatı belirlediği bir terimdir. Gwei cinsinden ifade edilir. (1 gwei = 0.000000001 ETH) Gas fiyatı, işlem hızını ve ağ yoğunluğunu etkiler. Gas fiyatı ne kadar yüksek olursa, işlem o kadar hızlı bir şekilde işlenir çünkü madenciler veya doğrulayıcılar, daha yüksek gas ücretine sahip işlemleri önceliklendirir.
+\end{itemize}
+
+Akıllı kontratların karmaşıklığına göre gas kullanımı artabilir. Ethereum ağı, her işlem için gereken gas miktarını belirlemek için işlem tipi ve kontratın içerdiği hesaplamaları göz önünde bulundurur. Gas miktarı, Ethereum ağı tarafından otomatik olarak hesaplanır. Gas fiyatını etkileyen faktörler:
+
+\begin{itemize}
+    \item \textbf{Ağ Yoğunlupu}: Ethereum ağı daha yoğun olduğunda, işlem onay süreleri uzar. Bu durumda kullanıcılar, işlem hızlarını artırmak için daha yüksek gas fiyatları teklif ederler.
+    \item \textbf{Madencilerin Tercihleri}: Madenciler veya doğrulayıcılar, gas fiyatı yüksek olan işlemleri daha hızlı işleyecek şekilde seçerler. Bu nedenle, bir işlemdeki gas fiyatı ne kadar yüksek olursa, işlem o kadar hızlı onaylanır.
+    \item \textbf{Akıllı Kontratın Karmaşıklığı}: Daha karmaşık bir akıllı kontrat çağrısı, daha fazla hesaplama gücü gerektirir ve bu da daha fazla gas kullanımına neden olur.
+    \item \textbf{Gas Savaşları (Gas Wars)}: Gas savaşları, işlem onayı için yüksek gas fiyatı teklif eden birden fazla kullanıcının olduğu durumlarda ortaya çıkar. Kullanıcılar daha hızlı işlem yapmak için gas fiyatlarını artırır ve bu da ağda rekabeti artırır.
+\end{itemize}
+
+\newpage

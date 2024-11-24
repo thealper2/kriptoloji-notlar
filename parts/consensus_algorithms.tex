@@ -1,0 +1,219 @@
+\section{Konsensüs Algoritmaları}
+
+\subsection{Nakamoto Consensus}
+
+Nakamoto Konsensüsü, Bitcoin'in temelini oluşturan ve birçok blockchain ağına ilham veren bir konsensüs mekanizmasıdır. İlk kez Satoshi Nakamoto tarafından 2008 yılında Bitcoin whitepaper'ında tanımlanmıştır. Bu konsensüs mekanizması, dağıtık bir ağdaki düğümlerin (nodes), merkezi bir otorite olmadan üzerinde uzlaştıkları bir işlem sırasını sağlamasını hedefler. Merkezi bir otoriteye ihtiyaç duymadan, ağdaki tüm düğümlerin üzerinde anlaştığı bir defter oluşturur. Dijital para birimlerinde bir varlığın aynı anda birden fazla yerde harcanmasını önler (çifte harcama problemi). Ağın dürüst düğümleri tarafından desteklenen en uzun zincir (Longest Chain Rule) kabul edilir, bu da kötü niyetli saldırıları zorlaştırır. Her düğüm, tüm işlemleri doğrular ve blok zincirine eklenen her şey şeffaf bir şekilde kaydedilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Nakamoto Konsensüsü, Proof of Work (PoW) mekanizmasını kullanır. Madenciler, belirli bir zorluğu karşılayan bir hash değeri bulmak için kriptografik bir bulmacayı çözer.
+    \item Bir madenci, geçerli bir blok oluşturup bulmacayı çözdüğünde, bu bloğu ağa yayınlar. Diğer düğümler, bloğu doğrular ve kabul eder.
+    \item En Uzun Zincir kuralı sayesinde ağdaki tüm düğümler, en uzun ve en fazla iş gücünü temsil eden zinciri doğru zincir olarak kabul eder. Yeni bir blok üretildiğinde, bu blok yalznıca en uzun zincire ekler.
+    \item Eğer ağda aynı anda iki farklı blok üretilirse (fork), düğümler, sonunda en fazla işlem gücüyle desteklenen zinciri seçer.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Proof of Work (PoW)}: Yeni bir blok eklemek için çok yüksek bir hesaplama gücü gerektirir. Bu, saldırganların zincire müdahale etmesini maliyetli ve zor hale getirir.
+    \item \textbf{En Uzun Zincir Kuralı (Longest Chain Rule)}: Sistemin, en uzun ve en fazla işlem gücüyle desteklenen zinciri kabul etmesi, kötü niyetli bir aktörün alternatif bir zincir oluşturmasını çok zorlaştırır.
+    \item \textbf{Zorluk Seviyesi}: Bitcoin gibi sistemlerde, blokların ortalama belirli bir sürede bir oluşturulmasını sağlamak için zorluk seviyesi düzenli olarak ayarlanır. Bu, saldırganların blok üretme hızını artırmasını zorlaştırır.
+\end{itemize}
+
+\newpage
+
+\subsection{Proof of Work (Pow)}
+
+PoW, ağdaki katılımcıların, belirli bir matematiksel problemi çözmesi için yoğun hesaplama gücü harcamasını gerektirir. Bu problemin çözümü "iş kanıtı" olarak değerlendirilir ve çözen madenci, blok zincirine bir blok ekleyerek ödüllendirilir. Bu yöntem, ağdaki konsensüs mekanizmasını (uzlaşmayı) sağlar ve kötü niyetli aktörlerin sistemi manipüle etmesini zorlaştırır. Yüksek enerji tüketir. Yavaş ve düşük işlem gücüne sahiptir. Daha güçlü donanıma sahip madenciler daha avantajlı duruma geçer.
+
+Bitcoin ağında PoW şu şekilde işler:
+
+\begin{enumerate}
+    \item Bir kullanıcı, bir işlemi gönderir.
+    \item İşlemler bir blokta toplanır.
+    \item Madenciler, bu bloğu onaylamak için hash problemini çözmeye çalışır.
+    \item İlk çözen madenci, bloğu doğrular ve blockchain'e ekler.
+    \item Diğer madenciler bu bloğu kabul eder ve işlem geçerli hale gelir.
+\end{enumerate}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir madenci, yeni bir blok oluşturmak için işlemleri gruplar ve bunları hash fonksiyonları ile özetlemeye başlar. PoW'da çözülmesi gereken matematiksel problem, bir hash fonksiyonunun beilrli bir zorluğa (difficulty) uygun bir çıktı üretmesidir.
+    \item Madenciler, nonce (rastgele sayı) değerini değiştirerek bu hash'i bulmaya çalışır.
+    \item Ağa bağlı madencilerin sayısına ve hesaplama gücüne göre problem zorluğu ayarlanır. Bitcoin ağı, her 2016 blokta bir (yaklaşık 2 haftada bir) bu zorluğu otomatik olarak ayarlar.
+    \item İlk doğru hash'i bulan madenci, bloğunu ağdaki diğer düğümlere gönderir. Diğer düğümler, bloğun geçerli olup olmadığını kontrol eder. Eğer geçerliyse, blok zincirine eklenir ve madenci ödüllendirilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+PoW'un temel gücü, bir blok eklemenin veya geçmişteki bir bloğu değiştirmenin çok yüksek bir hesaplama maliyeti gerektirmesidir.
+
+\begin{itemize}
+    \item \textbf{Enerji ve Zaman Maliyeti}: Bir bloğu değiştirmek veya sahte bir blok eklemek için, kötü niyetli bir aktörün mevcut tüm PoW hesaplamalarını yeniden yapması gerekir. Bu, büyük bir enerji ve zaman maliyetine yol açar.
+    \item \textbf{Ağ Gücü (Hashrate)}: Manipülasyon yapmak isteyen bir aktör, ağdaki toplam hash gücünün \%51'inden fazlasını kontrol etmek zorundadır (\%51 saldırısı). Ancak, büyük bir blockchain ağında bu düzeyde güç toplamak ekonomik olarak imkansızdır.
+    \item \textbf{Kriptografik Güvenlik}: Hash fonksiyonları tek yönlüdür ve geri dönüşü yoktur. Bu nedenle, bir hash değerine ulaşmak için rastgele denemeler yapılır. Bu sürecin tahmin edilememesi manipülasyonu zorlaştırır.
+\end{itemize}
+
+\newpage
+
+\subsection{Proof of Stake (PoS)}
+
+PoS, blokların oluşturulması ve doğrulanmasını, madencilik hesaplama gücünden ziyade, kullanıcıların sahip oldukları varlık miktarına ve bu varlıkları "stake" (kilitleme) etmelerine dayanır. Kullanıcılar, belirli miktarda coin veya token'lerini bir süreliğine kilitler ve bu miktar, onların blok doğrulama hakkını kazanma olasılığını artırır. PoS, kripto para ağına katılan doğrulayıcıların, sahip oldukları kripto para miktarına ve ağda bu varlıkları ne kadar süre stake ettiklerine göre ödüllendirilmesini sağlar.
+
+Ethereum, başlangıçta PoW kullanan bir ağdı ancak Ethereum 2.0 güncellemesiyle PoS'e geçti. Ethereum'da PoS şu şekilde işler:
+
+\begin{enumerate}
+    \item Kullanıcılar, minimum 32 ETH stake ederek doğrulayıcı olabilir.
+    \item Doğrulayıcılar, blok üretmek veya doğrulamak için rastgele seçilir.
+    \item Doğru çalışan doğrulayıcılar ödüllendirilir, kötü niyetli doğrulayıcılar cezalandırılır.
+\end{enumerate}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcılar ellerindeki coin'leri ağın belirlediği bir süre boyunca kilitler. Kilitlenen miktar, doğrulayıcı seçilme olasılığını artırır. Bu süreç, bir tür piyango veya rastgele seçim algoritması ile desteklenir.
+    \item Ağ, bir doğrulayıcı seçmek için şu kriterlere bakar:
+    \begin{itemize}
+        \item \textbf{Stake Miktarı}: Daha fazla coin stake edenin seçilme olasılığı daha yüksektir.
+        \item \textbf{Stake Süresi}: Stake edilen varlıkların ağda ne kadar süre kilitli kaldığı göz önünde bulundurulur.
+        \item \textbf{Rastgelelik}: TAm merkeziyetsizlik sağlamak için rastgelelik unsurları eklenir.
+    \end{itemize}
+    \item Seçilen doğrulayıcı, yeni bloğu oluşturur ve ağa önerir. Diğer doğrulayıcılar, bloğun geçerliliğini kontrol eder. Eğer blok geçerliyse, blok zincire eklenir.
+    \item Doğrulayıcı, stake ödülü alır.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Slashing Mekanizması}: Bir doğrulayıcı, blok oluşturma veya doğrulama sırasında hile yaparsa, bu mekanizma sayesinde varlıkların bir kısmını veya tamamını kaybedebilir. Bu durum, kötü niyetli davranışı finansal olarak cezalandırır ve ağın güvenliğini sağlar.
+    \item \textbf{Ekonomik Teşvikler}: PoS, sisteminde bir saldırı yapmak için ağın büyük bir kısmını kontrol etmek gerekir. Bu çok maliyetlidir.
+    \item \textbf{Konsesüs Çeşitliliği}: Bazı PoS sistemleri, kötü niyetli doğrulayıcıların işlemleri çift harcamasını veya zinciri çatal yapmasını önlemek için ilave mekanizmalar kullanılır. 
+    \item \textbf{Rastgelelik}: Blok doğrulayıcıların seçim süreci rastgele olduğu için kötü niyetli bir doğrulayıcının sürekli seçilmesi imkansız hale gelir. 
+\end{itemize}
+
+\newpage
+
+\subsection{Delegated Proof of Stake (DPoS)}
+
+Delegated Proof of Stake (DPoS), Proof of Stake (PoS) konsensüs algoritmasının daha hızlı, daha ölçeklenebilir ve topluluk odaklı bir versiyonudur. Bu sistemde, ağ katılımcıları (token sahipleri), "delegeler" olarak adlandırılan bir grup doğrulayıcı seçer. Delegeler, ağdaki işlemleri doğrulamak ve yeni bloklar oluşturmakla sorumludur. Delegelerin kötü niyetli davranışlarını cezalandıracak mekanizmalar içerir.
+
+\subsubsection{Delege Seçme}
+
+\begin{itemize}
+    \item Token sahipleri, ellerindeki token miktarına göre oy hakkına sahiptir. Oylama, ağı güvence altına almak için delegelerin seçilmesini sağlar.
+    \item Delgeler, toplulukta güvenilirlik, şeffaflık ve sorumluluk sahibi olarak tanınırsa daha fazla oy alma şansına sahiptir.
+    \item Token sahipleri, herhangi bir delegenin performansından memnun kalmazsa oylarını geri çekebilir ve başka bir delegeye oy verebilir.
+    \item Bazı ağlar, oy gücünü sınırlandırarak büyük token sahiplerinin sistemi domine etmesini önlemek iççin mekanizmalar uygular.
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Ağ katılımcıları, ellerindeki token miktarına bağlı olarak delegeleri seçmek için oy kullanır. Her token bir oy hakkı sağlar. Token sahipleri, oylarını istedikleri doğrulayıcıya verebilir ve dilerlerse oylarını başka birine devredebilir.
+    \item Topluluğun oyları sonucunda, sınırlı sayıda delege seçilir. Bu delegeler, ağın işlem doğrulama ve blok oluşturma görevini üstlenir.
+    \item Delegeler, sırayla blok oluşturur ve zincire ekler. Eğer bir delege, sırada görevini yerine getirmezse, bir sonraki delege devreye girer.
+    \item Blok oluştuma görevini başarıyla yerine getiren delegeler, işlem ücretlerinden ve blok ödüllerinden pay alır. Bazı ağlarda delegeler, kazançlarını oy veren token sahipleriyle paylaşabilir.
+    \item Kötü niyetli veya görevini yerine getiremeyen delegeler, topluluk oylarıyla görevden alınabilir ve yerlerine yeni delegeler seçilebilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Delegelerin Sorumluluğu}: Delegeler, token sahipleri tarafından seçildiği için topluluğa hesap verme yükümlülüğü taşır. Görevlerini kötüye kullanan delegeler, oy kaybederek sistemden dışlanır.
+    \item \textbf{Oylama Mekanizması}: Oylar sürekli olarak yeniden düzenlenebilir. Bu, bir delegenin uzun süre sistemde kötü niyetli davranmasını zorlaştırır.
+    \item \textbf{Azınlık Koruma}: Delegelerin sayısı sınırlı olduğu için uzlaşma daha hızlı sağlanır ve bu durum saldırganların ağın \%51'inde kontrol sağlamasını zorlaştırır.
+    \item \textbf{Ekonomik Teşvikler}: Delegelerin kötü niyetli davranması, yalnızca görevlerini değil aynı zamanda gelecekteki ödülleri de kaybetmelerine neden olur. Ayrıca, delegeler sıklıkla ödüllerini toplulukla paylaştıkları için, ekonomik olarak dürüst kalmaya teşvik edilirler.
+\end{itemize}
+
+\newpage
+
+\subsection{Proof of Authority (PoA)}
+
+Proof of Authority (PoA), izinli (permissioned) bir blockchain konsensüs algoritmasıdır. Bu mekanizma, blok oluşturma ve doğrulama yetkisini, güvenilir bir grup doğrulayıcıya (validator) devreder. Doğrulayıcılar, kimliklerini kanıtlar ve ağın güvenliğini sağlamak için güvenilirliklerini ortaya koyarlar. PoA, işlem doğrulama sürecini hızlandırır ve saniyede daha fazla işlem (TPS) sağlar. Özel (private) blockchain ağlarında tercih edilir, çünkü yetkilendirilmiş doğrulayıcılar kullanır. PoW gibi enerji tüketimi yüksek mekanizmalara ihtiyaç duymaz, bu da düşük maliyetli bir sistem sağlar. Kimlik temelli doğrulayıcı seçimi, ağın kötü niyetli kişiler tarafından ele geçirilmesini zorlaştırır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Ağ, belirli kriterlere göre seçilen ve kimliklerini doğrulayan az sayıda doğrulayıcıyı yetkilendirir. Bu doğrulayıcılar, ağı işletmek ve işlemleri doğrulamakla sorumludur.
+    \item PoA, doğrulayıcıların kimliklerini kanıtlamalarını gerektirir. Bu, bir doğrulayıcının gerçek kişi veya kurum olması anlamına gelir. Kimlik doğrulama, ağın kötü niyetli kişilerden korunmasını sağlar.
+    \item Blok üretimi ve doğrulama sırası, önceden tanımlı bir algoritmayla belirlenir. Doğrulayıcılar sırayla blok oluşturur ve ağı senkronize eder.
+    \item PoA sistemlerinde doğrulayıcıların kazançları genellikle işlemlerden alınan işlem ücretlerine veya belirli bir ödül mekanizmasına dayanır.
+    \item Az sayıda doğrulayıcı kullanıldığı için saldırıların gerçekleşmesi zorlaşır. Manipülasyon riski doğrulayıcıların kimlikleri ve sorumluluklarıyla minimize edilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Kimlik Tabanlı Güven}: Doğrulayıcıların gerçek kimlikleri bilinir ve güvenilirlikleri şeffaftır. Kötü niyetli davranış sergileyen doğrulayıcılar, kimliklerinin ifşa edilmesi nedeniyle itibarlarını kaybeder.
+    \item \textbf{Sınırlı Doğrulayıcılar}: Az sayıda doğrulayıcı olduğundan ağın kontrolü kolaylaşır. Saldırı gerçekleştirmek için doğrulayıcıların büyük bir kısmını kontrol etmek gerekir ki bu oldukça zordur.
+    \item \textbf{Ceza Mekanizmaları}: Kötü davranışta bulunan doğrulayıcılar, yetkilerini kaybedebilir.
+    \item \textbf{Güçlü Merkeziyetçi Kontrol}: Manipülasyon ihtimali, güvenilir bir doğrulayıcı grubu seçilerek minimize edilir.
+\end{itemize}
+
+\newpage
+
+\subsection{Proof of Elapsed Time (PoET)}
+
+Proof of Elapsed Time (PoET), Intel tarafından Hyperledger Sawtooth projesi kapsamında geliştirilen bir blockchain konsensüs algoritmasıdır. PoET, madencilik işlemlerinde enerji tüketimini minimuma indirerek, PoW (Proof of Work) gibi yüksek enerji tüketen mekanizmalara alternatif sunar. Bu mekanizma, blok oluşturma hakkını adil bir şekilde dağıtmayı hedefler ve bu süreci donanım tabanlı bir güven mekanizmasıyla sağlar. Her katılımcıya eşit şans tanıyarak, blok üretim sürecinde merkeziyetsizliği korur. Kurumsal ihtiyaçlara uygun, ölçeklenebilir bir çözüm sunar. PoW gibi yoğun hesaplama gücü gerektiren işlemlerden kaçınır, bu nedenle düşük maliyetli donanımlarla çalışabilir.
+
+\begin{itemize}
+    \item \textbf{Hyperledger Sawtooth}: PoET'nin ilk uygulandığı blockchain platformudur. İzne dayalı blockchain projelerinde kullanılır.
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Her node (düğüm), bir blok oluşturma hakkı kazanabilmek için rastgele bir bekleme süresi (elapsed time) seçer. Bu süre, ağdaki tüm düğümler tarafından belirlenen donanımın güvenilir bir ortamında üretilir.
+    \item Düğümler, rastgele bekleme sürelerini hesapladıktan sonra bu süre boyunca bekler. Süresi dolan ilk düğüm, blok oluşturma hakkı kazanır.
+    \item PoET, Intel'in Software Guard Extensions (SGX) teknolojisini kullanarak rastgele bekleme süresinin manipüle edilmesini engeller. SGX, düğümlerin güvenilir bir şekilde çalışmasını sağlayan bir donanım tabanlı güvenli işlem ortamıdır.
+    \item Rastgele bekleme süresi, tüm düğümler arasında eşit dağıtılır, bu da manipülasyonu zorlaştırır.
+    \item Blok oluşturulduktan sonra diğer düğümler, blok üretim sürecinin geçerliliğini doğrular. SGX, bu doğrulama işlemini güvenilir bir şekilde destekler.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Intel SGX}: PoET, rastgele bekleme süresini Intel SGX gibi güvenilir donanım ortamlarında üretir. Bu sayede, düğümlerin süreci manipüle etmesi veya bekleme süresini kısaltması mümkün değildir.
+    \item \textbf{Şeffaflık}:Rastgele bekleme süresi hesaplamaları, ağdaki diğer düğümler tarafından doğrulanabilir. Bu, blok oluşturma sürecinin güvenilirliğini artırır.
+    \item \textbf{Koordinasyon}: PoET, diğer konsensüs algoritmalarında olduğu gibi düğümler arasında bir koordinasyon gerektirmez. Rastgele bekleme süresi mekanizması manipülasyon girişimlerini önler.
+    \item \textbf{Adil Katılım}: PoET, bekleme sürelerini rastgele ve eşit şekilde dağıtarak blok oluşturma şansını tüm düğümlere eşit şekilde tanır. Bu, merkeziyetçiliği azaltır.
+    \item \textbf{Güvenilir Donanım}: Manipülasyon girişiminde bulunan düğümler, güvenilir donanım ortamında tespit edilebilir ve ağdan dışlanabilir.
+\end{itemize}
+
+\newpage
+
+\subsection{Byzantine Fault Tolerance (BFT)}
+
+Byzantine Fault Tolerance (BFT), bir dağıtık sistemde, ağdaki bazı düğümlerin kötü niyetli davranmasına veya hatalı çalışmasına rağmen sistemin doğru çalışmaya devam etmesini sağlayan bir konsensüs mekanizmasıdır. BFT, adını "Bizans Generalleri Problemi"nden alır ve dağıtık sistemlerde güvenilirlik sağlama sorununu çözmeye odaklanır. Elektrik kesintisi, ağ sorunları veya yazılım hataları nedeniyle bazı düğümler çalışamaz hale gelse bile sistemi işler durumda tutar. Ağdaki tüm doğrulayıcıların (veya düğümlerin) doğru bir şekilde aynı veriler üzerinde uzlaşmasını sağlar.
+
+\begin{itemize}
+    \item \textbf{Dürüst Düğümler}: Sistemdeki çoğunluk dürüst olduğunda konsensüs sağlanabilir.
+    \item \textbf{Kötü Niyetli Düğümler}: Kötü niyetli düğümler sahte bilgi yaysa bile dürüst düğümler doğru bir karar üzerinde uzlaşır.
+\end{itemize}
+
+\[ \text{Fault Tolerance} = 3f + 1 \]
+
+Burada, $f$ sistemde maksimum kötü niyetli düğüm sayısını ifade eder. Uzlaşma sağlanabilmesi için düğüm sayısı en az $3f + 1$ olmalıdır. Bu durumda, $f$ sayıda kötü niyetli düğüm olsa bile sistem doğru karar verebilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir düğüm (lider) belirli bir işlem veya blok önerir.
+    \item Öneri, mesajlaşma ağdaki diğer düğümlere iletilir. Düğümler birbirleriyle bilgi paylaşır.
+    \item Her düğüm, aldığı bilgilere göre önerinin doğru olup olmadığına karar verir, oylama yapılır.
+    \item Dürüst düğümlerin büyük çoğunluğu (\%66 veya daha fazla) aynı karara varırsa, öneri kabul edilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Dürüst Çoğunluk İlkesi}: Sistemdeki düğümlerin büyük bir kısmı dürüst olduğu sürece konsensüs mekanizması manipülasyonu engeller.
+    \item \textbf{İletişim Protokolleri}: BFT mekanizmaları, her düğümün diğer düğümlerle mesaj alışverişi yaparak bilgi doğrulamasını sağlar. Kötü niyetli düğümlerden gelen hatalı bilgiler bu süreçte filtrelenir.
+    \item \textbf{Deterministik Karar Süreci}: Tüm düğümler aynı girdiye sahipse ve doğru protokolü izliyorsa, aynı çıktıyı üretir. Böylece, manipülasyon girişimleri etkisiz kalır.
+    \item \textbf{Çoğunluk Kuralı}: Sistemin kararı, dürüst düğümlerin çoğunluk oyu ile belirlenir. Kötü niyetli düğümlerin oyları karar sürecinde dikkate alınmaz.
+    \item \textbf{Lider Seçimi ve Değişimi}: Sistem, belirli bir süre lider düğümü kullanır. Eğer lider düğüm kötü niyetli veya işlevsiz hale gelirse, yeni bir lider seçilir.
+\end{itemize}
+
+\newpage

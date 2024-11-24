@@ -1,0 +1,68 @@
+\section{Blockchain'de Veri Yapıları}
+
+\subsection{Merkle Tree}
+
+Merkle Tree, bir tür ikili ağaç (binary tree) veri yapısıdır. Kriptografik hash fonksiyonlarını kullanarak verilerin bütünlüğünü ve doğruluğunu kontrol etmek için tasarlanmıştır. Her düğüm, alt düğümlerin hash değerini saklar. Ağaçtaki yaprak düğümler, ham verilerin hash değerlerini içerirken, diğer düğümler alt düğümlerin hash'lerinin birleşimininden oluşur. En üstteki düğüm, Merkle Root olarak adlandırılır ve tüm ağacın özetini temsil eder. Verilerin değişmediğini veya değiştirilmediğini doğrulamak için kullanılır. Blockchain sistemlerinde işlemlerin doğruluğunu kontrol eder. Merkle Tree sayesinde, kullanıcılar tüm blockchain'i indirmeden bir işlemi doğrulayabilir. Tüm veriyi doğrulamak yerine yalnızca ilgili hash değerleri kontrol edilerek işlem doğrulama yapılır. Blockchain'de, bir bloğun işlemlerinin bütünlüğü ve doğru zincirlenmesi Merkle Tree ile sağlanır. İşlemler arasında minimum bilgiyle maksimum doğrulama sağlar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Ağaç yaprak düğümlerinden başlar. Her yaprak düğüm, bir işlem verisinin hash’ini saklar. Hash işlemi kriptografik hash fonksiyonlarıyla yapılır.
+    \item Alt düğümlerin hash’leri birleştirilir ve bir üst düğümde depolanır. Bu işlem, kök düğüme ulaşana kadar devam eder. Merkle Root, ağacın en üstündeki hash değeridir. Bu değer, tüm işlemlerin özetini temsil eder.
+    \item Belirli bir veri veya işlemin doğrulanması için yalnızca yol boyunca hash değerlerine ihtiyaç duyulur.
+\end{enumerate}
+
+\newpage
+
+\subsection{Trie}
+
+Trie, ön ek ağacı olarak adlandırılan bir veri yapısıdır. Verileri hiyerarşik bir şekilde depolamak için kullanılır. Trie, string işlemlerinde hızlı arama, ekleme ve silme işlemleri için tasarlanmıştır. Blockchain'de Trie, Ethereum gibi platformlarda state database'i ve işlemleri organize etmek için kullanılır. Ethereum'da, hesap bakiyelerini, kodlarını ve diğer verileri depolamak için Trie'nin geliştirilmiş bir hali olan Patricia Trie kullanılır. Trie, verilerdeki ortak ön ekleri paylaşarak bellek tüketimini azaltır. Bir string'in varlığını kontrol etmek veya bir ön ekle başlayan tüm stringleri bulmak çok hızlıdır. Bir Trie'de her düğüm bir harf içerir ve birden fazla çocuğu olaiblir. Yaprak düğümler, stringlerin sonunu temsil eder.
+
+\begin{itemize}
+    \item \textbf{Ekleme İşlemi}: Bir kelime Trie'ye eklenirken, her harf hiyerarşik olarak bir düğüm olarak eklenir.
+    \item \textbf{Arama İşlemi}: String’in harfleri sırayla takip edilerek Trie’de olup olmadığı kontrol edilir.
+    \item \textbf{Silme İşlemi}: String’in sonunda ilgili düğüm kaldırılır ve eğer düğümün başka çocukları yoksa gereksiz düğümler silinir.
+\end{itemize}
+
+\newpage
+
+\subsection{Patricia Tree}
+
+Patricia Tree, bir sıkıştırılmış Trie yapısıdır. Trie'nin optimize edilmiş bir versiyonudur ve benzer ortak ön eklere sahip olana anahtarları saklamak için kullanılır. Trie'deki her harf için ayrı düğüm oluşturulması yerine, benzer yollar birleştirilir. Patricia Trie’de anahtarlar, sıkıştırılmış yollar boyunca depolanır. Bu yapı hash değerleriyle birlikte birleştirilerek veri bütünlüğü sağlanır.
+
+\newpage
+
+\subsection{Merkle Patricia Tree}
+
+Merkle Patricia Trie (MPT), Ethereum gibi blokzincirlerinde kullanılan bir veri yapısıdır. Bu yapı, hem Merkle Tree'lerin güvenlik özelliklerini hem de Patricia Trie'lerin verimli depolama avantajlarını birleştirir. MPT, verilerin güvenli bir şekilde depolanmasını ve hızlı bir şekilde doğrulanmasını sağlar. Ethereum ve diğer blokzincir projeleri, her işlemdeki veriyi ve durumu (state) şifreli bir şekilde saklamak için Merkle Patricia Trie'yi kullanır. Bu, her işlemde yapılan değişikliklerin, ağın tüm katılımcıları tarafından doğrulanabilmesini sağlar. Patricia Trie, aynı ön eki paylaşan anahtarları daha verimli depolayarak veri belleği kullanımını optimize eder.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Merkle Patricia Trie, hem Trie'yi hem de Merkle Tree'yi içerir. Trie, her düğümün bir anahtar ve değer sakladığı bir yapıdır, ve Merkle Tree ise her düğümde bir hash değerine sahiptir.
+    \item Düğüm Tipleri;
+    \begin{itemize}
+        \item \textbf{Branch Node}: Çocuk düğümlerin bağlantılarını ve bir hash değeri içerir.
+        \item \textbf{Extension Node}: Anahtarları uzatarak önceki düğüme bağlanır.
+        \item \textbf{Leaf Node}: Anahtar-değer çiftini içerir.
+    \end{itemize}
+    \item Her düğümün, altındaki verilerin hash'lerini içerdiği bir Merkle hash yapısı vardır. Bu sayede, herhangi bir veri değiştirilirse, sadece kök hash değeri değişir ve bu değişiklik tüm ağ tarafından kolayca doğrulanabilir.
+    \item MPT'ye yeni bir veri eklendiğinde, trie'nin kökünden başlayarak ilgili düğüme kadar hash hesaplamaları yapılır. Veriler silindiğinde, boş kalan düğümler temizlenir.
+\end{enumerate}
+
+\newpage
+
+\subsection{Directed Acyclic Graphs (DAG)}
+
+Directed Acyclic Graph (DAG), bir graf yapısında düğümler ve yönlendirilmiş bağlantılar (kenarlar) içeren, ancak döngü barındırmayan bir veri yapısıdır. Yönlendirilmiş bir graf olduğu için, her bir kenarın bir yönü vardır ve herhangi bir döngü bulunmadığından bir düğümden kendisine geri dönülemez. Bu yapı, blockchain alternatifleri ve dağıtılmış defter teknolojilerinde (DLT) yaygın olarak kullanılır. DAG, geleneksel blockchain yapılarında bulunan madencilik ve işlem sıralama süreçlerini ortadan kaldırarak daha hızlı ve ölçeklenebilir bir yapı sunar. Yüksek işlem hızlarına ve düşük işlem maliyetlerine izin verir. Blockchain'in aksine, tüm işlemler bir zincir yerine bir grafik üzerinde işlenir. Birden fazla işlem aynı anda işlenebilir ve bu durum sistemin hızını artırır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Her bir düğüm, bir işlemi temsil eder.
+    \item Bir düğümden diğerine giden kenarlar, işlemlerin onay mekanizmasını temsil eder. Bir işlem, önceki işlemleri doğrulayarak ağı ilerletir.
+    \item Yapıdaki kenarlar, hiçbir zaman bir döngü oluşturmaz. Bir işlem sadece kendisinden önce gelen işlemleri referans alabilir.
+    \item Yeni bir işlem,  iki veya daha fazla önceki işlemi onaylamak zorundadır. Bu onaylar, işlemin geçerli sayılması için gereklidir.
+\end{enumerate}
+
+\newpage
