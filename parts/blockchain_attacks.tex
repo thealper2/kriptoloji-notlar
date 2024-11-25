@@ -1,0 +1,245 @@
+\section{Blockchain Attacks}
+
+\subsection{Sybil Attack}
+
+Sybil Attack, bir blockchain ağında ya da merkezi olmayan bir sistemde, bir saldırganın birden fazla sahte kimlik (node) oluşturmasıyla gerçekleştirdiği bir saldırı türüdür. Bu sahte düğümler, ağın işleyişini bozabilir, konsensüs mekanizmasını manipüle edebilir veya ağın kaynaklarını kötüye kullanabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, sistemde sahte kimliklerle temsil edilen birden fazla düğüm oluşturur. Bu düğümler, saldırganın kontrolünde çalışır ve ağın diğer gerçek düğümleriyle aynı haklara sahiptir.
+    \item Saldırgan, sahte düğümler ile ağda önemli bir pozisyon elde etmeye çalışır.
+    \item Saldırgan, çeşitli manipülasyonlar yapar:
+    \begin{itemize}
+        \item \textbf{Veri Manipülasyonu}: Yanlış veri yayabilir veya işlemleri engelleyebilir.
+        \item \textbf{Konsensüs Bozma}: Sahte düğümlerle çoğunluğu elde ederek yanlış kararlar alabilir.
+        \item \textbf{İzleme ve Analiz}: Gerçek düğümlerin aktivitelerini izleyerek ağdaki işlemleri takip edebilir.
+        \item \textbf{Denial of Service}: Ağda hizmet reddi saldırısı oluşturabilir.
+        \item \textbf{Double Spending}: Çifte harcama saldırısı yapabilir.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Konsensüs Mekanizmaları}: PoW, PoS gibi konsensüs mekanizmaları kullanılabilir.
+    \item \textbf{Kimlik Doğrulama}: Düğümlerin kimliklerini doğrulamak için merkezi olmayan doğrulama mekanizmaları kullanılabilir.
+    \item \textbf{Merkeziyetsiz Bağlantı Yapısı}: Ağa katılan düğümlerin rastgele seçilmesi, sahte düğümlerin ağın kritik bölgelerine erişimini zorlaştırır.
+    \item \textbf{Kaynak Sınırlandırma}: Sahte kimliklerin oluşturulmasını zorlaştırmak iççin bant genişliği, işlem gücü gibi bazı kaynaklara sınırlama getirilebilir.
+    \item \textbf{Karmaşık Topoloji}: Ağın daha karmaşık bir bağlantı yapısına sahip olması, sahte düğümlerin kritik pozisyonları ele geçirmesini zorlaştırır.
+\end{itemize}
+
+\newpage
+
+\subsection{Eclipse Attack}
+
+Eclipse Attack saldırısında, bir düğümün diğer düğümlerle olan bağlantıları manipüle edilir ve saldırganın kontrol ettiği sahte düğümlerle sınırlanır. Saldırgan, hedef düğümü izole ederek yalznıca kendi kontrolündeki bilgiye erişmesini sağlar. Böylece, hedef düğüm yalnızca saldırganın belirlerdiği verileri alır. Ağa katılan diğer düğümlerle bilgi alışverişi yapamaz.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, hedef düğümün IP adresini, ağ bağlantı yapılandırmasını ve düğümün iletişim kurduğu diğer düğümleri analiz eder. Hedef düğümün sınırlı sayıda eş (peer) bağlantısı olması saldırıyı kolaylaştırır.
+    \item Saldırgan, birden fazla sahte düğüm oluşturur ve bu düğümleri hedef düğümle iletişim kuracak şekilde yapılandırır.
+    \item Saldırgan, hedef düğümün ağdaki diğer gerçek düğümlerle olan bağlantılarını kesmeye çalışır. Hedef düğüm yalnızca saldırganın kontrol ettiği düğümlerle bağlantı kurar.
+    \item Saldırgan, hedef düğüme yanlış veya eksik bilgi gönderir. Örneğin; yanlış bloklar sunulur, gerçek işlemler gizlenir veya saldırganın istediği işlemler doğru olarak gösterilir.
+    \item Saldırgan, izole edilen düğümden gelen yanlış bilgileri kullanarak çift harcama veya konsensüs manipülasyonu gibi saldırılar gerçekleştirir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Bağlantı Limitlerini Artırma}: Hedef düğümün daha fazla eş (peer) düğümle bağlantı kurması sağlanır. Bu, sahte düğümlerin hedef düğümü izole etmesini zorlaştırır.
+    \item \textbf{IP Adresi Filtreleme}: Aynı IP adresinden gelen çoklu bağlantılar sınırlandırılır. Saldırganın birden fazla sahte düğümü aynı IP üzerinden kontrol etmesi engellenir.
+    \item \textbf{Rastgele Bağlantı Kurma}: Hedef düğümün, her oturumda rastgele düğümlerle bağlantı kurması sağlanır. Böylece saldırganın, hedef düğümü tamamen izole etmesi zorlaşır.
+\end{itemize}
+
+\newpage
+
+\subsection{Eavesdropping Attack}
+
+Eavesdropping Attack, bir blockchain ağı üzerindeki iletişim trafiğini gizlice dinleyerek bilgi elde etme amacı taşıyan bir saldırıdır. Bu saldırıda, saldırgan ağdaki düğümler arasında geçen mesajları veya işlemleri ilzer, veri akışını kaydeder ve bu verileri kötü niyetli amaçlarla kullanabilir. Örneğin, işlem bilgilerini çalabilir, kullanıcı kimliklerini açığa çıkarabilir veya ağın kullanım modelini analiz edebilir. Bu saldırı doğrudan ağın güvenliğine zarar vermez ancak kullanıcı gizliliğini tehlikeye atar ve daha karmaşık saldırılar için veri sağlar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, hedef blockchain ağına bağlanır veya düğümlerin iletşim trafiğini ağ seviyesinde izler.
+    \item Düğümler arasındaki işlem mesajlarını, blok bilgilerini veya diğer ağ içi iletişim verilerini yakalar.
+    \item Toplanan veriler analiz edilir. 
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{TLS (Transport Layer Security)}: Düğümler arası iletişimde TLS gibi güvenli protokoller kullanılarak trafiğin şifrelenmesi sağlanır.
+    \item \textbf{Meta Veri Gizliliği}: Blockchain protokolleri, IP adresleri gibi meta verilerin toplanmasını sınırlamalıdır.
+\end{itemize}
+
+\newpage
+
+\subsection{Denial of Service (DoS) Attack}
+
+DoS Saldırısı, bir blockchain ağını veya belirli bir düğümü hedef alarak bu sistemlerin işleyişini bozmayı amaçlayan bir saldırı türüdür. Saldırgan, hedef sisteme aşırı miktarda sahte istek göndererek kaynaklarını tüketir ve sistemi kullanıcılar için erişilemez hale getirir. Ağda yavaşlamalara, tıkanıklıklara veya hizmet kesintilerine sebep olabilir. Sahte işlemlerle madencilerin veya doğrulayıcıların gereksiz kaynak harcamasını sağlayabilir. Türleri:
+
+\begin{itemize}
+    \item \textbf{Flooding Attack}: Ağa aşırı miktarda sahte işlem gönderilir. Ağ bant genişliği veya düğüm işlem kapasitesi tüketilir.
+    \item \textbf{Consensus-Level DoS}: Madencileri veya doğrulayıcıları yanıltmak için gereksiz veya yanlış işlemler gönderilir. Konsensüs mekanizmasını yavaşlatır.
+    \item \textbf{Application-Level DoS}: Belirli bir blockchain uygulamasını (örneğin akıllı kontratlar) hedef alan saldırılardır.
+    \item \textbf{Distributed DoS}: Birden fazla saldırgan kullanılarak hedefe eş zamanlı saldırılar gerçekleştirilir.
+\end{itemize}
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, blockchain ağında en savunmasız düğümleri veya hizmetleri belirler. Düşük kapasiteye sahip düğümler veya doğrulayıcılar seçilir.
+    \item Saldırgan, hedefe sürekli sahte istekler gönderir. Büyük miktarda sahte işlem göndererek blok doğrulama sürecini yavaşlatır. Düğümün kaynaklarını tüketmek için veri akışı başlatır.
+    \item Düğümün CPU, RAM veya depolama gibi kaynakları tükenir. Diğer düğümlerle iletişimi kesilir ve hedef düğüm işlevsiz hale gelir.
+    \item Hedeflenen düğüm ağdan koparılır veya işlevi tamamen durdurulur. Ağ performansı genel olarak düşer, işlemler gecikir veya doğrulanamaz hale gelir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Kapasite Artırımı}: Düğümlerin işlem gücü, bellek ve ağ bant genişliği artırılarak saldırılara dayanıklı hale getirilir.
+    \item \textbf{Rate Limiting}: Bir düğümün belirli bir süre içinde kabul edebileceği işlem veya istek sayısını sınırlandırır.
+    \item \textbf{Kara Liste}: Kötü niyetli davranış sergileyen düğümler kara listeye alınır.
+\end{itemize}
+
+\newpage
+
+\subsection{Border Gateway Protocol (BGP) Hijack Attack}
+
+BGP Hijack saldırısı, BGP protokolündeki zayıflıkları hedef alır. Blockchain ağında, verilerin farklı düğümler arasında taşınması için internet altyapısı kullanılır. BGP, internet üzerindeki ağlar arasında veri yönlendirme için kullanılan bir protokoldür. Bu protokol, bir ağın hangi IP adreslerine sahip olduğunu ve bu adreslere nasıl ulaşılacağını belirler. Ancak BGP, doğrulama süreçlerinde güvenliğe çok dayanmaz. Bu durum, saldırganların sahte yönlendirme bilgileri göndererek internet trafiğini yanlış yönlendirmesine olanak tanır. BGP saldırısında saldırgan, ağ trafiğini yanlış yönlendirerek veri akışını kesintiye uğratır, gecikmeler yaratır veya trafik üzerinde casusluk yapar. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, blockchain ağına hizmet sağlayan düğümleri belirler.
+    \item Saldırgan, kontrol ettiği bir yönlendiriciden sahte BGP güncellemeleri gönderir. Sahte güncellemeler, saldırganın IP adres aralığına veya yönlendirme yollarına daha kısa yollar gösterir.
+    \item Blockchain ağına gönderilmesi gereken veri trafiği, saldırganın belirlediği yanlış IP adreslerine yönlendirilir. Saldırgan, bu veriyi inceleyebilir, manipüle edebilir veya tamamen kesebilir.
+    \item Veriler, blockchain ağına ulaşmadan saldırgan tarafından değiştirilir veya tamamen düşürülür. Madencilik havuzları birbirleriyle senkronize olamaz veya kullanıcı işlemleri gecikir.
+\end{enumerate}
+
+\newpage
+
+\subsection{Alien Attack}
+
+Alien saldırısı, blockchain sistemine yabancı (alien) unsurların dahil edilmesiyle gerçekleşir. Amaç, ağı manipüle etmek, hatalara neden olmak, işlemleri geciktirmek veya güvenlik açıklarını istismar etmektir. Alien Attack, doğrudan bir güvenlik açığından faydalanmak yerine, mevcut sistemlerin dışındaki unsurları kullanarak ağın işleyişini bozmayı hedefler. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, blockchain ağına bağlı harici unsurları analiz eder.
+    \item Saldırgan, sahte düğümler, yanıltıcı veri sağlayıcılar veya kötü niyetli yazılımlar oluşturur.
+    \item Harici unsurlar, blockchain ağına entegrasyon süreçlerinden geçer. Örneğin, bir oracle saldırısında, blockchain ağına yanlış veri gönderilir.
+    \item Saldırgan, sisteme entegre ettiği unsurlar üzerinden ağın işleyişini manipüle eder. Akıllı sözleşmeler, yanlış veri doğrultusunda yanlış sonuçlar üretir.
+    \item Yanıltıcı işlemler, veri kaybı veya sistem hataları yaratılır.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Doğrulama Mekanizmaları}: Blockchain ağında kullanılan oracle’ların verileri birden fazla kaynaktan doğrulaması sağlanmalıdır. Çapraz doğrulama ve çoğunluk onayı mekanizmaları devreye sokulmalıdır.
+    \item \textbf{Zincirler Arası Güvenlik}: Blockchainler arasında veri aktarımı sırasında kriptografik imzalar ve zincirleme doğrulama yöntemleri kullanılmalıdır. Güvenli köprü (secure bridge) protokolleri uygulanmalıdır.
+\end{itemize}
+
+\newpage
+
+\subsection{Timejacking Attack}
+
+Timejacking Attack, blockchain ağlarında zaman damgalarını (timestamps) manipüle ederek ağın işleyişini bozmayı hedefleyen bir saldırı türüdür. Blockchain sistemleri, işlemleri ve blokları zaman sırasına göre organize eder. Bu süreçte, düğümler (nodes) birbirlerinin zaman bilgilerine güvenerek çalışır. Saldırganlar, bu zaman bilgilerinin hatalı veya manipüle edilmiş olmasını sağlayarak ağı yanıltabilir. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, ağa bağlanan düğümlere yanlış zaman bilgisi içeren mesajlar gönderir. Bu mesajlar, ağdaki diğer düğümlerin zaman bilgisiyle çelişir ve ağı yanıltarak düğümlerin zaman algılarını değiştirir. 
+    \item Hedef düğümler, sahte zaman bilgisine göre kendi sistem saatlerini günceller. Zaman damgaları manipüle edildiğinde, düğümler yanlış blok zincirlerini doğrulamaya başlar.
+    \item Yanıltılan düğümler, hatalı blokları kabul eder ve bunları diğer düğümlere yayar. Sonuç olarak, ağda çatallanma (fork), işlemlerin doğrulanmasında gecikme veya çift harcama (double spending) gibi sorunlar ortaya çıkar.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Çeşitli Zaman Kaynakları}: Blockchain ağları, merkezi olmayan ve dağıtık zaman kaynakları kullanmalıdır.
+    \item \textbf{Zaman Bilgini Doğrulama}: Düğümler, yalnızca tek bir zaman kaynağına güvenmek yerine birden fazla güvenilir kaynaktan zaman bilgisi almalıdır.
+\end{itemize}
+
+\newpage
+
+\subsection{The Ethereum Black Valentine's Day Vulnerability}
+
+14 Şubat 2019'da Ethereum platformunda keşfedilen bir güvenlik açığıdır. Bu açık, Ethereum istemci yazılımının belirli bir sürümünde ortaya çıkan bir kod hatasından kaynaklanıyordu. Bu açık, Ethereum ağındaki düğümlerin birbirinden farklı durumlara düşmesine neden olan bir hata içeriyordu. Bu durum, düğümlerin aynı işlemi farklı şekillerde işlemesine ve blok zincirinin geçici veya kalıcı olarak çatallanmasına (fork) neden olabiliyordu.
+
+\begin{enumerate}
+    \item Ethereum istemci yazılımındaki hata, bazı işlemlerin belirli koşullarda yanlış bir şekilde işlenmesine neden oldu. Bu durum, düğümlerin aynı işlemi farklı sonuçlarla yorumlamasına yol açtı.
+    \item Düğümler arasında bir fikir birliği sağlanamaması, ağda çatallanma riskini artırdı. Farklı düğümler, farklı zincirleri geçerli olarak görmeye başladı.
+    \item Bu çatallanma, saldırganların aynı varlıkları farklı zincirlerde birden fazla kez harcama olasılığını doğurdu.
+    \item Saldırganlar, hatalı düğümleri manipüle ederek Ethereum ağına zarar verebilir ve işlemleri geciktirebilir veya durdurabilirdi.
+\end{enumerate}
+
+\newpage
+
+\subsection{Long Range Attack}
+
+Long Range saldırısı, Proof of Stake (PoS) tabanlı blockchain sistemlerinde görülen bir saldırı türüdür. Saldırganın geçmişte sahip olduğu ancak artık kontrol etmediği bir stake (hisse) üzerinden blockchain ağını manipüle etmesiyle gerçekleşir. Amaç, geçmiş bir noktadan itibaren alternatif bir zincir oluşturarak, mevcut blockchain ağına üstünlük sağlamaktır. Bu saldırı, düşük maliyetli zincir yeniden yapılandırma fırsatı sunduğu için PoS sistemlerine özgü bir tehdittir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item PoS sistemlerinde, blok üretimi kullanıcıların stake miktarına göre belirlenir. Saldırgan, geçmişte stake sahibi olduğu dönemi hedefler.
+    \item Saldırgan, geçmişteki bir bloktan itibaren yeni bir blockchain zinciri üretmeye başlar. Bu yeni zincir, mevcut zincirden farklı bir yön izler ve saldırganın istediği şekilde düzenlenir.
+    \item Saldırganın zinciri, mevcut blockchain ağında dolaşımda olan zincirle rekabet eder. Long Range Attack, PoW'deki (Proof of Work) gibi yoğun hesaplama gücü gerektirmez. Saldırgan, düşük maliyetle geçmiş zinciri yeniden oluşturabilir. Daha uzun ve daha geçerli bir zincir oluşturmayı başarırsa, mevcut blockchain ağı bu yeni zinciri kabul edebilir. 
+    \item Saldırgan, kendi oluşturduğu zinciri ağa tanıtarak mevcut zinciri geçersiz kılmaya çalışır. Saldırgan, zinciri manipüle ederek sahte işlemleri veya çift harcama (double-spending) işlemlerini gerçekleştirebilir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Finality Mekanizmaları}: Finality, bir işlemin veya blok zincirinin belirli bir noktadan sonra geri alınamayacağını garanti eder. PoS sistemlerinde kullanılan bu mekanizmalar, zincir geçmişine dayalı saldırıları önlemek için etkilidir.
+    \item \textbf{Stake Taşıma Süresi}: Kullanıcıların stake taşıma işlemleri kısıtlanarak, stake'i geçmişe dayalı olarak kullanmaları önlenir.
+\end{itemize}
+
+\newpage
+
+\subsection{Bribery Attack}
+
+Bribery saldırısı, blockchain ağını manipüle etmek için saldırganın madencilere mali teşviklerle rüşvet vererek, saldırganın istediği işlemleri onaylamalarını veya belirli bir zincir versiyonunu desteklemeleri sağlanır. PoW ve PoS mekanizmalarında görülür. Saldırgan rüşvet vererek; belirli işlemleri bloke edebilir veya başka işlemlerin zincire öncelikli olarak eklenmesini sağlayabilir, bölünme (fork) yaratarak alternatif bir zincirin benimsenmesini sağlayabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, blockchain ağına katılan madencilere veya doğrulayıcılara, belirli bir zinciri veya işlemi desteklemeleri için rüşvet teklif eder.
+    \item Rüşveti kabul eden madenciler/doğrulayıcılar, saldırganın belirttiği işlemleri onaylar veya blok zincirini yeniden düzenler.
+    \item Rüşvet kripto para birimi olarak ödenir ve gizli bir şekilde yapılır. Akıllı sözleşmeler kullanılarak ödemeler otomatikleştirilebilir ve saldırganın kimliği gizlenir.
+    \item Saldırganın zinciri veya işlemleri ağda geçerli kabul edilir. Bu durum ağın güvenilirliğini ve işleyişini zedeler.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Slashing}: Saldırganın hedeflediği kazancı ekonomik olarak dezavantajlı hale getiren modeller kullanılabilir. Örneğin, akıllı sözleşmelerle rüşvet alanların cezalandırılması.
+    \item \textbf{Ödül Artırma}: Madencilerin veya doğrulayıcıların dürüst davranışlarını desteklemek için daha cazip teşvikler sunulabilir. Örneğin, blok ödüllerinin artırılması.
+\end{itemize}
+
+\newpage
+
+\subsection{Race Attack}
+
+Race saldırısı, bir işlemin farklı versiyonlarının blockchain ağına eş zamanlı olarak gönderilmesiyle gerçekleştirilir. Amaç, ağın bir işlemi geçerli kılmasını sağlarken diğerini iptal etmektir. Hızlı işlem onayı gerektiren durumlarda karşılaşılır. PoW tabanlı blockchain ağlarında görülür. Race Attack, iki işlemin aynı kripto parayı harcadığı bir durum yaratarak çalışır. Saldırgan, mağdurun ödemenin alındığına inanmasını sağlarken, diğer işlemin geçerli kılınmasını hedefler.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, iki çelişkili işlem oluşturur. İlk işlem, mağdurun cüzdanına bir miktar kripto para göndermek için oluşturulur. İkinci işlem, saldırganın kendi cüzdanına aynı kripto parayı geri göndermek için hazırlanır.
+    \item Saldırgan, iki işlemi eşzamanlı olarak blockchain ağına gönderir. Blockchain ağı, hangi işlemi önce onaylayacağı konusunda bir yarış başlatır.
+    \item Eğer saldırganın kendi lehine olan işlem madenciler tarafından onaylanırsa, mağdura yapılan ödeme geçersiz hale gelir.
+    \item Mağdur, saldırganın mal veya hizmeti alıp ödemenin aslında başarısız olduğunu fark ettiği bir durumla karşı karşıya kalır.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayı}: Blockchain ağında bir işlemin tam olarak geçerli sayılması için birkaç blok onayının alınması beklenir.
+    \item \textbf{Anlık Ödemelerden Kaçınma}: Anlık ödeme sistemlerinde yeterli blok onayı beklenmeden işlem tamamlanırsa, saldırıya açık hale gelinir. Bu nedenle, hızlı onay gerektiren durumlarda ek güvenlik önlemleri alınmalıdır.
+\end{itemize}
+
+\newpage
