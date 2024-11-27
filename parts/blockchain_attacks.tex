@@ -243,3 +243,263 @@ Race saldırısı, bir işlemin farklı versiyonlarının blockchain ağına eş
 \end{itemize}
 
 \newpage
+
+\subsection{Liveness Denial Attack}
+
+Liveness Denial saldırısı, bir blockchain ağının işleyişini kesintiye uğratmayı hedefleyen bir saldırı türüdür. Bir blockchain'in sürekli yeni bloklar ekleyebilmesi ve işlemleri doğrulayabilmesi canlılığı sağlar. Bu saldırı, ağdaki canlılığı azaltmak için ağı yavaşlatmayı veya tamamen durdurmayı amaçlar. PoS, PoW tabanlı sistemleri hedef alır. Ağın canlılığını azaltmak için, ağ tıkanlığı, blok üretimini engelleme, kaynak tüketmegibi saldırılar yapılır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, ağı tıklayarak v eya bir grup madenci/doğrulayıcı hedef alarak saldırıya hazırlanır.
+    \item Saldırgan, sahte işlemler göndererek veya sistemin bant genişliğini tüketerek ağın yavaşlamasına neden olur.
+    \item Düğümler arası iletişim engellenir ya da yanlış bilgi yayılır. Bu, düğümler doğru bir şekilde karar alamamasına yol açar.
+    \item Yeni bloklar üretilmediği için ağ durma noktasına gelir. Kullanıcılar işlemlerini tamamlayamaz ve ağın güvenilirliği azalır.
+\end{enumerate}
+
+\newpage
+
+\subsection{Censorship Attack}
+
+Censorship Attack, bir blockchain ağındaki belirli işlemlerin engellenmesi, reddedilmesi veya ağın geri kalanından gizlenmesi amacıyla yapılan bir saldırı türüdür. Bu saldırı madenciler veya doğrulayıcılar tarafından yapılır. Belirli kullanıcıların işlemlerinin ağa eklenmesini önler.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Madenciler veya doğrulayıcılar, belirli adreslerden veya işlemlerden gelen veri paketlerini reddeder.
+    \item Saldırgan, hedef işlemleri sürekli olarak daha düşük önceliğe sahip gibi göstererek işlem havuzunda (mempool) beklemesini sağlar.
+    \item Hedeflenen işlemlerin mempool'da bekleme süresi artırılır ve kullanıcılar işlemleri tekrar göndermeye zorlanır, bu da ek maliyetlere yol açar.
+    \item Madenciler veya doğrulayıcılar, konsensüs mekanizmasını kontrol ederek belirli işlemlerin dahil edilmesini engeller.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{zk-SNARKs}: Gizli işlem bilgilerini doğrulamak için sıfır bilgi ispatları kullanılabilir.
+\end{itemize}
+
+\newpage
+
+\subsection{Finney Attack}
+
+Finney Attack, adını Bitcoin geliştiricisi Hal Finney'den alır. PoW tabanlı sistemlerde görülen bir tür çift harcama (double spending) saldırısıdır. Bu saldırı, yalnızca bir madenci tarafından gerçekleştirilebilir ve bir işlemin blockchain ağına yayınlanmadan önce harcanmasını amaçlar. Ağın mekanizmalarını manipüle ederek saldırganın bir işlemi iki kez kullanmasına izin verir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan kendi düğümünde, bir bloğa dahil edilmek üzere saldırganın bir miktar kripto para gönderdiği sahte bir işlem oluşturur.
+    \item Saldırgan, hazırladığı bloğu henüz blockchain ağına yayınlamaz. Bunun yerine, bu işlemle ilişkili bloğu gizli tutar.
+    \item Sadlrıgan, aynı kripto para birimini, bir satıcıya veya hedefe ödeme yapmak için kullanır. Bu işlem blockchain ağına normal bir şekilde gönderilir, ancak saldırganın gizli bloğu ile çelişir.
+    \item Saldırgan, önceki sahte işlem içeren bloğu yayınlar. Bu işlem daha önceki bir blokta olduğu için blockchain ağı, yayınlanan bloğu kabul eder ve saldırganın gerçek ödeme işlemi reddedilir.
+    \item Hedef, saldırganın gerçek bir ödeme yaptığını düşünürken, saldırganın sahte işlemi blockchain ağı tarafından onaylanır. Bu sayede, saldırgan aynı kripto parayı iki kez kullanmış olur.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayını Beklemek}: Kullanıcılar ve satıcılar, işlemin güvenilirliği için blok onaylarını beklemelidir.
+\end{itemize}
+
+\newpage
+
+\subsection{Vector76 Attack}
+
+Vector76 saldırısı, Race saldırısı ve Finney saldırısının bir birleşimidir. Bu saldırıda, bir işlem hem blockchain ağı tarafından hem de hedef tarafından geçerli olarak kabul edilir. Amacı, blockchain'in geçici durumlarını manipüle ederek bir çift harcama gerçekleştirmektir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, geçici bir blok zinciri durumu oluşturur ve bir işlem sahte bir blokta yer alır.
+    \item Saldırgan, bu sahte bloğu bazı düğümlere gönderir ancak tüm ağa yaymaz. Bu şekilde ağın bir kısmı sahte bloğu kabul ederken diğer kısmı etmez.
+    \item Saldırgan, aynı kripto parayı başka bir işlemde kullanır ve bu işlemi blockchain ağına yayınlar. İlk işlem ve ikinci işlem birbiriyle çelişir ancak saldırganın sahte bloğu bazı düğümler tarafından kabul edilmiş olabilir.
+    \item Saldırgan, geçici bloğunu geri çeker ve gerçek işlem içeren başka bir blok yayınlar. Bu işlem, ağın geçerli zincirinde onaylanır. Sonuç olarak ilk işlem (sahte işlem) bir süreliğine geçerli görünür ve hedef bu işlemi kabul eder. Ancak ikinci işlem blockchain tarafından onaylanır ve ilk işlem geçersiz hale gelir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayını Beklemek}: Kullanıcılar ve satıcılar, işlemin güvenilirliği için blok onaylarını beklemelidir.
+\end{itemize}
+
+\newpage
+
+\subsection{Alternative Historical Attack}
+
+Alternative Historical saldırısı, bir blockchain zincirine alternatif bir tarih oluşturarak bu alternatif zinciri ana zincirin yerini alacak şekilde yayımlamaya çalışır. Bu alternatif zincir, geçmişteki bir noktadan başladığı için "alternative historical" olarak bilinir. Amaç, geçmişteki işlemleri değiştirmek, çift harcama yapmak veya blockchain ağının bütünlüğünü bozmaktır. PoS tabanlı sistemlerde görülür.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, mevcut blockchain’in bir parçasından ayrılır ve alternatif bir zincir inşa etmeye başlar.
+    \item Saldırgan, kendi alternatif zincirini oluşturmak için eski bloklardan itibaren yeni bloklar üretir. Bu zincir, mevcut zincirle aynı yapıda görünür ancak içerdiği işlemler farklıdır.
+    \item Saldırgan, alternatif zincirini ağdaki diğer düğümlere yayıp kabul ettirmeye çalışır. Eğer saldırganın zinciri daha uzun veya daha geçerli kabul edilirse, ağ bu zinciri ana zincir olarak kabul eder.
+    \item Alternatif zincirin kabul edilmesiyle, saldırganın zincirde yaptığı değişiklikler meşru hale gelir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayını Beklemek}: Kullanıcılar ve satıcılar, işlemin güvenilirliği için blok onaylarını beklemelidir.
+    \item \textbf{Checkpoint Mekanizması}: Checkpoint, blockchain üzerinde belirli bir noktayı sabitler. Bu, o noktadan önceki blokların değiştirilemeyeceği anlamına gelir. Böylece geçmiş blokların yeniden yazılması önlenir.
+\end{itemize}
+
+\newpage
+
+\subsection{51\% Attack}
+
+51\% saldırısı, bir blockchain ağında doğrulayıcıların \%51 veya daha fazlasını ele geçiren bir saldırganın, ağı kontrol alarak çeşitli işlemler yapabilmesine verilen addır. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, blockchain ağındaki toplam hash gücünün veya stake'in \%51'ini ele geçirir.Bu, büyük madencilik havularının saldırgan ile iş birliği yapması veya yüksek miktarda hesaplama gücü kullanması ile gerçekleşir.
+    \item Saldırgan, ana blockchain’den bağımsız olarak kendi alternatif zincirini oluşturmaya başlar. Bu zincirde saldırgan istediği işlemleri yapabilir veya belirli işlemleri reddedebilir.
+    \item Saldırgan, ürettiği alternatif zinciri ağın geri kalanına yayıp kabul ettirmeye çalışır.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayını Beklemek}: Kullanıcılar ve satıcılar, işlemin güvenilirliği için blok onaylarını beklemelidir.
+    \item \textbf{Checkpoint Mekanizması}: Checkpoint, blockchain üzerinde belirli bir noktayı sabitler. Bu, o noktadan önceki blokların değiştirilemeyeceği anlamına gelir. Böylece geçmiş blokların yeniden yazılması önlenir.
+\end{itemize}
+
+\newpage
+
+\subsection{34\% Attack}
+
+34\% Saldırısı, Directed Acyclic Graph (DAG) yapısını kullanan blockchain sistemlerinde kullanılan bir saldırı türüdür. Bu saldırı, ağdaki işlemleri veya doğrulamaları kontrol altına almak için toplam hash gücünün \%34'üne sahip olmayı gerektirir. DAG  tabanlı sistemlerde işlemlerin doğrulanması için çoğunluğun kontroli yerine belirli bir minimum hash gücü gereklidir. Bu saldırıda saldırgan toplam hash gücünün \%34'ünü kontrol ettiğinde, ağdaki konsensusu manipüle edebilir.
+
+\newpage
+
+\subsection{Grinding Attack}
+
+Grinding saldırısı, bir sonraki blok üreticisinin seçim sürecinde manipülasyon yaparak saldırganın avantaj elde etmesine dayanır. PoS tabanlı sistemlerde, blok üreticisinin seçimi rastgelelik ve stake edilen varlık miktarı gibi faktörlere bağlıdır. Grinding Attack, bu rastgelelik mekanizmasını hedef alır. Saldırgan, olası tüm senaryoları (örneğin, nonce değerlerini) test ederek en uygun sonucu elde etmeye çalışır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item PoS mekanizmasının kullandığı rastgelelik kaynağı analiz edilir.
+    \item Saldırgan, her değişken için alternatif sonuçları hesaplar.
+    \item Rastgelelik hesaplamasında kullanılan nonce değerlerini tahmin ederek saldırgan, en iyi sonucu elde edene kadar farklı kombinasyonlar dener.
+    \item En iyi ödül veya avantajı sağlayacak blok kombinasyonu seçilir. Bu blok, ağa eklenir ve saldırgan avantaj elde eder.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem Onayını Beklemek}: Kullanıcılar ve satıcılar, işlemin güvenilirliği için blok onaylarını beklemelidir.
+    \item \textbf{Checkpoint Mekanizması}: Checkpoint, blockchain üzerinde belirli bir noktayı sabitler. Bu, o noktadan önceki blokların değiştirilemeyeceği anlamına gelir. Böylece geçmiş blokların yeniden yazılması önlenir.
+\end{itemize}
+
+\newpage
+
+\subsection{Coin Age Accumulation Attack}
+
+Coin Age Accumulation saldırısında saldırgan "coin age" kavramını manipüle ederek daha fazla blok oluşturma olasılığı elde etmeye çalışır. Coin age, bir kullanıcının sahip olduğu token miktarı ile bu tokenlerin ne kadar süre boyunca harcanmadan tutulduğunun çarpımıyla hesaplanır. PoS mekanizmalarında, coin age  blok üreticisi seçimini etkileyen bir faktördür. Saldırgan, sahip olduğu coinleri bir süre boyunca harcamadan tutar. Bu şekilde coinlerin yaşını artırır ve ağ üzerindeki toplam coin age miktarını yükseltir. PoS sistemlerinde, coin age ne kadar yüksekse, bir sonraki blok üreticisi olarak seçilme olasılığı da o kadar artar. Saldırgan, coinlerini kullanmadan coin age biriktirir. Ardından bir blok üreterek coinlerini harcar ve bu süreçten elde ettiği ödülü toplar.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, coinlerini harcamadan tutarak coin age değerini yükseltir.
+    \item Coin age sayesinde blok üreticisi olarak seçilme ihtimalini artırır.
+    \item Blok ürettikten sonra coinlerini harcar ve yeni coin age biriktirme sürecine başlar.
+    \item Bu işlemi tekrar ederek sürekli avantaj elde eder.
+\end{enumerate}
+
+\newpage
+
+\subsection{Selfish Mining Attack}
+
+Selfish Mining saldırısında saldırgan, bulduğu yeni blokları hemen yayınlamayıp gizleyerek, diğer madencilerden avantaj elde etmesine dayanır. Bu saldırıda, kötü niyetli madenciler blok zincirine bulunan bilgileri kasıtlı olarak gizler ve zincirin çatallanmasına yol açar. Böylece, madencilik ödüllerini artırmak için diğer dürüst madencilerin çalışmalarını boşa çıkarabilirler.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan bir blok bulduğunda, bu bloğu hemen blockchain ağına yayınlamak yerine gizler ve kendisine özel bir zincirde tutar.
+    \item Gizli zincirini uzatmaya devam ederek, halka açık zinciri geçmeye çalışır. Amaç, kendi zincirini daha uzun hale getirerek ağın geri kalanını bu zincire bağlanmaya zorlamaktır.
+    \item Gizli zinciri yeterince uzattıktan sonra bu zinciri yayınlayarak ağda çatallanma (fork) yaratır.
+    \item Saldırgan, çatallanma sonucunda kendi zincirinin daha uzun olması nedeniyle blok ödüllerini kazanır.
+\end{enumerate}
+
+\newpage
+
+\subsection{Block Double Production Attack}
+
+Block Double Production saldırısı, ağın blok üretme sürecinde çakışma yaratmayı amaçlar. Blockchain ağında birden fazla blok aynı anda üretilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Madenciler, blokları oluşturmak ve yayımlamak için ağda yarışır. Normalde, madenciler tek bir blok üretir ve bu blok ağda yayıldığında bir zincir oluşturulur.
+    \item Bir saldırgan, iki geçerli blok üretmeye çalışır. Yani, aynı zaman diliminde birden fazla blok üretir. Bu bloklar birbirine bağlıdır, ancak aynı zincir üzerinde yer almazlar.
+    \item Saldırgan, blokları paralel olarak yaymaya çalışarak blockchain ağında iki farklı blok zinciri oluşturur.
+    \item Blockchain ağındaki düğümler, bu çift bloktan yalnızca birini kabul etmeye çalışır. Sonuçta ağda çatal (fork) oluşur.
+\end{enumerate}
+
+\newpage
+
+\subsection{Transaction Replay Attack}
+
+Transaction Replay saldırısında saldırgan, bir işlemi bir blockchain ağında gerçekleştirilirken, aynı işlemin başka bir ağda da gerçekleştirir. İki farklı blockchain ağının aynı işlem verisini kabul ettiği durumlarda ortaya çıkar. Bu tür saldırılar, kullanıcıların hesaplarındaki bakiyeyi çalmak, başka bir ağda sahte işlem yaparak blockchain güvenliğini zayıflatmak gibi olumsuz sonuçlara yol açabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcı, ağda bir işlem başlatır. Bu işlem, ağda doğrulandıktan sonra geçerli olur.
+    \item Saldırgan, ağda doğrulanan bu işlemi kopyalar ve farklı bir ağda aynı verileri kullanarak tekrar işler.
+    \item İkinci ağ, bu işlem verisini geçerli kabul ederse, saldırgan işlemi iki kez yapmış olur. Bu da, aynı kullanıcıdan iki kez ödeme alınmasına veya işlem yapılmasına yol açar.
+    \item Eğer saldırgan, ödeme yaptığı ağda bir işlem yapıp, aynı işlemi başka bir ağda tekrarlarsa, bu bir tür çift harcama (double spend) durumu oluşturabilir. Bu da finansal kayıplara yol açar.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Nonce}: Nonce, her işlemi benzersiz kılmak için kullanılan bir sayıdır. Kullanıcılar her işlemde farklı bir nonce değeri kullanarak, aynı işlemin tekrar yapılmasını engelleyebilirler.
+\end{itemize}
+
+\newpage
+
+\subsection{Transaction Malleability Attack}
+
+Transaction Malleability saldırısı, bir blockchain ağında gerçekleştirilen bir işlemin, işlem verilerinin değiştirilmesiyle geçerli olmasına ve ve ağda yeniden işlenmesine neden olan bir saldırı türüdür. Bu saldırı, bir işlemin içeriğini değiştirmeyi ve bu değişikliği blockchain ağı üzerinde geçerli kılmayı amaçlar. 
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{İşlem İmzası}: İşlem malleability’sini engellemek için işlem imzalarının standartlaştırılması gereklidir. Ethereum gibi bazı blockchain ağları, imza formatını belirli kurallara dayandırarak bu tür saldırıları engellemeye çalışmıştır.
+\end{itemize}
+
+\newpage
+
+\subsection{Time-Locked Transaction Attack}
+
+Time-Locked Transaction saldırısında saldırgan blockchain'deki zmaan kilidini hedef alır. Zaman kilidi bir işlemin belirli bir zaman diliminde geçerli olmasını sağlar. Bu saldırıda, saldırgan bir işlemde zaman kilidi kullanarak, işlemi manipüle eder ve zamanlamayı değiştirerek işlem üzerinde kontrol sağlar veya ağa zarar verir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcı bir işlem yapar ve bu işlemde zaman kilidi kullanır.
+    \item Saldırgan, işlemi gözlemler ve zaman kilidinin olduğu işlemi manipüle etmeye başlar. Zaman kilidi, işlem verilerinde bulunan belirli bir parametreye dayanır. Saldırgan, bu parametreyi değiştirerek işlemin geçerli olacağı zamanı etkiler.
+    \item Manipüle edilen işlem, zaman kilidinin sağladığı koşullar altında geçerli hale gelir. Bu, saldırganın kontrolünü kolaylaştırabilir ve ağda güvenlik açıklarına yol açabilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{False Top-Up Attack}
+
+False Top-Up saldırısı, blockchain ağlarındaki hesap bakiyelerinin yanıltıcı bir şekilde artırılmasını amaçlar. Top-Up, bir kullanıcının hesabına para ekleme anlamına gelir. Bu saldırıda saldırgan, işlemlerin doğruluğunu manipüle ederek, hesap bakiyesini yanlış bir şekilde artırır. Bu saldırının başarılı olabilmesi için, blockchain ağındaki doğrulayıcıların işlemleri doğru bir şekilde onaylaması gerekir. Yani, saldırgan yanıltıcı veriler göndererek veya yetersiz doğrulama sağlayarak, hesabın bakiyesini artırabilir. Saldırgan, kendi hesabına gerçek olmayan bir bakiye ekleyerek çift harcama (double-spending) yapabilir veya ağda başka olumsuz etkilere yol açabilir.
+
+\newpage
+
+\subsection{Rug Pull Attack}
+
+Rug Pull saldırısında, kötü niyetli bir proje ekibi veya geliştiriciler, yatırımcıları çekmek için sahte bir yatırım fırsatı sunar ve projeye yatırım yapmalarını sağlar. Ancak, yatırımcılar büyük miktarda para yatırdıktan sonra, projeye sahip kişiler fonları çeker ve projeyi terk ederler. Bu saldırının adı, "rug pull (halı çekmek)" teriminden türetilmiştir ve bu, bir kişinin halıyı aniden çekerek başka birini düşürmesi gibi bir durumu ifade eder.
+
+\subsubsection{Engelleme Yöntemleri}
+
+\begin{itemize}
+    \item \textbf{Proje Denetimi}: Projelerin bağımsız güvenlik denetimlerinden geçirilmesi önemlidir. Denetimler, olası güvenlik açıklarını ve dolandırıcılık amaçlı tasarlanmış kodları tespit edebilir.
+\end{itemize}
+
+\newpage

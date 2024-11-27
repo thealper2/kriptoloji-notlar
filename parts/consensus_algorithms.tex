@@ -217,3 +217,44 @@ Burada, $f$ sistemde maksimum kötü niyetli düğüm sayısını ifade eder. Uz
 \end{itemize}
 
 \newpage
+
+\subsection{Proof of History (PoH)}
+
+PoH, zamanın doğrulanmasını temel alır. Solona blockchain tarafından kullanılır. PoH, işlemlerin bir sıraya konulmasını ve bu sıranın kriptografik olarak kanıtlayarak, işlem zamanlamasını kesin bir şekilde belirler. Konsensüs sürecindeki iletişim yükünü azaltır, böylece blok zincirindeki işlemler daha hızlı onaylanır. Düğümler arasında zamana dayalı senkronizasyon gereksinimini azaltarak ağ gecikmesini minimuma indirir. PoH, kriptografik bir Verifiable Delay Function (VDF) kullanır. VDF, belirli bir süre içinde çözülmesi garanti edilen ve bu süreden daha kısa bir sürede çözümünün imkansız olduğu bir matematik problemidir. Bu fonksiyonlar, işlemleri sırayla işler ve her işlemden sonra bir hash oluşturur. Bu hash, işlemlerin sırasını kanıtlamak için kullanılır. Solana gibi sistemlerde PoH, Proof of Stake (PoS) ile birleştirilir. Bu, hem zamanın hem de konsensüsün güvenliğini artırır.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item VDF ile işlemler sırayla işlenir ve her ilemden sonra bir hash oluşturulur.
+    \item İşlemler, sürekli bir hash zinciri içinde düzenlenir. Her yeni işlem, bir önceki işlemin hash'ine dayanır. Hash fonksiyonu sayesinde, bir işlemin tam olarak hangi sırada gerçekleştiği ve hangi zaman aralığında işlendiği kriptografik olarak kanıtlanır.
+    \item PoH, tüm düğümlerin aynı anda senkronize olmasını gerektirmez. İşlemler, merkezi bir zaman damgası olmadan, kendi sıralarına göre doğrulanır.
+    \item Düğümler, PoH tarafından oluşturulan zaman damgasını kullanarak işlemlerin sırasını hızlıca doğrulayabilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Kriptografik Zaman Damgası}: İşlemler, sahte zaman bilgisiyle değiştirilemez. Çünkü her işlemin hash'i, önceki hash'e dayanır.
+\end{itemize}
+
+\newpage
+
+\subsection{Proof of Burn (PoB)}
+
+PoB, kullanıcıların coin yakarak madencilik yapma hakkı kazandığı bir algoritmadır. Bu yakma mekanizmasında, kullanıcılar belirli miktarda kripto varlığı kalıcı olarak erişilemez hale getirir ve bu işlem karşılığında ağda işlem onaylama ve yeni blok oluşturma hakkı elde ederler.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcılar, belirli bir miktarda coin'i ağ tarafından belirlenen bir erişilemez adrese gönderir. Bu işlem, bu coin'lerin geri alınamayacak şekilde "yakılması" anlamına gelir. Yakılan coin'ler kalıcı olarak dolaşımdan çıkar.
+    \item Yakılan coin miktarı, kullanıcının ağdaki madencilik gücünü belirler. Daha fazla coin yakan kullanıcı, daha fazla blok oluşturma veya doğrulama şansı elde eder.
+    \item Kullanıcılar, blok doğrulama işlemleri karşılığında ödül olarak yeni coin'ler veya işlem ücretleri alabilir.
+\end{enumerate}
+
+\subsubsection{Güvenlik}
+
+\begin{itemize}
+    \item \textbf{Coin Yakma}: Bir kez yakılan coin, hiçbir şekilde geri alınamaz. Bu, kötü niyetli kullanıcıların sistemi geri döndüremeyeceği anlamına gelir.
+\end{itemize}
+
+\newpage

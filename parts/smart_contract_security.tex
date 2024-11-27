@@ -1,0 +1,289 @@
+\section{Smart Contract Security}
+
+\subsection{Authorization Through tx.origin}
+
+tx.origin, Ethereum blok zinciri üzerinde bir işlem başlatan orijinal hesaba işaret eden bir global değişkendir. Bir akıllı sözleşme, yetkilendirme (authorization) veya erişim kontrol mekanizmasını tx.origin üzerine kurarsa, bu yöntem "Authorization Through tx.origin" olarak adlandırılır.  tx.origin, bir işlem başlatıldığında her zaman işlemi başlatan orijinal adresi gösterir. Çağrılar arasında farklı sözleşmeler birbirini tetiklese bile tx.origin değişmez.
+
+\subsubsection{Çalışma Adımları}
+
+Kullanıcı, bir cüzdan adresinden (örneğin adresi 1234 olsun) bir A sözleşmesini çağırarak bir işlem başlatır. Bu noktada tx.origin, kullanıcının cüzdan adresini (1234) döner. Daha sonra A sözleşmesi, B sözleşmesini çağırabilir. tx.origin hala 1234 olacaktır çünkü bu işlem zincirini başlatan orijinal adres 1234'dür. Eğer bir sözleşme, yetkilendirme kontrolünü tx.origin ile yapıyorsa kötü niyetli bir sözleşme zincirine dahil edilip manipüle edilebilir. Örneğin, kullanıcının A sözleşmesini çağırdığı zaman A sözleşmesi de başka bir zararlı sözleşmeye çağrı yapabilir.
+
+\subsubsection{Engelleme Yöntemleri}
+
+tx.origin yerine msg.sender kullanılmalıdır. msg.sender yalnızca o anki işlemi gerçekleştiren adresi döndürür.
+
+\begin{lstlisting}
+adress owner;
+
+modifier onlyOwner() {
+    require(msg.sender == owner, "Not Authorized");
+    _;
+}
+\end{lstlisting}
+
+\newpage
+
+\subsection{Insufficient Access Control}
+
+Insufficient Access Control, bir akıllı sözleşmenin yetersiz erişim kontrolü nedeniyle kötü niyetli kişilerin yetkilendirilmiş işlemler yapmasını sağlayan bir güvenlik açığıdır. Yanlış veya eksik yetkilendirme kontrolleri, güvenlik mekanizmalarının uygun bir şekilde uygulanmaması, sözleşme yapısındaki mantık hataları gibi nedenlerden dolayı ortaya çıkar. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{itemize}
+    \item \textbf{Eksik Yetkilendirme Kontrolü}: Kritik bir fonksiyona erişim için herhangi bir "require" ifadesi veya kontrol mekanizması bulunmuyorsa, herkes bu fonksiyonu çağırabilir.
+    \item \textbf{Hatalı Yetkilendirme}: Yanlış değişkenlerle yapılan kontroller, yanlış kullanılan global değişkenler (örneğin msg.sender yerine tx.origin kullanarak yetki kontrolü yapmak) veya mantık hataları nedeniyle kullanıcıların sınırsız işlem yapabilmesi.
+    \item \textbf{Varsayılan Sahiplik Sorunları}: Sözleşme bir owner değişkeni atanmazsa veya doğru bir şekilde initialize edilmezse, başka biri sözleşmeyi ele geçirebilir.
+\end{itemize}
+
+\subsubsection{Engelleme Yöntemleri}
+
+Sözleşmede bir sahip (admin) belirlenmeli ve sadece bu kişi kritik işlemleri gerçekleştirebilmelidir. Sahiplik devrinde, doğru adres doğrulaması yapılmalıdır.
+
+\newpage
+
+\subsection{Unchecked External Call}
+
+Delegatecall fonksiyonu, bir Ethereum akıllı sözleşmesinin başka bir sözleşmenin kodunu kendi bağlamında çalıştırmasına izin veren bir Solidity fonksiyondur. Fakat bu mekanizma doğru bir şekilde kullanılmadığında, kötü niyetli bir sözleşmeye delegatecall yapmak güvenlik açıklarına sebep olabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Ana sözleşme (Caller) bir delegatecall yapar.
+    \item Hedef sözleşme (Callee) kötü niyetlidir.
+    \item Hedef sözleşmenin kodu, ana sözleşmenin bağlamında çalışır. 
+    \item Kötü niyetli hedef, ana sözleşmenin durumunu (storage) veya fonksiyonlarını kontrol eder ve manipüle eder.
+    \item msg.sender, ana sözleşmeyi çağıran adres olur. Hedef sözleşmenin storage alanı değil, ana sözleşmenin storage alanı değiştirilir.
+\end{enumerate}
+
+\begin{lstlisting}
+contract Caller {
+    adress public callee;
+
+    function setCallee(adress _callee) public {
+        callee = _callee;
+    }
+
+    function execute(bytes memory data) public {
+        (bool success, ) = callee.delegatecall(data);
+        require(success, "Delegatecall failed");
+    }
+}
+
+contract Malicious {
+    adress public owner;
+
+    function exploit() public {
+        owner = msg.sender;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Engelleme Yöntemleri}
+
+Delegatecall yapmadan önce hedef adresin güvenilir olduğundan emin olunmalıdır. Hedef adresin kullanıcı tarafından değiştirilemeyecek şekilde sabitlenmesi gerekir. Delegatecall yapılacak hedef sözleşmenin kodunun güvenli olduğundan emin olunmalıdır.
+
+\newpage
+
+\subsection{Signature Malleability}
+
+Signature Malleability, dijital imzaların aynı mesaj için farklı şekillerde oluşturulabilmesini sağlayan bir güvenlik açığıdır. Yani bir mesaj, farklı geçerli imzalarla temsil edilebilir, bu da mesajin doğruluğunu sorgulamadan işlemlerin manipüle edilmesine yol açabilir. Bu durum, ECDSA tabanlı imzalar için risktir. ECDSA imzaları rastgele bir değer $r$ ve özel anahtara dayalı oluşturulan $s$ çiftlerinden oluşur. $s$, değerinin negatif bir eşleniği de geçerli bir imzadır. Yani:
+$(r, s)$ ve $(r, -s \text{ mod } n )$ aynı mesaj için geçerli imzadır. $n$, kriptografik eğrinin bir parametresidir. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcı bir mesajın imzasını $(r, s)$ çifti olarak oluşturur.
+    \item Saldırgan, orijinal $(r, s)$ imzasını alır. Yeni bir imza $(r, -s \text{ mod } n)$ türetir. Bu yeni imza, aynı mesaj için geçerli olur ve doğrulama algoritmasından geçer.
+    \item İşlem doğrulama mekanizması, farklı imzaları aynı işlem olarak algılamazsa, saldırgan bir işlemi defalarca yayınlayabilir (signature replay).
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+ECDSA imzalarını doğrularken, $s$ değerinin sadece pozitif ve belirli bir aralıkta $(0 < s < \frac{n}{2})$ olmasına dikkat edilir.
+
+\newpage
+
+\subsection{Signature Replay Attack}
+
+Signature Replay saldırısı, bir kullanıcının işlem doğrulaması için kullandığı dijital imzanın kötü niyetli bir kişi tarafından ele geçirilip tekrar kullanılarak aynı işlemin tekrarlanmasıyla ortaya çıkan bir saldırı türüdür. Eğer bir akıllı sözleşmede, imza doğrulandıktan sonra yeniden kullanılmasını engelleyecek mekanizmalar eksikse, bu saldırı ortaya çıkar. 
+
+\subsubsection{Çalışma Adımları}
+
+Bir imza, bir mesajın (örneğin bir ödeme talebi) doğruluğunu kanıtlamak için kullanılır. Ancak, bu imza yeniden kullanılabilir durumdaysa, saldırgan aynı imzayı kullanarak orijinal işlem mesajını bir kez daha akıllı sözleşmeye gönderir. Eğer akıllı sözleşme, bir işlemin daha önce işlenip işlenmediğini kontrol etmiyorsa, işlem tekrar gerçekleştirilir.
+
+\subsubsection{Engelleme Yöntemleri}
+
+Her işlem benzersiz bir nonce değeri ile ilişkilendirilir. Bu değer, aynı imzanın birden fazla kez kullanılmasını engeller. İşlenmiş işlemlerin hash'leri bir mapping'de saklanır. Aynı hash'e sahip bir işlem yeniden gönderilirse reddedilir.
+
+\newpage
+
+\subsection{Integer Overflow and Underflow}
+
+Integer Overflow ve Underflow, bir değişkenin alabileceğim maksimum veya minimum değer sınırlarını aşması durumunda ortaya çıkan bir hatadır. Bu durum, akıllı sözleşmeler için güvenlik açıklarına yol açabilir:
+
+\begin{itemize}
+    \item \textbf{Overflow}: Bir değişkenin değeri, temsil edebileceği maksimum değeri aştığında, en küçük değerden tekrar başlamasına neden olur. Maksimum değeri 255 olan bir uint x değerine $x + 1$ işlemi yapılırsa sonuç 0 olur.
+    \item \textbf{Underflow}: Bir değişkenin değeri, temsil edebileceği minimum değerden daha aşağıya düştüğünde, en büyük değerden tekrar başlamasına neden olur. Minimum değeri 0 olan bir uint x değerine $x - 1$ işlemi yapılırsa sonuç 255 olur.
+\end{itemize}
+
+Bu durumlar, Solidity'nin eski sürümlerinde uint ve int veri tiplerinde koruma olmadan gerçekleşebilirdi. 0.8 ve üst versiyonlarından bu durumlar varsayılan olarak engellenir ve bir hata fırlatılır.
+
+\begin{lstlisting}
+function transfer(address to uint256 amount) public {
+    balances[msg.sender] -= amount; // Underflow
+    balances[to] += amount; // Overflow
+}
+\end{lstlisting}
+
+\subsubsection{Engelleme Yöntemleri}
+
+Her işlemden önce sınır kontrolü yapılmalıdır.
+
+\newpage
+
+\subsection{Off by One}
+
+Off by One hatası, bir döngü veya aritmetik işlemlerde sınır koşullarının yanlış hesaplanması sonuçu oluşur. Bu hatalar, akıllı sözleşmelerde yanlış sonuçlara, veri kayıplarına veya güvenlik açıklarına neden olabilir. Örneğin dizilerde indekslerin yanlış hesaplanması, bir öğenin eksik işlenmesine veya fazla işlenmesine neden olabilir, döngü sayısınnın beklenenden fazla veya az çalışması.
+
+\newpage
+
+\subsection{Lack of Precision}
+
+Lack of Precision, bir akıllı sözleşmede ondalıklı sayılar ve kesirli işlemler ile çalışırken oluşabilecek hassasiyet kaybını ifade eder. Ethereum gibi blockchain platformları, işlem kolaylığı için tam sayılar (integer) kullanır. Ethereum'un EVM (Ethereum Virtual Machine) tabanlı sistemleri floating-point (ondalıklı sayı) yerine fixed-point (sabit noktalı) aritmetik kullanır. Ancak ondalık hassasiyet gerektiğinde, yuvarlama hataları, yanlış işlemler sonuçlarına ve güvenlik açıklarına yol açabilir. Tam sayı aritmetiği kullanan işlemlerde, ondalık bölme sonucunda küsuratlar kaybolur. Örneğin, $\frac{1}{3}$ işlemi tam sayılarla çalışırken 0 sonucunu verir. Kesirli işlemler sırasında sonuç, bir sonraki işlem için yeterli doğruluğu sağlayamayabilir. Örneğin, $\frac{a}{b} \cdot b$ işlemi her zaman $a$ sonucunu vermez. Bu şekilde birden fazla matematiksel işlem ardışık olarak gerçekleştirildiğinde, her adımda küçük hassasiyet kayıpları birikerek büyük sapmalara yol açabilir.
+
+\subsubsection{Engelleme Yöntemleri}
+
+Matematiksel hassasiyeti artırmak için tüm hesaplamalar ölçeklendirilmiş tam sayılar ile yapılabilir. Bütün değerler bir ölçekleme faktörü ile çarpılır ve işlemler bu ölçekle gerçekleştirilir. İşlem sonunda ölçekleme faktörü çıkarılır.
+
+\newpage
+
+\subsection{Re-Entrancy}
+
+Re-Entrancy saldırısında, bir sözleşme bir başka sözleşmeye bir çağrı yaptığında, çağrılan sözleşme geri dönmeden önce ilk sözleşmenin fonksiyonlarını yeniden çağırabilir. Bu, kötü niyetli amaçlar için kullanılarak fonksiyonun doğru çalışmasını engelleyebilir veya saldırganın mnaipüle etmesine olanak tanır. En bilinen örneği, Ethereum DAO saldırısıdır. Bu saldırıda, bir re-entrancy açığı kullanılarak akıllı sözleşmeden milyonlarca dolar çalınmıştır. Re-entrancy saldırılarının farklı tipleri, saldırganın hedeflediği akıllı sözleşme ve saldırı modeline göre değişiklik gösterir.
+
+\subsubsection{Single-Function Re-Entrancy}
+
+Bir saldırgan, aynı fonksiyonu tekrar tekrar çağırarak akıllı sözleşmenin durumunu manipüle edebilir. Tek bir fonksiyon sürekli tekrar çağrılarak sözleşme boşaltılmıştır. DAO saldırısı, Single-Function Reentrancy türüne bir örnektir.
+
+\subsubsection{Cross-Function Re-Entrancy}
+
+Bir saldırgan, bir sözleşmenin birden fazla farklı fonksiyonu arasında yeniden giriş yapar. İlgili fonksiyonların birbiriyle olan bağımlılığından yararlanır.
+
+\subsubsection{Cross-Contract Re-Entrancy}
+
+Saldırgan, bir sözleşmeyi çağırdıktan sonra bu sözleşmenin başka bir harici sözleşmeyi çağırmasını sağlar ve yeniden giriş yaparak durumu manipüle eder.
+
+\subsubsection{Cross-Chain Re-Entrancy}
+
+Bir saldırgan, farklı blockchain ağları arasında yeniden giriş saldırısı gerçekleştirir. Bu daha karmaşık bir saldırı türüdür ve genellikle köprü protokollerini hedef alır.
+
+\subsubsection{Read-Only Re-Entrancy}
+
+Saldırgan, bir okuma fonksiyonu üzerinden yeniden giriş yapar. Bu tür saldırılar, ekonomik avantaj sağlamak için kullanılır ve doğrudan fon kaybına neden olmaz.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, hedef akıllı sözleşmedeki bir fonksiyonu çağırır. Bu fonksiyon, saldırganın kontrol ettiği başka bir akıllı sözleşmeye bir ödeme yapar veya bir dış çağrı gönderir.
+    \item Saldırganın sözleşmesi çağrıyı alır ve bu sırada, ilk akıllı sözleşmeye tekrar bir çağrı yapar. Bu, orijinal fonksiyonun birden fazla kez çalıştırılmasına neden olabilir.
+    \item Yeniden giriş sırasında, ilk fonksiyonun beklenen durumu güncellenmemiştir (örneğin, bir bakiyenin düşürülmesi). Saldırgan, bu durumu kullanarak fazladan işlemler gerçekleştirebilir (örneğin, birden fazla ödeme alabilir).
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+Durum değişikliklerini gerçekleştirdikten sonra dış çağrılar yapılır. Bu yaklaşım, yeniden giriş olasılığını ortadan kaldırır.
+
+\newpage
+
+\subsection{Gas Limit DoS Attack}
+
+Gas Limit DoS Attack, akıllı sözleşmelerin işlevselliğini engellemek için, ağın blok gas limitini aşacak şekilde işlem talebinde bulunurak hizmet kesintisine neden olmayı amaçlar. Ethereum blok zinciri gibi platformlarda, her işlem belirli bir miktar gas kullanır. Gas, bir işlemin çalıştırılması için gereken hesaplama gücünün bir ölçüsüdür. Her blok, belirli bir gas limitine sahiptir. Bu limit, bir blok içinde işlenebilecek işlemlerin toplam gas miktarını belirler. Bu saldırı, sözleşme içindeki yoğun işlem veya döngü gerektiren fonksiyonların hedef alınmasıyla gerçekleşir. Saldırgan, gas sınırını manipüle ederek işlemlerin başarısız olmasına veya ağın sıkışmasına neden olabilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, hedef sözleşmenin yoğun işlem gerektiren bir fonksiyonunu belirler.
+    \item Saldırgan, bu fonksiyonu çağırırken, gas tüketimini yapay olarak artıran parametreler gönderir. Fonksiyonun çalışması, blok başına tahsis edilen gas limitinin aşılmasına neden olur.
+    \item Fonksiyon, blok gas limitini aştığı için çalıştırılamaz ve başarısız olur. Diğer işlemler veya sözleşme fonksiyonları da bu süreçten etkilenerek hizmet kesintisi yaşanır.
+\end{enumerate}
+
+\newpage
+
+\subsection{DoS with Unexpected Revert}
+
+DoS with Unexpected Revert, akıllı sözleşmelerin çalışma mantığını bozmak için yapılan bir saldırı türüdür. call, delegetecall, transfer veya send gibi fonksiyonlarla başka bir sözleşmeyle etkileşim kuran akıllı sözleşmelerde, bir işlem sırasında bir revert (geri alma) işlemi tetiklenir ve hedef sözleşme revert işlemi nedeniyle çalışmasını durdurur. Bu da diğer kullanıcıların sözleşmeyi kullanmasını engeller.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, başka bir sözleşmeyi çağıran hedef bir fonksiyonu belirler.
+    \item Saldırgan, kendisine yapılan çağrıda bir revert işlemi tetikleyen bir sözleşme oluşturur. Bu sözleşme, çağrı yapılır yapılmaz revert eden bir fonksiyona sahip olur.
+    \item Hedef sözleşme, saldırganın sözleşmesine bir işlem gönderdiğinde revert tetiklenir. Bu durum, hedef sözleşmenin işlem akışını durdurur ve diğer kullanıcıların sözleşmeyi kullanmasını engeller.
+    \item Tüm işlemler revert edildiğinden, sözleşme işlevselliğini kaybeder. Örneğin, bir ödül dağıtım mekanizmasında bir adres revert ederse, dağıtım tamamlanamaz.
+\end{enumerate}
+
+\newpage
+
+\subsection{Reusing msg.value}
+
+msg.value, Ethereum tabanlı akıllı sözleşmelerde gönderilen Ether miktarını ifade eder. Bu değerin döngü içinde yanlış bir şekilde kullanılması, güvenlik açıklarına yol açabilir. Döngü içerisinde msg.value'nin yeniden kullanılması, döngü mantığını manipüle edebilir veya sözleşmedeki fonların yanlış bir şekilde dağıtılmasına yol açabilir. Temel sorun döngünün her yinelemesinde aynı msg.value değerine güvenilmesidir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Saldırgan, bir döngü içinde msg.value kullanıldığını tespit eder.
+    \item Saldırgan, döngüde kullanılan msg.value değerini manipüle etmek için beklenmedik miktarda ether gönderir.
+    \item Döngü, saldırganın sağladığı yanlış değerler nedeniyle doğru çalışmaz, ödüller veya ödemeler yanlış adreslere veya hatalı miktarda gönderilir.
+\end{enumerate}
+
+\subsubsection{Engelleme Yöntemleri}
+
+msg.value değerini döngü içinde hesaplamak yerine, döngüye girmeden önce kesin miktarlar belirlenir.
+
+\newpage
+
+\subsection{Transaction Ordering Dependence (TOD)}
+
+Transaction Ordering Dependence, işlem sırasına bağımlılık anlamına gelir. Akıllı sözleşmelerin, blockchain'deki işlemlerin sırasına göre beklenmedik davranışlar göstermesine neden olur. Saldırganlar, işlemleri kendi lehlerine olacak şekilde yeniden sıralayabilir veya başka işlemleri ekleyerek manipülasyonlar yapabilir. Bu sorun, Ethereum gibi blockchain ağlarında görülür ve MEV (Maximal Extractable Value) saldırısı ile ilişkilidir. Akıllı sözleşmeler, işlem sırasını göz önünde bulundururlar. Ancak blockchain'de işlemler madenciler tarafından sıralandığı için, madenciler veya MEV botları bu sıralamayı manipüle edebilir.
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Kullanıcı, bir akıllı sözleşme fonksiyonunu çağıran bir işlem oluşturur ve gönderir.
+    \item Saldırgan, kullanıcı tarafından gönderilen işlemi mempool'da (işlenmemiş işlemlerin havuzu) görür.
+    \item Saldırgan, kendi işlemini kullanıcı işleminin önüne geçirecek şekilde madenciye daha yüksek bir gas ücretiyle gönderir. Bu, kullanıcının orijinal işleminin etkisiz kalmasına veya saldırganın avantaj sağlamasına neden olur.
+    \item Madenci, saldırganın işlemini öncelikli olarak işler ve işlemi blockchain'e yazar.
+\end{enumerate}
+
+\subsection{Maximal Extractable Value (MEV) Saldırısı}
+
+MEV, bir blok üreticisinin bir blokta işlemleri dahil etme, dışlama yada yeniden sıralama yetkisini kullanarak elde edebileceği maksimum değerdir. DeFi (Merkeziyetsiz Finans) sistemlerinde sorun çıkarır. Madenciler, doğrulayıcılar veya MEV botlar, belirli işlemlerden kâr elde etmek için işlem sıralamasını manipüle edebilir. İşlem sırası, blockchain'in mempool adı verilen bekleyen işlemler havuzunda yer alan işlemlerden belirlenir. MEV, bu sıralama üzerinde yapılan manipülasyonlarla elde edilir.
+
+\begin{itemize}
+    \item \textbf{Front-Running}: Bir işlemin önüne geçerek, o işlemden avantaj sağlamak. Örneğin, büyük bir alım işlemi fiyatı artıracaksa, saldırgan daha düşük fiyatla önce alım yapar.
+    \item \textbf{Back-Running}: Bir işlemin ardından, fiyat dalgalanmalarını kullanarak kâr sağlamak. Örneğin, büyük bir satım işlemi fiyatı düşürecekse, bu işlemin ardından alım yapmak.
+    \item \textbf{Sandwich Attack}:Hem front-running hem de back-running kullanılarak bir işlemi sıkıştırma. Örneğin, kullanıcının işleminin öncesinde token alımı, ardından ise satışı gerçekleştirilerek fiyat farkından kazanç sağlanır.
+    \item \textbf{Liquidation}: Madenciler, tasfiye edilebilir bir borç pozisyonunu tasfiye ederek tasfiye ödüllerini toplar.
+    \item \textbf{Arbitrage}: Farklı platformlardaki fiyat farklarından faydalanma. MEV botları, tokenları düşük fiyatla alıp başka bir platformda yüksek fiyatla satar.
+\end{itemize}
+
+\subsubsection{Engelleme Yöntemleri}
+
+Commit-Reveal Pattern (Taahhüt ve Açıklama Mekanizması), kullanıcıların, işlem detaylarını doğrudan açıklamak yerine taahhüt ettikleri bir mekanizmadır. Kullanıcı ilk olarak bir hash değeri gönderir. Daha sonra hash değerini çözmek için gerekli bilgileri açıklayan ikinci bir işlem gönderir. Saldırgan, ilk işlemde detayları göremedi için manipüle edemez.
+
+İşlemleri gizlemek için özel bir işlem havuzu veya private mempool kullanılabilir. Kullanıcı işlemleri yalnızca madenciler tarafından işlenmeden önce görülebilir.
+
+\newpage
+
+\subsection{Gas Griefing Attack}
+
+Gas Griefing saldırısında, bir saldırgan, bir işlemi gerçekleştirmek için yetersiz gas (işlem ücreti) göndermesi nedeniyle bir akıllı sözleşmenin normal işleyişini bozar. Bu saldırı, blockchain ekosisteminde işlemlerin verimliliğini düşürerek protokollerin doğru çalışmasını engelleyebilir ve kullanıcılar için ek maliyetlere neden olabilir.
+
+\begin{enumerate}
+    \item Saldırgan, mempool’da (işlenmemiş işlem havuzu) bekleyen işlemleri tarar ve hedef sözleşmeye yönelir.
+    \item Saldırgan, bir işlem gönderir ancak bu işleme yetersiz gas ekler.
+    \item Sözleşme, işlemi tamamlayamaz ve gas ücreti kaybolur.
+    \item Saldırgan, bu yöntemi tekrar tekrar kullanarak hedef sözleşmeyi sürekli meşgul edebilir ve kullanıcıların işlevselliği etkilenir.
+\end{enumerate}
+
+\newpage

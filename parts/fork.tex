@@ -1,0 +1,28 @@
+\section{Fork (Çatallanma)}
+
+Fork, bir blockchain ağı üzerinde blokların geçmişine veya kurallarına dair bir değişikliği ifade edir. Blockchain'in mevcut durumunda ağdaki düğümlerin anlaşmazlığa düşmesi veya farklı bir protokol izlemeye başlamasıyla ortaya çıkar. Yazılım güncellemelerinden, fikir ayrılıklarından veya teknik hatalardan kaynaklı olabilir.
+
+\subsection{Hard Fork (Zorunlu Çatallanma)}
+
+Hard Fork, blockchain protokolünde geriye dönük uyumsuz bir değişiklik anlamına gelir. Ağın kuralları değiştirildiğinde eski kurallara uyan düğümler yeni blockchain'e uyum sağlayamaz. Bu değişkiklik, ağdaki tüm düğümlerin yazılımını güncellemelerini zorunlu kılar. Sert çatallanma sonucu bağımsız blochchain'ler ve bu bu blockchain'lere ait kripto paralar oluşabilir. Örneğin, Bitcoin blockchain'inde oluşan bir hard fork sebebiyle Bitcoin Cash (2017) ortaya çıkmıştır. Bitcoin Cash, Bitcoin'in blok boyutunun artırılarak daha fazla ilemi işleyebilmesi gerektiği konusundaki anlaşmazlıklar sonucu ortaya çıkmıştır. Ethereum ağında "DAO" saldırısı sonrası bir hard fork gerçekleştirdi. Ethereum Classic, eski blockchain’i devam ettirirken Ethereum, yeni kurallara geçti. Hard Fork sonucu iki ayrı blockchain oluşur: biri eski kuralları izler, diğeri yeni kuralları. Katılımcılar hangi blockchain üzerinde çalışacaklarına karar verir.
+
+\subsubsection{Hard Fork Oluşum Süreci}
+
+\begin{itemize}
+    \item \textbf{Protokol Değişikliği}: Geliştiriciler, blockchain'in kurallarını değiştirebilirler. Bu değişiklik, mevcut kurallarla uyumsuz ise hard fork oluşur.
+    \item \textbf{Topluluk Anlaşmazlığı}: Ağdaki düğümler anlaşmazlık yaşabilir.
+    \item \textbf{Yazılım Güncellemesi}: Blockchain yazılımında yapılan bir güncelleme, eski sürümlerle uyumsuz olabilir. Güncellenmemiş düğümler eski blockchain'i takip ederken, güncel düğümler yeni kuralları izler. Böylece hard fork oluşur.
+\end{itemize}
+
+\subsection{Soft Fork (Yumuşak Çatallanma)}
+
+Soft Fork, blockchain protokolünde geriye dönük uyumlu bir değişkiklik anlamına gelir. Eski düğümler, yeni kuralları anlamasalar bile hala ağ üzerinde işlem yapabilir. Soft fork, ağdaki tüm düğümlerin güncellenmesini zorunlu kılmaz. Yeni kurallar yalnızca yeni sürüme yükseltilmiş düğümler tarafından tam olarak desteklenir. Eski düğümler, yeni kuralların bir kısmını anlamayabilir ama blokları reddetmez. 
+
+\subsubsection{Soft Fork Oluşum Süreci}
+
+\begin{itemize}
+    \item \textbf{Protokol Güncellemesi}: Geliştiriciler, blockchain'in işleyişini iyileştirmek veya yeni özellikler eklemek için mevcut kuralları genişletir veya daraltır.
+    \item \textbf{Topluluk Desteği}: Soft fork'un uygulanabilmesi için ağdaki madencilerin en az \%51'inin desteğini alması gerekir.
+\end{itemize}
+
+\newpage
