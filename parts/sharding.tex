@@ -1,0 +1,29 @@
+\section{Sharding}
+
+Sharding, blockchain ağlarının ölçeklenebilirlik ve işlem hızını artırmak amacıyla, veriyi veya işlemleri daha küçük alt gruplara (parçalara) ayırma yöntemidir. Bu alt gruplara "shard" adı verilir. Her shard, bir blockchain'in kendi mini-versiyonu gibi çalışır ve belirli bir veri veya işlem alt kümesini işler. Sharding, ağ büyüdükçe ortaya çıkan ölçeklenebilirlik sorunlarını çözmek için tasarlanmıştır. Bu mekanizma, blockchain ağındaki tüm düğümlerin aynı veriyi saklamak veya aynı işlemleri doğrulamak zorunda kalmasını engelleyerek performansı artırır. Bir shardın ele geçirilmesi, o shard üzerindeki verilerin veya işlemlerin güvenliğini tehdit edebilir.
+
+\subsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Blockchain, farklı shardlara bölünür. Her shard, yalnızca kendisine atanmış işlemleri ve verileri işler.
+    \item Her shard, diğerlerinden bağımsız olarak işlemleri işler ve kaydeder. Bu paralel işlem sayesinde ağda daha fazla işlem aynı anda gerçekleştirilebilir.
+    \item Shardlar birbirinden bağımsız çalışsa da, zaman zaman birbirleriyle iletişim kurmaları gerekir. Bu, "Cross-Shard Communication" (Shardlar Arası İletişim) ile sağlanır.
+    \item Her bir shardda işlemleri doğrulamak için belirli düğümler görevlendirilir. Doğrulayıcıların shardlar arasında rastgele atanması, ağ güvenliğini artırır ve kötü niyetli aktörlerin bir shardı ele geçirme olasılığını düşürür.
+\end{enumerate}
+
+\subsection{Cross-Shard Communication}
+
+Shardlar bağımsız çalıştığı için bir sharddaki işlem veya veri, diğer shardlarla iletişim kurmadan tam anlamıyla tamamlanamayabilir. Bu mekanizma, bir sharddaki işlem veya bilginin başka bir shardda kullanılmasını sağlar. 
+
+\subsubsection{Çalışma Adımları}
+
+\begin{enumerate}
+    \item Bir shardda bir işlem başlatılır. Örneğin, bir kullanıcı A, shard 1 üzerindeyken, kullanıcı B, shard 2 üzerindedir. A, B'ye bir kripto para transferi yapmak ister.
+    \item Shard 1, bu işlemi gerçekleştirmek için bir mesaj oluşturur. Bu mesaj, işlemin detaylarını içerir.
+    \item Mesaj, shardlar arası iletişim protokolü kullanılarak shard 2’ye iletilir. Bu aşamada, mesajın güvenli ve doğru bir şekilde taşınması için kriptografik imzalar ve doğrulama mekanizmaları kullanılır.
+    \item Shard 2, aldığı mesajı işler ve işlemin geçerli olup olmadığını kontrol eder. Eğer geçerliyse, işlem kaydedilir ve ilgili değişiklikler shard 2’nin defterine yazılır.
+    \item İşlem tamamlandıktan sonra, shardlar birbirlerinin durumunu günceller. Örneğin, shard 1'deki A'nın bakiyesi azaltılırken, shard 2'deki B'nin bakiyesi artırılır.
+    \item İşlemin her iki shardda da kesinleşmesi için bir konsensüs mekanizması devreye girer. Bu, işlemin zincir üzerinde geri alınamaz hale gelmesini sağlar.
+\end{enumerate}
+
+\newpage
