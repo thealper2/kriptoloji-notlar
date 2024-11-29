@@ -2,27 +2,216 @@
 
 Kuantum kriptografi, kuantum mekaniğinin temel ilkelerine dayanan bir şifreleme yöntemidir. Diğer yöntemlerden farklı olarak, veri güvenliğini matematiksel hesaplamaların karmaşıklığından ziyade fiziksel prensiplere dayandırır. Bilgiler, kuantum bitleri (qubit) ile temsil edilir. Qubit'ler 0, 1 veya bu ikisinin süperpozisyonu şeklinde olabilir. Kuantum Kriptografi, Heisenberg Belirsizlik İlkesini kullanır. Kuantum parçacığının özelliklerini ölçmek, o parçacığın durumunu değiştirir. Bu özellik, dinleme girişimlerini tespit etmeyi sağlar. Kuantum durumları, birbiriyle çakışmayan bazlarda ölçüldüğünde kesin bilgi vermez. Bu, iletişim güvenliğini artırır. Dolaşıklık (Entanglement), iki veya daha fazla parçacığın durumlarının birbirine bağlı olması durumudur. Bu bağlantı, fiziksel olarak ayrı yerlerde bile ölçümler arasında güçlü bir bağıntı sağlar.
 
-\subsection{BB84 Algorithm}
+\subsection{Quantum Key Distribution Protocols}
 
-BB84 Algoritması, 1984 yılında Charless Bennett ve Gilles Brassard tarafından geliştirilen ilk kuantum anahtar dağıtım protokolüdür. 
+\subsubsection{BB84 Algorithm}
+
+BB84 Algoritması, 1984 yılında Charless Bennett ve Gilles Brassard tarafından geliştirilen ilk kuantum anahtar dağıtım protokolüdür. Bu protokol, kuantum mekaniğinin temel prensiplerine dayanır ve iletişimdeki iki tarafın güvenli bir şifreleme anahtarı oluşturmasını sağlar. BB84 protokolü, kuantum mekaniğinin "ölçümün sistemin durumunu değiştirmesi" prensibini kullanarak eavesdropping (dinleme) girişimlerini algılayabilir. Kuantum durumları ölçüldüğünde değişir. Kuantum mekaniğinde bir qubit'in tam bir kopyasını oluşturmak mümkün değildir. Bu, dinleyicinin qubit'leri çoğaltarak iletişimi fark edilmeden bozmasını engeller.
+
+BB84, iki kuantum durumu üzerinde çalışır ve iki farklı bazis kullanır:
+
+\begin{itemize}
+    \item \textbf{Rectilinear Basis (Dik Basis)}: |0 ve |1, yatay ve dikey polarizasyon.
+    \item \textbf{Diagonal Basis (Çapraz Basis)}: |+ ve |-, 45 derece polarizasyon.
+\end{itemize}
+
+Her bit, bu bazislere göre kuantum bit (qubit) olarak kodlanır. Alice, rastgele bir bazis ve bir bit seçerek Bob'a qubit'ler gönderir. Bob ise bu qubit'leri rastgele bir bazis seçerek ölçer.
 
 \begin{enumerate}
-    \item Alice, rastgele bir bit dizisi ve baz dizisi seçer. Bitleri seçilen bazlara göre kuantum durumlarına dönüştürür ve Bob'a gönderir.
+    \item Alice, rastgele bir bit dizisi ve her bit için rastgele bir basis seçer seçer. Bitleri seçilen bazlara göre qubit'lere dönüştürür ve Bob'a gönderir.
     \item Bob, rastgele bazlar seçerek kuantum bitlerini ölçer. Bazlar doğru seçildiyse, Alice'in gönderdiği biti doğru şekilde ölçer; aksi takdirde rastgele bir sonuç elde eder.
     \item Alice ve Bob, bir kanal üzerinden hangi bazları kullandıklarını paylaşır, bitlerin kendisini paylaşmazlar. Sadece aynı bazda ölçülen bitler korunur ve diğerleri atılır.
     \item Kalan bitler, ortak bir gizli anahtar olarak kullanılır.
     \item Alice ve Bob, anahtarın bir kısmını karşılaştırarak Eve'in dinleme girişimlerini tespit eder. Eğer müdahale varsa, kuantum durumlarındaki değişimden dolayı hata oranı artar.
 \end{enumerate}
 
-\subsection{EPR-Ekert Protocol}
+Alice'nin bit dizisi "10101" olsun. Alice ve Bob'un bazis dizileri:
 
-EPR-Ekert Protokolü, 1991 yılında Artur Ekert tarafından önerilen bir kuantum anahtar dağıtım protokolüdür. Bu protokol, Einstein-Podolsky-Rosen (EPR) dolaşıklığı üzerine kuruludur. 
+\begin{itemize}
+    \item \textbf{Alice}: $+ \times + \times +$.
+    \item \textbf{Bob}: $+ + \times \times +$.
+\end{itemize}
+
+Bob'un aynı bazislere göre ölçüm sonuçları "1XX01" (X, rastgele bittir) olur. Doğru eşleşen bazisler, birinci dördüncü ve beşinci bitler, Alice ve Bob'un ortak anahtarını "101" oluşturur.
+
+\newpage
+
+\subsubsection{E91 (Ekert91) Protocol}
+
+Ekert Protokolü, 1991 yılında Artur Ekert tarafından önerilen bir kuantum anahtar dağıtım protokolüdür. Bu protokol, Einstein-Podolsky-Rosen (EPR) dolaşıklığı üzerine kuruludur. Güvenli anahtar paylaşımını sağlamak için Bell eşitsizliklerini ve dolanıklık durumlarını (entangled states) kullanır. Yerel gizlilik modellerinin ihlalini temel alarak dinlenme girişlerini tespit edebilir. E91, BB84 gibi tek bir tarafın qubit üretip gönderdiği bir sistem yerine, dolanık qubit çiftlerini kullanır. Bu çiftler, bir kuantum kaynağı tarafından oluşturulur ve iki taraf arasında paylaşılır. Bell eşitsizlikleri, iki tarafın ölçüm sonuçları arasındaki korelasyonun kuantum sınırları arasında olup olmadığını test etmek için kullanılır. 
 
 \begin{enumerate}
-    \item Alice ve Bob, dolaşık kuantum parçacıkları alır. Bu parçacıklar, birbirinden bağımsız iki uzak yerde ölçülür.
+    \item Bir kuantum kaynağı, dolanık qubit çiftlerini oluşturur.
+    \item Alice ve Bob, gelen qubit'ler üzerinde rastgele ölçüm bazisleri seçer.
     \item Alice ve Bob, ölçümlerini farklı yönlerde rastgele yapar. Ölçüm sonuçları, kuantum mekaniğinin yasaları nedeniyle güçlü bir şekilde korelasyonludur.
+    \item Alice ve Bob, bir kanal üzerinden kullandıkları bazisleri paylaşır. Ancak ölçüm sonuçlarını paylaşmazlar.
+    \item Bazis seçimlerinden bir kısmı, Bell eşitsizliklerini test etmek için ayrılır. Eğer Bell eşitsizlikleri kuantum mekaniğinin sınırlarına uyuyorsa, iletişim güvenli kabul edilir.
     \item Eğer Eve, kuantum kanalı dinlemeye çalışırsa, dolaşıklık bozulur ve korelasyonlar değişir. Bu, dinleme girişimlerini tespit etmeyi sağlar.
-    \item Alice ve Bob, ölçüm sonuçlarının korelasyonuna dayanarak bir gizli anahtar oluşturur.
+    \item Alice ve Bob, ölçüm sonuçlarının korelasyonuna dayanarak ortak bir gizli anahtar oluşturur.
+    \item Ölçüm sonuçlarında hata oranı kontrol edilir. Eğer hata oranı kabul edilebilir düzeydeyse anahtar güvenlidir.
 \end{enumerate}
+
+\newpage
+
+\subsubsection{B92 Protocol}
+
+B92 Protokolü, 1992 yılında Charles Bennett tarafından önerilen bir kuantum anahtar dağıtım protokolüdür. BB84'ün daha basit bir varyasyonudur. BB92, yalnızca iki kuantum durumu kullanır. Bu durumlar birbiriyle ortogonal olmayan iki farklı durumdur.
+
+\begin{enumerate}
+    \item Alice, rastgele bir bit dizisi oluşturur. Bit değerlerini temsil etmek için iki farklı kuantum durumu kullanır: 0 bit için $|\psi_1$, 1 bit için $|\psi_2$. Bu iki kuantum durumu ortogonal değildir.
+    \item Alice, oluşturduğu qubit'leri bir kanal üzerinden Bob'a gönderir.
+    \item Bob, gelen her qubit'i rastgele bir bazis seçerek ölçer. Bazis, Alice'in durumlarını ayırt etmek için uygundur.
+    \item Bob, yalnızca bir kuantum durumuna uyan ölçümleri kaydeder. Eğer Bob'un bazisi, Alice'in gönderdiği durumla uyumluysa, Bob bir bit değeri elde eder. Uyumsuz ölçümlerde, Bob sonuç elde edemez ve bu qubit'i atar.
+    \item Alice ve Bob, bir klasik kanal üzerinden hangi qubit'lerin ölçüm için uygun olduğunu paylaşır. Bob, hangi qubit'lerde bilgi elde ettiğini Alice'e bildirir. Ancak, Bob kesin bit değerini paylaşmaz.
+    \item Alice, Bob'un bilgisine göre kullanışlı qubit'leri belirler.
+    \item Alice ve Bob, paylaştıkları geçerli qubit'lerden ortak bir bit dizisi (anahtar) oluşturur.
+    \item Bob'un ölçümlerinde hata oranı kontrol edilir. Eğer hata oranı düşükse, ortak anahtar güvenli kabul edilir.
+\end{enumerate}
+
+Alice'nin bit dizisi "1010" ($|\psi_2 |\psi_1 |\psi_2 |\psi_1$) olsun. Bob, rastgele bazisler seçer ve ölçümler yapar.
+
+\begin{itemize}
+    \item İlk qubit için seçim: ($\psi_2$), Bob'un bazisi doğru: 1.
+    \item İkinci qubit için seçim: ($\psi_2$), Bob'un bazisi yanlış: 0.
+    \item Üçüncü qubit için seçim: ($\psi_2$), Bob'un bazisi doğru: 1.
+    \item Dördüncü qubit için seçim: ($\psi_2$), Bob'un bazisi yanlış: 0.
+\end{itemize}
+
+Bob'un aynı bazislere göre ölçüm sonuçları "1XX01" (X, rastgele bittir) olur. Doğru eşleşen bazisler, birinci ve üçüncü bitler, Alice ve Bob'un ortak anahtarını "11" oluşturur.
+
+\newpage
+
+\subsubsection{Six-State Protocol (6SP)}
+
+BB84 protokolünün bir genişletmesidir. Bu protokolde kuantum bitleri 6 farklı kuantum durumuyla temsil edilir. Bu ek bazis güvenlik seviyesini artırır ve dinlenme saldırılarına karşı daha dayanıklıdır. Protokolde kullanılan üç bazis:
+
+\begin{itemize}
+    \item \textbf{Rectilinear Basis}: $|0$ ve $|1$.
+    \item \textbf{Diagonal Basis}: $|+$ ve $|-$.
+    \item \textbf{Circular Bazis}: $|i$ ve $|-i$.
+\end{itemize}
+
+\begin{enumerate}
+    \item Alice, rastgele bir bit dizisi oluşturur. Her bit, üç bazisten biri ve bu bazise uygun bir kuantum durumu seçilerek temsil edilir. 
+    \item Alice, rastgele seçtiği bazise göre qubit'leri hazırlar ve kuantum kanal üzerinden Bob'a gönderir.
+    \item Bob, her qubit'i rastgele bir bazis seçerek ölçer. Eğer Bob'un seçtiği bazis, Alice'in gönderdiği bazisle uyumluysa doğru bir sonuç elde eder; aksi halde ölçüm sonucu rastgele olur.
+    \item Alice ve Bob, hangi qubit'lerin aynı baziste gönderilip ölçüldüğünü bir kanal üzerinden belirler. Bob, hangi bazisi kullandığını ve başarılı ölçüm yapıp yapmadığını Alice'e bildirir. Alice, Bob'un kullandığı bazise göre geçerli olan qubit'leri belirler.
+    \item Alice ve Bob, ortak bir bazisle ölçülen qubit'lerden ortak bir anahtar oluşturur.
+    \item Alice ve Bob, anahtarlarının bir kısmını karşılaştırarak hata oranını kontrol eder. Hata oranı düşükse anahtarın güvenli olduğu kabul edilir.
+\end{enumerate}
+
+Alice'nin bit dizisi "0101" olsun. Kuantum durumları:
+
+\begin{itemize}
+    \item \textbf{0}: Rectilinear Basis: $|0$, Diagonal Basis: $|+$, Circular Basis $|i$.
+    \item \textbf{1}: Rectilinear Basis: $|1$, Diagonal Basis: $|-$, Circular Basis $|-i$.
+\end{itemize}
+
+Bob, rastgele bazisler seçer ve ölçümler yapar.
+
+\begin{itemize}
+    \item İlk qubit için seçim: Bob, Rectilinear bazisi seçer ve doğru ölçüm yapar: 0
+    \item İkinci qubit için seçim: Bob, Diagonal bazisi seçer ve doğru ölçüm yapar: 1
+    \item Üçüncü qubit için seçim: Bob, Circular bazisi seçer ve yanlış ölçüm yapar.
+    \item Dördüncü qubit için seçim: Bob, Rectilinear bazisi seçer ve yanlış ölçüm yapar.
+\end{itemize}
+
+Alice ve Bob'un ortak anahtarını "01" oluşturur.
+
+\newpage
+
+\subsubsection{Decoy-State Protocol}
+
+Decoy-State Protokolü, anahtar dağıtımı sırasında tek foton kaynaklarının zorluklarını aşmayaı amaçlar. Protokol, BB84 veya diğer QKD protokollerine bir güvenlik katmanı ekler ve gönderilen ışık darbelerinin bir kısmını "decoy" (yalancı) darbelere dönüştürerek dinleme faaliyetlerini tespit etmeye yardımcı olur. Decoy-State Protokolü, gönderilen darbelerin yoğunluğunu (foton sayılarını) rastgele değiştirir. Bu, darbe içeriği hakkında bilgi edinmesini zorlaştırır ve saldırı girişimlerini algılamayı mümkün kılar. Zayıf koherent ışık kaynakları (weak coherent pulses, WCP) kullanan sistemlerde foton bölme saldırıları (photon splitting attacks) gibi güvenlik risklerini azaltmayı hedefler. Foton Bölme Saldırısı, eğer birden fazla foton içeren bir darbe varsa, Eve bu fotonlardan birini gizlice ölçebilir ve kalan fotonları Bob'a iletebilir. Bu, protokolün güvenliğini tehlikeye atar.
+
+\begin{enumerate}
+    \item Alice, farklı yoğunluklara sahip iki tür darbe oluşturur. Sinyal darbeleri, asıl anahtarı taşır. Decoy darbeler, dinleme faaliyetlerini tespit etmek için kullanılır. Bu darbeler, sinyal darbelerine benzer şekilde ancak farklı yoğunluklarla gönderilir.
+    \item Alice, gönderdiği her darbe için rastgele bir seçim yapar.
+    \item Bob, gelen darbeleri ölçer ve yoğunluk bilgisi olmadan bunları kaydeder.
+    \item Alice, hangi darbelerin sinyal, hangilerinin decoy olduğunu klasik kanal üzerinden Bob'a bildirir.
+    \item Alice ve Bob, decoy darbeleri üzerindeki hata oranını analiz eder. Eğer Eve, bu darbeler üzerinde müdahale yaptıysa, bu müdahaleler istatistiksel olarak fark edilir.
+    \item Alice ve Bob, yalnızca sinyal darbelerinden gelen sonuçları kullanarak ortak anahtar oluşturur. Decoy darbeler analiz için kullanılır, ancak anahtara dahil edilmez.
+\end{enumerate}
+
+\newpage
+
+\subsubsection{Device-Independent QKD (DI-QKD)}
+
+DI-QKD, kuantum anahtar dağıtımında kullanılan, cihazların iç yapısına güvenmek zorunda kalmadan güvenliği garanti eden bir protokoldür. QKD protokollerinde, kullanılan cihazların doğru bir şekilde çalıştığı varsayılır. Ancak bu cihazlarda oluşabilecek hatalar veya kötü niyetli manipülasyonlar, güvenliği tehlikeye atabilir. DI-QKD, cihazların güvenilir olup olmadığını kontrol etme gereksinimini ortadan kaldırır. Bu, cihazların kusurlu, manipüle edilmiş veya kötü niyetli bir şekilde tasarlanmış olabileceği durumlarda bile güvenliği garanti eder. DI-QKD, dolanık kuantum durumlarını kullanarak güvenli anahtar dağıtımı yapar. Cihazların doğru çalışıp çalışmadığını anlamak için Bell testi gerçekleştirilir. Eğer Bell eşitsizlikleri ihlal edilirse, cihazların güvenli olduğu ve dış müdahale olmadığı doğrulanır. Bu doğrulamanın ardından, taraflar rastgele bir anahtar oluşturabilirler.
+
+\newpage
+
+\subsubsection{Measurement Device-Independent QKD (MDI-QKD)}
+
+MDI-QKD, kuantum anahtar dağıtımında kullanılan ve ölçüm cihazlarının güvenilir olmadığı durumlarda bile güvenlik sağlayan bir protokoldür. QKD protokollerinde, ölçüm cihazlarındaki kusurlar bir saldırganın sistemi dinleyerek güvenliği tehlikeye atmasına neden olabilir. MDI-QKD, bu sorunu çözmek için ölçümlerin tarafsız bir üçüncü taraf tarafından yapılmasını sağlar.
+
+\begin{enumerate}
+    \item Alice ve Bob, rastgele bit dizileri üretir ve bu dizilere karşılık gelen kuantum durumlarını hazırlar.
+    \item Alice ve Bob, hazırladıkları kuantum durumlarını ortak bir ölçüm cihazına (Charles) gönderir.
+    \item Charles, kendisine ulaşan kuantum durumlarını birleştirerek Bell durum analizi yapar. Ölçüm sonuçlarını Alice ve Bob'a iletir. Bu sonuçlar, bireysel olarak anlamlı olmasa da iki tarafın ortak olarak bir anahtar oluşturmasına olanak tanır.
+    \item Alice ve Bob, Charles'tan aldıkları ölçüm sonuçlarını kullanarak kendi bit dizilerini eşler ve ortak bit dizisini elde ederler.
+\end{enumerate}
+
+\newpage
+
+\subsection{Kuantum Güvenlik ve Doğrulama Protokolleri}
+
+\subsubsection{Quantum Digital Signatures (QDS)}
+
+QDS, dijital imza yöntemlerinin kuantum versiyonudur. Kuantum mekaniğinin ilkelerini kullanarak, dijital imza işlemlerini eavesdropping (dinleme), sahtecilik, tekrar saldırıları gibi tehditlere karşı güvenli hale getirir. QDS'nin temel prensibi, mesajların kuantum anahtarları ile imzalanması ve alıcılar arasında güvenli bir şekilde doğrulanmasıdır. Hem kuantum kanalları hem de klasik iletişim kanalları gerektirir. QDS, kuantum durumlarının ölçümle bozulması prensibine dayanır. Eğer bir saldırgan (Eve) kuantum imzaları gizlice ölçmeye çalışırsa, bu imzaların özellikleri değişir ve saldırı hemen fark edilir.
+
+\begin{enumerate}
+    \item Alice, rastgele bir kuantum anahtar dizisi oluşturur. Bu anahtar dizisi, kuantum bitlerden oluşur.
+    \item Alice göndermek istediği mesajı bir hash fonksiyonu ile özetler.  Mesaj özeti, Alice'in rastgele oluşturduğu kuantum anahtar dizisi ile imzalanır. 
+    \item Alice, imzalanmış mesajı hem klasik hem de kuantum kanallar üzerinden alıcılara ayrı ayrı gönderir. Kuantum kanal üzerinden anahtarlar, klasik kanal üzerinden mesaj ve doğrulama için gerekli bilgiler paylaşılır.
+    \item Bob ve Charlie, Alice'in kuantum anahtar dizilerini kullanarak gelen mesajın imzasını kontrol eder. 
+    \item  Bob, mesajı Charlie'ye iletmek isterse, Charlie de aynı kuantum imza doğrulama sürecinden geçer. Bu süreç, Alice'in imzasının yeniden kullanılabilirliğini sağlar.
+\end{enumerate}
+
+\newpage
+
+\subsubsection{Quantum Bit Commitment (QBC)}
+
+QBC, klasik bit commitment protokollerinin kuantum mekaniksel güvenlik özellikleriyle güçlendirilmiş halidir. Protokol, kuantum mekaniğinin özelliklerinden faydalanarak daha güvenli bir şekilde gerçekleştirilir. İki taraf arasında yapılan bir sözleşme olup, bir tarafın bir bit değerine taahhüt etmesini, diğer tarafın bu değeri henüz bilmemesini ama sonradan bu değeri doğrulayabilmesini sağlar. Bit commitment, gizli bir değerin güvenli bir şekilde "kilitlenmesi" ve daha sonra "açılmasını" içerir. QBC'nin tam güvenliğinin teorik olarak imkansız olduğunu gösteren kanıtlar vardır (Mayers-Lo-Chau Teoremi). Bu teorem, herhangi bir kuantum bit commitment protokolünün ya Alice ya da Bob tarafından ihlal edilebileceğini öne sürer.
+
+\begin{enumerate}
+    \item Alice, taahhüt edeceği bir bit değerine karar verir. Bu bit değerine karşılık gelen bir kuantum durumu hazırlar.
+    \item Alice, tahhüt ettiği bit değerine karşılık gelen kuantum durumunu Bob'a gönderir. Bob, gelen kuantum durumunu saklar ancak henüz ölçüm yapmaz.
+    \item Alice, Bob'a taahhüt ettiği bit değerini ve bu değere karşılık gelen kuantum durumunun tanımını açıklar. Bob, elindeki kuantum durumunu ölçer ve Alice'in verdiği bilgiyle karşılaştırır.
+    \item Bob, ölçüm sonucunu kullanarak Alice'in başlangıçta gerçekten belirttiği bit değerine taahhüt edip etmediğini doğrular. Eğer sonuçlar eşleşirse, Alice'in taahhüt sürecine sadık kaldığı kabul edilir.
+\end{enumerate}
+
+\newpage
+
+\subsection{Kuantum İletişim Protokolleri}
+
+\subsubsection{Quantum Teleportation}
+
+Quantum Teleportation, bir kuantum durumunun bir konumdan başka bir konuma aktarılması işlemidir. Bu süreçte, kuantum durum fiziksel olarak taşınmaz, ancak hedefe tam olarak yeniden oluşturulur. Teleportasyon, kuantum mekaniğinin dolanıklık ve ölçüm ilkelerine dayanır. Dolanıklık, iki kuantum parçacık, fiziksel olarak birbirinden uzak olsa bile, birbiriyle ilişkili bir durumda olabilir. Bu, iki parçacık arasında özel bir bağlantı oluşturur. Kuantum Ölçüm, bir kuantum durumunun ölçülmesi, durumun çökmesine neden olur. Bu, ilgili parçacıkların durumlarını belirli bir şekilde etkiler.
+
+Bob, iki dolanık kuantum biti üretir. Bu qubit'ler $Q_b$ ve $Q_c$ olarak adlandırılır ve dolanık bir durumda olabilirler:
+
+\[ |\phi^{+} = \frac{1}{\sqrt{2}} (|00\rangle + |11\rangle) \]
+
+Bob, dolanık qubit'lerden birini $Q_c$ Alice'e gönderir. Artık Alice'in elinde $Q_a$ (göndermek istediği durum) ve $Q_c$ (Bob'dan gelen dolanık qubit) vardır. Bob'un elinde ise $Q_b$ (Dolanık çiftin diğer qubit'i) vardır.
+
+Alice, göndermek istediği kuantum durumunu ($|\psi\rangle$) ve kendisindeki dolanık qubit $Q_c$ üzerinde bir Bell ölçümü gerçekleştirir. Bu ölçüm, iki parçacığı dört Bell durumundan birine çökertecektir. Bell durumları
+
+\[ |\phi^{+} = \frac{1}{\sqrt{2}} (|00\rangle + |11\rangle) \]
+\[ |\phi^{-} = \frac{1}{\sqrt{2}} (|00\rangle - |11\rangle) \]
+\[ |\psi^{+} = \frac{1}{\sqrt{2}} (|01\rangle + |10\rangle) \]
+\[ |\psi^{-} = \frac{1}{\sqrt{2}} (|01\rangle - |10\rangle) \]
+
+Bell ölçümünün sonunda, Alice'in elindeki $Q_a$ ve $Q_c$ qubit'lerinin durumları çöker, ancak bu durum Bob'un elindeki $Q_b$ üzerinde bir değişiklik yaratır. Alice, ölçüm sonuçlarını bir iletişim kanalı üzerinden Bob'a iletir. Bu sonuçlar, Bob'a hangi Bell durumunun seçildiğini belirtir.
+
+Bob, Alice'in gönderdiği ölçüm sonuçlarına göre elindeki qubit $Q_b$ üzerinde uygun bir kuantum kapısı uygular. Bu, Bob'un qubit'ini, Alice'in başlangıçta göndermek istediği durum ile aynı hale getirir. Sonuç olarak, Alice'in başlangıçtaki durumu $(|\psi\rangle)$ Bob'un elindeki qubit'te yeniden oluşturulmuş olur. Alice'in orijinal duurmu ise artık yoktur.
+
+\newpage
+
+\subsubsection{Quantum Secret Sharing (QSS)}
+
+QSS, bir sır paylaşımının güvenli bir şekilde yapılmasını sağlayan bir kuantum protokolüdür. QSS, bir sırdaki bilginin farklı taraflar arasında bölünmesini ve bu sırra yalnızca belirli bir grup tarafın birlikte erişebilmesini sağlar. Dolanık kuantum parçacıklar, sır paylaşımı için bir bilgi taşıyıcısı olarak kullanılır. Bilginin elde edilmesi veya sırrın geri alınması, dolanık durumların ölçülmesine dayanır. Sır, sadece belirli bir koalisyonun birlikte çalışması durumunda erişilebilir hale gelir.
+
+Alice, sır paylaşımı için dolanık bir kuantum durum oluşturur $n$ kişiye bölünecek bir sır için $n$-parçacıklı dolanık bir durum üretilir. Alice, dolanık durumu $n$ kişiye dağıtır. Her katılımcı, dolanık sistemin bir kuantum bitini alır. Alice, paylaşmak istediği sırrı kuantum durumları üzerine kodlar. Kodlama, sırrın yalnızca belirli sayıda kişinin bir araya gelmesi durumunda erişilebilir olmasını sağlar. Her bir katılımcıya, kuantum kanallar üzerinden kuantum sistemin bir parçası (qubit) gönderilir. Sır, yalnızca belirli bir eşik sayıda kişi bir araya geldiğinde yeniden oluşturulabilir. Katılımcılar ellerindeki qubit'leri birleştirir. Bu qubit'ler üzerinde ortak bir ölçüm gerçekleştirilir. Ölçüm sonuçları, Alice'in başlangıçta kodladığı sırra erişmeyi sağlar. Eşik sayısından az kişi bir araya gelirse eksik kuantum bilgisi nedeniyle sır geri alınamaz.
 
 \newpage

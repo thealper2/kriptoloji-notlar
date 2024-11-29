@@ -347,3 +347,41 @@ Linear Cryptanalysis, blok şifreleme algoritmalarını çözmek için kullanıl
 Impossible Differential Cryptoanalysis, modern blok şifreleme algoritmalarına yönelik bir kriptoanaliz tekniğidir. Bu yöntemde, belirli bir şifreleme algoritmasında mümkün olmayan diferansiyeller tespit edilir ve bu bilgi kullanılarak anahtar uzayı daraltılır. Yani, belirli bir giriş ve çıkış farkı kombinasyonunun hiçbir şekilde oluşamayacağı kanıtlanır ve bu bilgi, şifreleme sisteminin zayıflıklarını keşfetmek için kullanılır.
 
 \newpage
+
+\subsection{Implementation Attack}
+
+Implementation Attack, algoritmanın nasıl uygulandığını hedef alır. Algoritmanın uygulanma şekli sırasında ortaya çıkan zayıflıklardan faydalanır. Amaç, gizli bilgileri ele geçirmektir. Side-Channel saldırıları ile beraber kullanılır. 
+
+\begin{itemize}
+    \item \textbf{Timing Attack}: Algoritmanın işlem süresini analiz ederek gizli bilgileri çıkarır. OpenSSL'de zamanlama farklarından kaynaklanan zayıflıklar geçmişte bulunmuştur.
+    \item \textbf{Power Analysis}: Algoritmanın güç tüketimini ölçerek anahtar bilgisine ulaşır.
+    \item \textbf{Fault Injection Attack}: Donanım üzerinde kontrollü hatalar yaratarak algoritmanın davranışı gözlemler.
+    \item \textbf{Electromagnetic Analysis}: Algoritmanın elektromanyetik yayılımlarını analiz ederek bilgi çıkarır.
+    \item \textbf{Cache Attack}: Bellek önbellek kullanımını analiz ederek hassas bilgileri ele geçirir.
+\end{itemize}
+
+\newpage
+
+\subsection{Collision Attack}
+
+Collision Attack, bir hash fonksiyonunun zayıflıklarından yararlanarak iki farklı giriş için aynı hash değerine sahip olmasını sağlamaya çalışır. Hash fonksiyonları, bir veriyi sabit uzunluktaki çıktı ile temsil eder ve bu değer benzersiz olmalıdır. Ancak, hash fonksiyonunun çıktısında çakışmalar oluşabiliyorsa, bu bir güvenlik açığıdır. 
+
+\newpage
+
+\subsection{Replay Attack}
+
+Replay Attack, bir saldırganın daha önce iletilmiş olan geçerli bir mesajı yeniden göndermesi yoluyla bir güvenlik sistemini kandırmayı amaçlar. Kimlik doğrulama süreçlerinde, ödeme işlemlerinde kullanılır. Saldırgan, sistemin önceki bir geçerli mesajı tekrar etmesini sağlamak için bu mesajları yakalar ve iletir.
+
+\newpage
+
+\subsection{Analytic Attack}
+
+Analytic Attack, bir şifreleme algoritmasının matematik yapısının analiz edilerek şifreleme sisteminde zayıflıkların tespit edilmesidir. Şifreleme algoritmasının yapısını, doğrusal veya diferansiyel özelliklerini inceleyerek, sistemin şifre çözme sürecini hızlandırmaya yönelik stratejiler geliştirir.
+
+\newpage
+
+\subsection{Statistical Attack}
+
+Statistical Attack, şifreleme sistemlerinin zayıflıklarını bulmak için şifreli verilerin istatistiksel özelliklerini inceler. Şifreli metinlerdeki örüntülerin veya ilişkilerin keşfedilmesini amaçlar. Şifreli metinlerin ve düz metinlerin belirli kalıplar, frekanslar veya yapılar içermesi durumunda etkili olabilir. 
+
+\newpage
