@@ -152,7 +152,7 @@ def gcd(a, b):
 
 \subsection{Relatively Prime (Co-Prime) Numbers}
 
-Aralarında asal sayılar, iki sayının ortak bir böleninin sadece 1 olduğu durumları ifade eder. Yani $\text{GCD}(a, b) = 1$ olan iki sayı aralarında asaldır. Relatively Prime Numbers, kriptografide ve sayılar teorisinde şu alanlarda önemli bir rol oynar:
+Aralarında asal sayılar, iki sayının ortak bir böleninin sadece 1 olduğu durumları ifade eder. Yani $\text{GCD}(a, b) = 1$ olan iki sayı aralarında asaldır.
 
 Örneğin 35 ve 64'ün aralarında asal olup olmadığına bakalım.
 
@@ -162,9 +162,9 @@ Aralarında asal sayılar, iki sayının ortak bir böleninin sadece 1 olduğu d
     \item İkinci adım $\text{GCD}(64, 35) = \text{GCD}(35, 65 \text{ mod } 35)$ buradan 29 elde edilir, $a = 35$ ve $b = 29$.
     \item Üçüncü adım $\text{GCD}(35, 29) = \text{GCD}(29, 35 \text{ mod } 29)$ buradan 6 elde edilir, $a = 29$ ve $b = 6$.
     \item Dördüncü adım $\text{GCD}(29, 6) = \text{GCD}(6, 29 \text{ mod } 6)$ buradan 5 elde edilir, $a = 6$ ve $b = 5$.
-    \item Dördüncü adım $\text{GCD}(6, 5) = \text{GCD}(5, 6 \text{ mod } 5)$ buradan 1 elde edilir, $a = 5$ ve $b = 1$.
-    \item Beşinci adım $\text{GCD}(5, 1) = \text{GCD}(1, 5 \text{ mod } 1)$ buradan 1 elde edilir ve bitirilir.
-    \item Sonuç: $\text{GCD}(35, 64) = 1$ olduğu için 35 ve 64 aralarında asaldır..
+    \item Beşinci adım $\text{GCD}(6, 5) = \text{GCD}(5, 6 \text{ mod } 5)$ buradan 1 elde edilir, $a = 5$ ve $b = 1$.
+    \item Altıncı adım $\text{GCD}(5, 1) = \text{GCD}(1, 5 \text{ mod } 1)$ buradan 1 elde edilir ve bitirilir.
+    \item Sonuç: $\text{GCD}(35, 64) = 1$ olduğu için 35 ve 64 aralarında asaldır.
 \end{enumerate}
 
 \subsubsection{Python Kodu}
@@ -714,7 +714,7 @@ Fermat’ın Asal Testi, kriptografi alanında büyük öneme sahiptir, özellik
 \[ a^{n-1} \equiv 1 (\text{ mod } n) \]
 \[ 2^10 \text{ mod } 11 = 1 \]
 
-Bu sonnuç, Fermat'ın asal testine göre $n = 11$'in asal olduğuna karar verir.
+Bu sonuç, Fermat'ın asal testine göre $n = 11$'in asal olduğuna karar verir.
 
 \subsubsection{Python Kodu}
 
