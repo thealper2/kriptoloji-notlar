@@ -251,7 +251,7 @@ Anahtarlar oluşturulur.
     \item Lambda ($\lambda$) değeri hesaplanır (carmichael fonksiyonu): $\lambda = \text{lcm}(p - 1, q - 1)$, burada lcm en küçük olan ortak kattır.
     \item Bir yardımcı fonksiyon $L(u)$ hesaplanır: $L(u) = \frac{u - 1}{n}$.
     \item g, $n^2$ modülünde bir sayı seçilir: $\text{gcd}(L(g^{\lambda} \text{ mod } n^2), n) = 1$
-    \item Açık anahtar $(n, g)$'dir. Özel anahtar ise $(\lambda, \mu$). Burada $\mu = L(g^{\lambda} \text{ mod } n^2)^{-1} \text{ mod } n$.
+    \item Açık anahtar $(n, g)$'dir. Özel anahtar ise ($\lambda, \mu$). Burada $\mu = L(g^{\lambda} \text{ mod } n^2)^{-1} \text{ mod } n$.
 \end{enumerate}
 
 Mesaj şifrelenir.

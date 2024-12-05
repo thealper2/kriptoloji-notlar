@@ -707,7 +707,7 @@ SipHash, anahtarlı hash fonksiyonu olarak tasarlanmıştır. Kısa veri parçal
 \begin{enumerate}
     \item SipHash, 128-bitlik bir gizli anahtar kullanır.
     \item Girdi verisi parçalara ayrılır ve her bir parça, 64-bitlik bloklar halinde işlenir. Eğer veri son bloğa sığmazsa, boş kalan kısımlar sıfırla doldurulur.
-    \item SsipHash, iç durumda 4 adet 64-bitlik başlangıç değerini tutar. Bu durum, daha sonra hash hesaplaması sırasında güncellenir. Başlangıç durumu, gizli anahtara dayanarak oluşturulur.
+    \item SipHash, iç durumda 4 adet 64-bitlik başlangıç değerini tutar. Bu durum, daha sonra hash hesaplaması sırasında güncellenir. Başlangıç durumu, gizli anahtara dayanarak oluşturulur.
     \item Her veri bloğu, dört farklı turda işlenir. Her bir tur, veri ve anahtar üzerinde çeşitli bit manipülasyonları yapar. Her turda belirli sayıda döndürme işlemi gerçekleştirilir. SipHash-2-4, bu işlemi 2 iç ve 4 dış turla yapar.
     \item Bütün veri işlendiğinde, 64-bit veya 128-bit (versiyona bağlı olarak) nihai hash sonucu üretilir.
 \end{enumerate}

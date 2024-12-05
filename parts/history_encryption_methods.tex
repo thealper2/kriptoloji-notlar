@@ -105,7 +105,7 @@ Caesar Cipher, Julius Caesar tarafından kullanılan bir yer değiştirme (subst
 \subsubsection{Decryption}
 
 \begin{enumerate}
-    \item Şifrelenmiş metindeki her harf için; harfin alfabe sıraısndaki yerinden shift değeri çıkarılır.
+    \item Şifrelenmiş metindeki her harf için; harfin alfabe sırasındaki yerinden shift değeri çıkarılır.
     \item Eğer alfabe başından önceye gidilerse sona dönülür.
 \end{enumerate}
 
@@ -255,7 +255,7 @@ Vigenere Cipher, çok alfabeli yer değiştirme şifreleme (polyalphabetic subst
 
 \[ C_i = (P_i + K_i) \text{ mod } 26 \]
 
-Burada, $P_i$, düz metindeki harfin alfabe sırası (0-25 arasında); $K_i$, anahtar keliminin ilgili harfinin alfabe sırası (0-25 arasında); $C_i$, şifrelenmiş metindeki harfin alfabe sırasıdır. Deşifreleme işleminde, şifreleme işlerminin tersi yapılır. 
+Burada, $P_i$, düz metindeki harfin alfabe sırası (0-25 arasında); $K_i$, anahtar keliminin ilgili harfinin alfabe sırası (0-25 arasında); $C_i$, şifrelenmiş metindeki harfin alfabe sırasıdır. Deşifreleme işleminde, şifreleme işleminin tersi yapılır. 
 
 \[ P_i = (C_i - K_i) \text{ mod } 26 \]
 
